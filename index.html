@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calamity War — Demo V0.5</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="screen" class="screen main-menu active">
+      <div class="bg bg-main"></div>
+      <div class="shade"></div>
+      <header class="game-title">
+        <div class="kicker">DEMO BUILD V0.5</div>
+        <h1>CALAMITY WAR</h1>
+        <p>Legacy Demands War</p>
+      </header>
+      <nav class="main-buttons" aria-label="Main Menu">
+        <button data-action="story" class="selected">Story Mode</button>
+        <button data-action="pvp">PvP Mode</button>
+        <button data-action="training">Training Mode</button>
+        <button data-action="select">Character Select</button>
+        <button data-action="gallery">Stage Gallery</button>
+        <button data-action="options">Options</button>
+      </nav>
+      <aside class="lore-box">
+        <h2>The Recommendation Mission</h2>
+        <p>Rai’s first real test begins after an explosion at Malachai Manor. Investigate the disappearances, survive the forest, and breach the fortress.</p>
+      </aside>
+      <div class="press-start">Press ENTER / Tap a menu option</div>
+    </div>
+
+    <div id="characterScreen" class="screen character-screen">
+      <div class="bg bg-select"></div>
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <section class="select-layout">
+        <div class="selected-panel">
+          <h2 id="selectedName">RAI</h2>
+          <p id="selectedSubtitle">Main Protagonist</p>
+          <div id="selectedAvatar" class="big-avatar rai"></div>
+          <dl id="selectedStats" class="stat-list"></dl>
+          <p id="selectedBio" class="bio-copy"></p>
+        </div>
+        <div class="roster-panel">
+          <h1>CHARACTER SELECT</h1>
+          <p class="sub">Choose Your Warrior</p>
+          <div class="tabs">
+            <span class="active">ALL</span><span>ARIES</span><span>REBELLION</span><span>BADGE TRIALS</span><span>HATHOR</span><span>SPECIAL</span>
+          </div>
+          <div id="rosterGrid" class="roster-grid"></div>
+          <div class="select-footer">
+            <span><b>A</b> Confirm</span>
+            <span><b>B</b> Back</span>
+            <span><b>X</b> Random</span>
+            <span>PLAYER 2: Press Join</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="pvpScreen" class="screen mode-screen">
+      <div class="bg bg-main"></div>
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <section class="mode-card">
+        <div class="kicker">BATTLE SETUP</div>
+        <h1>PvP Mode</h1>
+        <p>Choose a local player battle, fight the CPU yourself, or let CPU fighters run a watch-mode match for testing.</p>
+        <div class="difficulty-panel">
+          <h2>CPU Difficulty</h2>
+          <div id="cpuDifficultyButtons" class="difficulty-buttons">
+            <button data-difficulty="easy">Easy</button>
+            <button data-difficulty="normal" class="active">Normal</button>
+            <button data-difficulty="hard">Hard</button>
+            <button data-difficulty="extreme">EXTREME</button>
+          </div>
+          <p id="cpuDifficultyText" class="difficulty-copy">Balanced CPU behavior for testing versus AI.</p>
+        </div>
+        <div class="mode-buttons three">
+          <button data-action="pvp-player">
+            <strong>Versus Player</strong>
+            <span>Local two-player fight on one keyboard.</span>
+          </button>
+          <button data-action="pvp-ai">
+            <strong>Versus CPU</strong>
+            <span>Player 1 fights a CPU rival using the selected difficulty.</span>
+          </button>
+          <button data-action="pvp-cpu-cpu">
+            <strong>CPU vs CPU</strong>
+            <span>Watch two CPU fighters battle for QA and balance testing.</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div id="galleryScreen" class="screen gallery-screen">
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <h1>Stage Gallery</h1>
+      <p>Backgrounds generated first so the demo has real fight-stage identity.</p>
+      <div class="stage-gallery" id="stageGallery"></div>
+    </div>
+
+    <div id="optionsScreen" class="screen options-screen">
+      <div class="bg bg-main"></div>
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <div class="options-card">
+        <h1>Options</h1>
+        <label><input id="toggleDebug" type="checkbox" /> Show hitboxes</label>
+        <label><input id="toggleAssist" type="checkbox" checked /> Story mode assist hints</label>
+        <label class="select-label">Handicap
+          <select id="handicapSelect">
+            <option value="off">Off</option>
+            <option value="p1-plus">Player 1 +25% HP</option>
+            <option value="p2-plus">Player 2 / CPU +25% HP</option>
+            <option value="p1-minus">Player 1 -25% HP</option>
+            <option value="p2-minus">Player 2 / CPU -25% HP</option>
+          </select>
+        </label>
+        <p class="small">Controls are listed during fights. This V0.3 build adds Story difficulty, CPU difficulty, CPU vs CPU, and handicap testing.</p>
+      </div>
+    </div>
+
+
+    <div id="storySetupScreen" class="screen mode-screen">
+      <div class="bg bg-main"></div>
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <section class="mode-card">
+        <div class="kicker">STORY SETUP</div>
+        <h1>Story Mode</h1>
+        <p>Choose the story difficulty before beginning Rai’s recommendation mission.</p>
+        <div class="difficulty-panel">
+          <h2>Story Difficulty</h2>
+          <div id="storyDifficultyButtons" class="difficulty-buttons">
+            <button data-difficulty="easy">Easy</button>
+            <button data-difficulty="normal" class="active">Normal</button>
+            <button data-difficulty="hard">Hard</button>
+            <button data-difficulty="extreme">EXTREME</button>
+          </div>
+          <p id="storyDifficultyText" class="difficulty-copy">Balanced story combat for first QA passes.</p>
+        </div>
+        <div class="mode-buttons single">
+          <button data-action="story-start">
+            <strong>Start Chapter 1</strong>
+            <span>The Explosion → Forest Ambush → Fortress Infiltration.</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div id="storyScreen" class="screen story-screen">
+      <div id="storyBackdrop" class="bg"></div>
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <article class="story-card">
+        <div id="chapterTag" class="kicker">CHAPTER 1</div>
+        <h1 id="storyTitle">The Explosion</h1>
+        <p id="storyText"></p>
+        <div id="speakerLine" class="speaker-line"></div>
+        <div class="story-actions">
+          <button id="continueStory">Continue</button>
+          <button id="skipToFight">Start Next Fight</button>
+        </div>
+      </article>
+    </div>
+
+    <div id="fightScreen" class="screen fight-screen">
+      <canvas id="gameCanvas" width="960" height="540"></canvas>
+      <div class="fight-hud">
+        <div class="fighter-box left">
+          <div id="p1Name">RAI</div>
+          <div class="bar"><span id="p1Health"></span></div>
+          <div class="meter"><span id="p1Meter"></span></div>
+        </div>
+        <div id="roundInfo" class="round-info">STORY FIGHT</div>
+        <div class="fighter-box right">
+          <div id="p2Name">AMBUSHER</div>
+          <div class="bar"><span id="p2Health"></span></div>
+          <div class="meter"><span id="p2Meter"></span></div>
+        </div>
+      </div>
+      <div id="fightMessage" class="fight-message hidden"></div>
+      <div class="controls-hint">
+        <b>P1:</b> A/D move · W jump · J light · K heavy · L special · S guard
+        <span id="p2Hint"><b>P2:</b> ←/→ move · ↑ jump · 1 light · 2 heavy · 3 special · ↓ guard</span>
+        <span id="modeHint"></span>
+      </div>
+      <button class="fight-exit" data-action="back">Exit</button>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
