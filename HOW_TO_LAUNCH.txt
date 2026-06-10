@@ -1,0 +1,45 @@
+CALAMITY WAR DEMO V0.5 — HOW TO LAUNCH
+
+IMPORTANT:
+Do NOT open index.html while it is still inside the ZIP file.
+Unzip the folder first.
+
+FAST LOCAL TEST:
+1. Download calamity_war_demo_v0_4.zip.
+2. Right-click it and choose Extract All / Unzip.
+3. Open the extracted folder.
+4. Double-click index.html.
+
+If images say invalid source or do not load:
+- Make sure the assets folder is in the SAME folder as index.html.
+- The folder must look like this:
+  index.html
+  style.css
+  game.js
+  assets/
+    main_menu.jpg
+    character_select.jpg
+    bg_dojo_ruins.jpg
+    bg_forest.jpg
+    bg_fortress_courtyard.jpg
+    bg_fortress_hall.jpg
+
+GITHUB PAGES SETUP:
+1. Open the extracted folder.
+2. Upload index.html, style.css, game.js, README.md, HOW_TO_LAUNCH.txt, and the whole assets folder to the root of EmmaWoods36/Calamity-War.
+3. Do not upload only the ZIP.
+4. Do not upload the files inside an extra nested folder unless GitHub Pages is pointed at that folder.
+5. GitHub Pages link should be:
+   https://emmawoods36.github.io/Calamity-War/
+
+RELIABLE LOCAL SERVER TEST (optional):
+1. Open Terminal / Command Prompt in the extracted folder.
+2. Run:
+   python -m http.server 8000
+   or on Mac:
+   python3 -m http.server 8000
+3. Open this in your browser:
+   http://localhost:8000
+
+
+V0.5 note: this build uses JPEG assets only. Do not rename .jpg files to .jpeg or .png unless game.js/style.css are updated too.

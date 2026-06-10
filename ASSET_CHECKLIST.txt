@@ -1,0 +1,11 @@
+Calamity War V0.5 JPEG-only asset checklist
+
+These files must be in the assets folder next to index.html:
+./assets/main_menu.jpg
+./assets/character_select.jpg
+./assets/bg_dojo_ruins.jpg
+./assets/bg_forest.jpg
+./assets/bg_fortress_courtyard.jpg
+./assets/bg_fortress_hall.jpg
+
+If every image is invalid, usually the assets folder is missing, renamed, nested one level too deep, or index.html is being opened inside the ZIP instead of after extracting.
