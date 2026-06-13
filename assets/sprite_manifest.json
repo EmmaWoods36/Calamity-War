@@ -1,0 +1,32 @@
+{
+  "rai": {
+    "idle": "./assets/sprites/rai/rai_idle.png",
+    "light": "./assets/sprites/rai/rai_light.png",
+    "heavy": "./assets/sprites/rai/rai_heavy.png",
+    "special": "./assets/sprites/rai/rai_special.png",
+    "guard": "./assets/sprites/rai/rai_guard.png",
+    "jump": "./assets/sprites/rai/rai_jump.png",
+    "hurt": "./assets/sprites/rai/rai_hurt.png",
+    "ko": "./assets/sprites/rai/rai_ko.png"
+  },
+  "nico": {
+    "idle": "./assets/sprites/nico/nico_idle.png",
+    "light": "./assets/sprites/nico/nico_light.png",
+    "heavy": "./assets/sprites/nico/nico_heavy.png",
+    "special": "./assets/sprites/nico/nico_special.png",
+    "guard": "./assets/sprites/nico/nico_guard.png",
+    "jump": "./assets/sprites/nico/nico_jump.png",
+    "hurt": "./assets/sprites/nico/nico_hurt.png",
+    "ko": "./assets/sprites/nico/nico_ko.png"
+  },
+  "shanti": {
+    "idle": "./assets/sprites/shanti/shanti_idle.png",
+    "light": "./assets/sprites/shanti/shanti_light.png",
+    "heavy": "./assets/sprites/shanti/shanti_heavy.png",
+    "special": "./assets/sprites/shanti/shanti_special.png",
+    "guard": "./assets/sprites/shanti/shanti_guard.png",
+    "jump": "./assets/sprites/shanti/shanti_jump.png",
+    "hurt": "./assets/sprites/shanti/shanti_hurt.png",
+    "ko": "./assets/sprites/shanti/shanti_ko.png"
+  }
+}
