@@ -1,0 +1,2 @@
+<link rel="stylesheet" href="patches/splash_screen/emma_woods_splash.css">
+<script src="patches/splash_screen/emma_woods_splash.js"></script>
