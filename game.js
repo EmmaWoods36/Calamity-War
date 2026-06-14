@@ -289,6 +289,127 @@
   };
 
 
+
+
+  // Real audio file wiring. These WAVs live in assets/audio/.
+  // The game still has procedural fallbacks, but these are the actual file-based SFX/music hooks.
+  const audioSources = {
+    music: {
+      title: './assets/audio/music/title_theme_loop_placeholder.wav',
+      battle: './assets/audio/music/battle_theme_loop_placeholder.wav',
+      stageSelect: './assets/audio/music/stage_select_loop_placeholder.wav',
+      training: './assets/audio/music/training_loop_placeholder.wav'
+    },
+    sfx: {
+      menuCursor: './assets/audio/sfx/menu_cursor.wav',
+      menuConfirm: './assets/audio/sfx/menu_confirm.wav',
+      menuBack: './assets/audio/sfx/menu_back.wav',
+      menuError: './assets/audio/sfx/menu_error.wav',
+      characterLock: './assets/audio/sfx/character_select_lock.wav',
+      randomRoll: './assets/audio/sfx/random_roll.wav',
+      stageWhoosh: './assets/audio/sfx/stage_select_whoosh.wav',
+      roundStart: './assets/audio/sfx/round_start.wav',
+      fightStart: './assets/audio/sfx/fight_start.wav',
+      hitLight: './assets/audio/sfx/hit_light.wav',
+      hitHeavy: './assets/audio/sfx/hit_heavy.wav',
+      guardBlock: './assets/audio/sfx/guard_block.wav',
+      jump: './assets/audio/sfx/jump.wav',
+      land: './assets/audio/sfx/land.wav',
+      specialCharge: './assets/audio/sfx/special_charge.wav',
+      specialRelease: './assets/audio/sfx/special_release.wav',
+      koImpact: './assets/audio/sfx/ko_impact.wav',
+      pauseOpen: './assets/audio/sfx/pause_open.wav',
+      pauseClose: './assets/audio/sfx/pause_close.wav',
+      victory: './assets/audio/sfx/victory_stinger.wav',
+      gameOver: './assets/audio/sfx/game_over_stinger.wav'
+    }
+  };
+
+  let currentMusic = null;
+  let currentMusicKey = null;
+  let audioUnlocked = false;
+
+  function audioVolume(multiplier = 1) {
+    return Math.max(0, Math.min(1, (state.settings?.volume ?? 0.7) * multiplier));
+  }
+
+  function playSfx(key, volumeMultiplier = 1) {
+    if (state.settings?.mute) return false;
+    const src = audioSources.sfx[key];
+    if (!src) return false;
+    try {
+      const a = new Audio(src);
+      a.volume = audioVolume(volumeMultiplier);
+      a.preload = 'auto';
+      a.play().catch(() => {});
+      audioUnlocked = true;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function stopMusic() {
+    if (currentMusic) {
+      try {
+        currentMusic.pause();
+        currentMusic.currentTime = 0;
+      } catch (_) {}
+    }
+    currentMusic = null;
+    currentMusicKey = null;
+  }
+
+  function startMusic(key) {
+    if (state.settings?.mute) {
+      stopMusic();
+      return;
+    }
+    const src = audioSources.music[key];
+    if (!src) return;
+    if (currentMusicKey === key && currentMusic) {
+      currentMusic.volume = audioVolume(key === 'battle' ? 0.42 : 0.34);
+      return;
+    }
+    stopMusic();
+    try {
+      const a = new Audio(src);
+      a.loop = true;
+      a.volume = audioVolume(key === 'battle' ? 0.42 : 0.34);
+      a.preload = 'auto';
+      currentMusic = a;
+      currentMusicKey = key;
+      a.play().then(() => { audioUnlocked = true; }).catch(() => {});
+    } catch (_) {}
+  }
+
+  function refreshAudioVolumes() {
+    if (currentMusic) currentMusic.volume = audioVolume(currentMusicKey === 'battle' ? 0.42 : 0.34);
+  }
+
+  function musicForScreen(name) {
+    if (name === 'fight') return state.fightMode === 'training' ? 'training' : 'battle';
+    if (name === 'battleCharacters' || name === 'stageSelect' || name === 'ready') return 'stageSelect';
+    if (name === 'main' || name === 'loadGame' || name === 'gallery' || name === 'stageGallery' || name === 'options' || name === 'storySetup' || name === 'calamitySports') return 'title';
+    return null;
+  }
+
+  function updateMusicForScreen(name = state.screen) {
+    const musicKey = musicForScreen(name);
+    if (!musicKey) return;
+    startMusic(musicKey);
+  }
+
+  function unlockAudioForCurrentScreen() {
+    if (audioUnlocked) {
+      updateMusicForScreen(state.screen);
+      return;
+    }
+    // Browsers need a user gesture before audio can start. This is called from clicks/keys.
+    updateMusicForScreen(state.screen);
+  }
+
+
   const difficultySettings = {
     easy: {
       label: 'Easy',
@@ -998,10 +1119,12 @@
     state.screen = name;
     if (name !== 'fight') stopFight();
     applyLanguage();
+    updateMusicForScreen(name);
   }
 
   function showStoryGameOver() {
     showScreen('gameOver');
+    playSfx('gameOver', 0.85);
     playEvilGameOverLaugh();
   }
 
@@ -1413,6 +1536,7 @@
 
   function randomizeBattleCharacter(side=state.battle.activeSide) {
     if (side === 'p2' && state.battle.mode === 'training') return;
+    playSfx('randomRoll', 0.88);
     const team = getBattleTeam(side).slice();
     const slot = side === state.battle.activeSide ? (state.battle.activeSlot || 0) : 0;
     const avoid = team.filter((_, i) => i !== slot);
@@ -1433,6 +1557,7 @@
   }
 
   function randomizeBattleBoth() {
+    playSfx('randomRoll', 0.95);
     randomizeTeam('p1');
     if (state.battle.mode !== 'training') randomizeTeam('p2');
     renderBattleCharacters();
@@ -1775,6 +1900,7 @@
 
   function startReadyCountdown() {
     clearReadyCountdown();
+    playSfx('roundStart', 0.9);
     const countdownEl = document.getElementById('readyCountdown');
     let count = 3;
     if (countdownEl) countdownEl.textContent = String(count);
@@ -1786,6 +1912,7 @@
       }
       if (count === 0) {
         if (countdownEl) countdownEl.textContent = 'FIGHT!';
+        playSfx('fightStart', 0.95);
         return;
       }
       clearReadyCountdown();
@@ -1844,6 +1971,9 @@
 
   function playMenuTone(kind = 'move') {
     if (state.settings?.mute) return;
+    unlockAudioForCurrentScreen();
+    const fileKey = kind === 'confirm' ? 'menuConfirm' : kind === 'back' ? 'menuBack' : kind === 'error' ? 'menuError' : 'menuCursor';
+    if (playSfx(fileKey, 0.92)) return;
     const ctx = getMenuAudioContext();
     if (!ctx) return;
     const volume = Math.max(0, Math.min(1, state.settings?.volume ?? 0.7));
@@ -2000,12 +2130,24 @@
   document.getElementById('toggleDebug').addEventListener('change', e => state.debug = e.target.checked);
   document.getElementById('toggleAssist').addEventListener('change', e => state.storyAssist = e.target.checked);
   const muteToggle = document.getElementById('toggleMenuMute');
-  if (muteToggle) muteToggle.addEventListener('change', e => { state.settings.mute = e.target.checked; if (e.target.checked && window.speechSynthesis) window.speechSynthesis.cancel(); });
+  if (muteToggle) muteToggle.addEventListener('change', e => {
+    state.settings.mute = e.target.checked;
+    if (e.target.checked) {
+      stopMusic();
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    } else {
+      updateMusicForScreen(state.screen);
+    }
+  });
   const announcerToggle = document.getElementById('toggleAnnouncerVoice');
   if (announcerToggle) announcerToggle.addEventListener('change', e => { state.settings.announcer = e.target.checked; if (!e.target.checked && window.speechSynthesis) window.speechSynthesis.cancel(); });
   const volumeSlider = document.getElementById('gameVolumeSlider');
   const volumeReadout = document.getElementById('gameVolumeReadout');
-  if (volumeSlider) volumeSlider.addEventListener('input', e => { state.settings.volume = Math.max(0, Math.min(1, Number(e.target.value) / 100)); if (volumeReadout) volumeReadout.textContent = `${e.target.value}%`; });
+  if (volumeSlider) volumeSlider.addEventListener('input', e => {
+    state.settings.volume = Math.max(0, Math.min(1, Number(e.target.value) / 100));
+    if (volumeReadout) volumeReadout.textContent = `${e.target.value}%`;
+    refreshAudioVolumes();
+  });
   const languageSelect = document.getElementById('languageSelect');
   if (languageSelect) {
     languageSelect.classList.add('language-select-control');
@@ -2067,6 +2209,7 @@
   document.querySelectorAll('#cpuDifficultyButtons button').forEach(btn => btn.addEventListener('click', () => { state.cpuDifficulty = btn.dataset.difficulty; refreshDifficultyUI(); }));
 
   window.addEventListener('keydown', e => {
+    unlockAudioForCurrentScreen();
     const key = e.key.toLowerCase();
     state.keys.add(key);
     if (key === 'x' && state.screen === 'select') { state.selected = randomCharacter(); updateSelectedPanel(state.selected); renderRoster(); }
@@ -2142,7 +2285,11 @@
         if (left) this.vx -= moveSpeed;
         if (right) this.vx += moveSpeed;
       }
-      if (jump && this.onGround && !this.guard) { this.vy = -12.5; this.onGround = false; }
+      if (jump && this.onGround && !this.guard) {
+        this.vy = -12.5;
+        this.onGround = false;
+        playSfx('jump', 0.55);
+      }
       if (light) this.attack('light');
       if (heavy) this.attack('heavy');
       if (special) this.attack('special');
@@ -2152,14 +2299,25 @@
       if (kind === 'special' && this.meter < 32) return;
       this.attackKind = kind;
       this.attackTimer = kind === 'light' ? 14 : kind === 'heavy' ? 23 : 31;
-      if (kind === 'special') this.meter -= 32;
+      if (kind === 'special') {
+        this.meter -= 32;
+        playSfx('specialCharge', 0.75);
+      } else if (!this.isAI) {
+        playSfx(kind === 'heavy' ? 'hitHeavy' : 'hitLight', 0.22);
+      }
     }
     update(enemy) {
+      const wasOnGround = this.onGround;
       this.input(enemy);
       this.x += this.vx;
       this.y += this.vy;
       if (!this.onGround) this.vy += .75;
-      if (this.y >= floorY) { this.y = floorY; this.vy = 0; this.onGround = true; }
+      if (this.y >= floorY) {
+        this.y = floorY;
+        this.vy = 0;
+        if (!wasOnGround) playSfx('land', 0.5);
+        this.onGround = true;
+      }
       this.x = Math.max(60, Math.min(W - 110, this.x));
       this.facing = enemy.x >= this.x ? 1 : -1;
       if (this.attackTimer > 0) {
@@ -2184,13 +2342,18 @@
         let dmg = this.attackKind === 'light' ? 8 : this.attackKind === 'heavy' ? 15 : 22;
         dmg *= this.c.power * this.damageMod;
         if (enemy.guard) dmg *= .28;
+        playSfx(enemy.guard ? 'guardBlock' : (this.attackKind === 'light' ? 'hitLight' : 'hitHeavy'), enemy.guard ? 0.72 : 0.86);
+        if (this.attackKind === 'special' && !enemy.guard) playSfx('specialRelease', 0.72);
         enemy.hp = Math.max(0, enemy.hp - dmg);
         enemy.hitCooldown = enemy.guard ? 10 : 18;
         enemy.vx = this.facing * (enemy.guard ? 4 : 9);
         if (!enemy.guard) enemy.vy = this.attackKind === 'heavy' ? -3.8 : -2.2;
         this.meter = Math.min(this.maxMeter, this.meter + (this.attackKind === 'special' ? 7 : 12));
         enemy.comboFlash = 10;
-        if (enemy.hp <= 0) enemy.dead = true;
+        if (enemy.hp <= 0) {
+          enemy.dead = true;
+          playSfx('koImpact', 0.95);
+        }
       }
     }
     draw() {
@@ -2454,6 +2617,7 @@
       modeHint.style.display = modeHint.textContent ? 'inline' : 'none';
     }
     showScreen('fight');
+    startMusic(isTraining ? 'training' : 'battle');
     if (isTraining) flashMessage('TRAINING MODE\nInfinite health and meter.', 1300);
     updateRoundSplash();
     loop();
@@ -2699,6 +2863,7 @@
     const f = state.fight;
     if (!f) return;
     f.over = true;
+    playSfx(winnerText === 'DRAW' ? 'gameOver' : 'victory', 0.82);
     if (f.mode === 'tournament') {
       if (p1Won) {
         showCenterSplash('YOU WIN!', 1400);
