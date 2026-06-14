@@ -1,0 +1,118 @@
+/* Calamity War drop-in UI patch styles */
+.cw-random-select-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(100%, 980px);
+  margin: 1rem auto 0.85rem;
+  text-align: center;
+}
+.cw-random-select-btn,
+.ornate-button,
+.cw-continue-battle-stage {
+  border: 2px solid rgba(255, 215, 125, 0.88);
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  background: linear-gradient(135deg, rgba(23, 10, 40, 0.96), rgba(80, 16, 26, 0.92));
+  color: #ffe8b0;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 0 16px rgba(255, 196, 84, 0.24), inset 0 0 14px rgba(255,255,255,0.08);
+  cursor: pointer;
+}
+.cw-random-select-btn:hover,
+.ornate-button:hover,
+.cw-continue-battle-stage:hover,
+.main-menu button:hover,
+.main-menu .selected,
+.menu-option.selected {
+  color: #fff4d8;
+  border-color: #ff4444;
+  transform: translateY(-1px) scale(1.035);
+  box-shadow: 0 0 22px rgba(255, 70, 70, 0.42), inset 0 0 18px rgba(255,255,255,0.12);
+}
+.cw-continue-battle-stage {
+  display: block;
+  margin: 0 auto 1.2rem !important;
+  text-align: center;
+}
+.cw-selected-p1 { outline: 3px solid #4db8ff; outline-offset: 4px; }
+.cw-selected-p2 { outline: 3px solid #ff4de1; outline-offset: 4px; }
+.cw-cpu-side-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffe8b0;
+  font-weight: 700;
+}
+.cw-cpu-side-select,
+.cw-settings-language-row select,
+[data-cw-language-select] {
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 215, 125, 0.8);
+  background: rgba(15, 10, 25, 0.96);
+  color: #ffe8b0;
+  padding: 0.45rem 0.65rem;
+}
+.stage-gallery,
+#stageGallery,
+[data-stage-gallery] {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ffc35b rgba(22, 12, 38, 0.8);
+}
+.stage-gallery::-webkit-scrollbar,
+#stageGallery::-webkit-scrollbar,
+[data-stage-gallery]::-webkit-scrollbar { width: 10px; }
+.stage-gallery::-webkit-scrollbar-thumb,
+#stageGallery::-webkit-scrollbar-thumb,
+[data-stage-gallery]::-webkit-scrollbar-thumb {
+  background: #ffc35b;
+  border-radius: 999px;
+}
+.stage-preview img,
+#selectedStagePreview img,
+[data-selected-stage-preview] img {
+  display: block;
+  width: min(100%, 900px);
+  max-height: 52vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.main-menu button,
+.main-menu .menu-option,
+[data-main-menu] button,
+[data-main-menu] .menu-option {
+  min-width: min(86vw, 420px);
+  border: 2px solid rgba(255, 215, 125, 0.78);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(20,10,34,.92), rgba(65,18,40,.86));
+  color: #ffe8b0;
+  margin: 0.35rem auto;
+  padding: 0.75rem 1.25rem;
+  text-align: center;
+  white-space: nowrap;
+}
+.cw-match-end-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(0,0,0,0.68);
+  z-index: 9999;
+}
+.cw-match-end-overlay.is-open { display: grid; }
+.cw-match-end-popup {
+  min-width: min(92vw, 420px);
+  border: 2px solid rgba(255,215,125,.9);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  background: rgba(20, 10, 35, .96);
+  color: #ffe8b0;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(255,196,84,.25);
+}
+.cw-match-end-popup button { display:block; margin:.65rem auto; min-width: 230px; }
