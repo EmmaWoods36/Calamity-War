@@ -1,0 +1,15 @@
+CALAMITY WAR DOWNLOADABLE PARTS
+
+These zips are the same integrated package split into smaller, easier-to-download chunks.
+
+How to use:
+1. Download every part.
+2. Extract PART_00 first.
+3. Extract the remaining parts into the SAME parent folder.
+4. When your computer asks whether to merge folders, choose yes/merge.
+5. When it asks whether to replace duplicate README/manifest files, either option is fine; the asset files are what matter.
+
+For a coding chat:
+Upload all parts and say: “Please merge/extract these parts into one Calamity_War folder, then continue from the README and patch instructions.”
+
+Important: PART_00 contains the patch code, README files, manifests, and integration instructions. The other parts mostly contain assets.

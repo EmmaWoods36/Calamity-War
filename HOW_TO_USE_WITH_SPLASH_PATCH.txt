@@ -1,0 +1,44 @@
+CALAMITY WAR — SPLIT DOWNLOAD PARTS WITH EMMA WOODS STUDIO SPLASH
+
+Download all 10 parts:
+
+PART 00 — code patch, manifests, and Emma Woods Studio splash patch
+PART 01 — select cards
+PART 02 — select cards
+PART 03 — select cards
+PART 04 — spliced sprites
+PART 05 — sprites Adrian to Daisuke
+PART 06 — sprites Danpen to Esther
+PART 07 — sprites Goro to Nico
+PART 08 — sprites Nikki to Shani
+PART 09 — sprites Shanti to Yuta
+
+HOW TO USE
+
+1. Download all parts.
+2. Extract all zips into the same parent folder.
+3. When asked to merge folders, choose merge/replace.
+4. The merged output should contain one Calamity_War folder.
+5. Copy/merge that Calamity_War folder into the real playable GitHub repo.
+
+SPLASH SCREEN PATCH
+
+The Emma Woods Studio splash files are included in PART 00:
+
+Calamity_War/assets/ui/splash/emma_woods_studio_splash.jpeg
+Calamity_War/patches/splash_screen/emma_woods_splash.css
+Calamity_War/patches/splash_screen/emma_woods_splash.js
+Calamity_War/patches/splash_screen/index_html_snippet.txt
+Calamity_War/README_EMMA_WOODS_SPLASH_PATCH.md
+
+To make the splash actually run, the real playable index.html needs these two lines:
+
+<link rel="stylesheet" href="patches/splash_screen/emma_woods_splash.css">
+<script src="patches/splash_screen/emma_woods_splash.js"></script>
+
+If the playable game files are in a subfolder, adjust those paths to match the final folder structure.
+
+IMPORTANT
+
+These are not multi-volume zip pieces. They are normal separate zips designed to be extracted into the same folder and merged.
+Do not upload the zip files themselves as the GitHub Pages site. Extract them first, then commit the actual folders/files.
