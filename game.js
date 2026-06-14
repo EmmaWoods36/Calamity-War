@@ -66,11 +66,22 @@
   // P2 sprites are mirrored in the canvas renderer by flipping on the x-axis when facing left.
   const SPRITE_POSES = ['idle', 'walk_forward', 'walk_back', 'crouch', 'light', 'heavy', 'special', 'guard', 'jump', 'hurt', 'ko', 'victory'];
 
-  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'vasta', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei', 'dummy', 'awar', 'handler', 'danpen'];
+  // Character ids can be canonical in the game while reusing older asset folders.
+  // Awar == Awar Aries and Dante == Dante Aries, but the browser sprite folders are still awar/ and dante/.
+  const SPRITE_FILE_ALIASES = {
+    awar_aries: 'awar',
+    dante_aries: 'dante',
+    dummy: 'training_dummy_shadow',
+    handler: 'tenganisha',
+    danpen: 'danpen_shikake'
+  };
+
+  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'vasta', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei', 'dummy', 'training_dummy_shadow', 'awar', 'handler', 'danpen'];
 
   function standardSpriteSet(id) {
-    const folder = id;
-    const prefix = id;
+    const fileId = SPRITE_FILE_ALIASES[id] || id;
+    const folder = fileId;
+    const prefix = fileId;
     return Object.fromEntries(SPRITE_POSES.map(pose => [pose, `./assets/sprites/${folder}/${prefix}_${pose}.png`]));
   }
 
@@ -232,12 +243,187 @@
   };
 
 
+  function sanitizeSpriteBackground(img) {
+    try {
+      const w = img.naturalWidth || img.width;
+      const h = img.naturalHeight || img.height;
+      if (!w || !h) return img;
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const cctx = canvas.getContext('2d', { willReadFrequently: true });
+      cctx.drawImage(img, 0, 0);
+      const imageData = cctx.getImageData(0, 0, w, h);
+      const data = imageData.data;
+
+      const idxOf = (x, y) => y * w + x;
+      const rgbaAt = (idx) => {
+        const p = idx * 4;
+        return [data[p], data[p + 1], data[p + 2], data[p + 3]];
+      };
+      const brightNeutral = (idx, loose=false) => {
+        const [r,g,b,a] = rgbaAt(idx);
+        if (a <= 5) return true;
+        const max = Math.max(r,g,b);
+        const min = Math.min(r,g,b);
+        const chroma = max - min;
+        return loose ? (max >= 170 && chroma <= 88) : (max >= 198 && chroma <= 72);
+      };
+
+      // First pass: flood-fill from the real image edges.
+      const seen = new Uint8Array(w * h);
+      const q = [];
+      const push = (x, y, test) => {
+        if (x < 0 || y < 0 || x >= w || y >= h) return;
+        const idx = idxOf(x, y);
+        if (seen[idx] || !test(idx)) return;
+        seen[idx] = 1;
+        q.push(idx);
+      };
+      for (let x = 0; x < w; x++) { push(x, 0, brightNeutral); push(x, h - 1, brightNeutral); }
+      for (let y = 0; y < h; y++) { push(0, y, brightNeutral); push(w - 1, y, brightNeutral); }
+      for (let qi = 0; qi < q.length; qi++) {
+        const idx = q[qi];
+        const p = idx * 4;
+        data[p] = 0; data[p + 1] = 0; data[p + 2] = 0; data[p + 3] = 0;
+        const x = idx % w;
+        const y = Math.floor(idx / w);
+        push(x + 1, y, brightNeutral); push(x - 1, y, brightNeutral); push(x, y + 1, brightNeutral); push(x, y - 1, brightNeutral);
+      }
+
+      // Second pass: some sprites have a transparent border and then an internal white/gray rectangle.
+      // Find the remaining opaque bounding rectangle and flood-fill bright/neutral backdrop colors from that rectangle's perimeter.
+      let minX = w, minY = h, maxX = -1, maxY = -1;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const a = data[(idxOf(x, y) * 4) + 3];
+          if (a > 5) { if (x < minX) minX = x; if (y < minY) minY = y; if (x > maxX) maxX = x; if (y > maxY) maxY = y; }
+        }
+      }
+      if (maxX >= minX && maxY >= minY) {
+        const bgSamples = [];
+        const addSample = (x, y) => {
+          if (x < 0 || y < 0 || x >= w || y >= h) return;
+          const idx = idxOf(x, y);
+          const [r,g,b,a] = rgbaAt(idx);
+          if (a <= 5) return;
+          const max = Math.max(r,g,b), min = Math.min(r,g,b);
+          if (max >= 120 && (max - min) <= 90) bgSamples.push([r,g,b]);
+        };
+        const xStep = Math.max(1, Math.floor((maxX - minX + 1) / 64));
+        const yStep = Math.max(1, Math.floor((maxY - minY + 1) / 64));
+        for (let x = minX; x <= maxX; x += xStep) { addSample(x, minY); addSample(x, Math.min(maxY, minY + 2)); addSample(x, Math.max(minY, maxY - 2)); addSample(x, maxY); }
+        for (let y = minY; y <= maxY; y += yStep) { addSample(minX, y); addSample(Math.min(maxX, minX + 2), y); addSample(Math.max(minX, maxX - 2), y); addSample(maxX, y); }
+        const sampleColors = [];
+        bgSamples.forEach((c, i) => {
+          if (i % Math.max(1, Math.floor(bgSamples.length / 18)) !== 0) return;
+          if (sampleColors.every(d => ((c[0]-d[0])**2 + (c[1]-d[1])**2 + (c[2]-d[2])**2) > 300)) sampleColors.push(c);
+        });
+        const closeToBg = (idx) => {
+          const [r,g,b,a] = rgbaAt(idx);
+          if (a <= 5) return true;
+          if (brightNeutral(idx, true)) return true;
+          return sampleColors.some(c => ((r-c[0])**2 + (g-c[1])**2 + (b-c[2])**2) < 4200);
+        };
+        const seen2 = new Uint8Array(w * h);
+        const q2 = [];
+        const push2 = (x, y) => {
+          if (x < minX || x > maxX || y < minY || y > maxY) return;
+          const idx = idxOf(x, y);
+          if (seen2[idx] || !closeToBg(idx)) return;
+          seen2[idx] = 1;
+          q2.push(idx);
+        };
+        for (let x = minX; x <= maxX; x++) { push2(x, minY); push2(x, maxY); }
+        for (let y = minY; y <= maxY; y++) { push2(minX, y); push2(maxX, y); }
+        for (let qi = 0; qi < q2.length; qi++) {
+          const idx = q2[qi];
+          const p = idx * 4;
+          data[p] = 0; data[p + 1] = 0; data[p + 2] = 0; data[p + 3] = 0;
+          const x = idx % w;
+          const y = Math.floor(idx / w);
+          push2(x + 1, y); push2(x - 1, y); push2(x, y + 1); push2(x, y - 1);
+        }
+      }
+
+      cctx.putImageData(imageData, 0, 0);
+      canvas.loaded = true;
+      canvas.complete = true;
+      canvas._visibleBounds = computeSpriteVisibleBounds(canvas);
+      return canvas;
+    } catch (err) {
+      console.warn('Sprite background cleanup skipped:', err);
+      return img;
+    }
+  }
+
+  function computeSpriteVisibleBounds(sprite) {
+    try {
+      const w = sprite.naturalWidth || sprite.width;
+      const h = sprite.naturalHeight || sprite.height;
+      if (!w || !h) return null;
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const cctx = canvas.getContext('2d', { willReadFrequently: true });
+      cctx.drawImage(sprite, 0, 0);
+      const data = cctx.getImageData(0, 0, w, h).data;
+      let minX = w, minY = h, maxX = -1, maxY = -1;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          if (data[(y * w + x) * 4 + 3] > 12) {
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      if (maxX < minX || maxY < minY) return null;
+      const pad = 8;
+      minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+      maxX = Math.min(w - 1, maxX + pad); maxY = Math.min(h - 1, maxY + pad);
+      return { sx: minX, sy: minY, sw: maxX - minX + 1, sh: maxY - minY + 1 };
+    } catch (_) { return null; }
+  }
+
+  function spriteIsUsable(sprite) {
+    return !!(sprite && ((sprite.processed && (sprite.processed.width || sprite.processed.naturalWidth)) || (sprite.complete && sprite.naturalWidth)));
+  }
+
+  const SPRITE_POSE_ALIASES = {
+    // Pierre's current generated jump reads like hurt/KO, so use idle until a clean jump sprite is generated.
+    pierre: { jump: 'idle', hurt: 'guard', walk_forward: 'idle', walk_back: 'idle' }
+  };
+
+  const SPRITE_POSE_FALLBACKS = {
+    idle: ['idle'],
+    walk_forward: ['walk_forward', 'idle'],
+    walk_back: ['walk_back', 'idle'],
+    crouch: ['crouch', 'guard', 'idle'],
+    light: ['light', 'heavy', 'special', 'idle'],
+    heavy: ['heavy', 'light', 'special', 'idle'],
+    special: ['special', 'heavy', 'light', 'idle'],
+    guard: ['guard', 'idle'],
+    jump: ['jump', 'idle'],
+    hurt: ['hurt', 'guard', 'idle'],
+    ko: ['ko', 'hurt', 'idle'],
+    victory: ['victory', 'idle']
+  };
+
+  function fighterVisualPose(fighter) {
+    const rawPose = fighterPose(fighter);
+    return SPRITE_POSE_ALIASES[fighter.id]?.[rawPose] || rawPose;
+  }
+
   const spriteImages = {};
   Object.entries(spriteSources).forEach(([charId, poses]) => {
     spriteImages[charId] = {};
     Object.entries(poses).forEach(([pose, src]) => {
       const img = new Image();
-      img.onload = () => { img.loaded = true; };
+      img.onload = () => {
+        img.loaded = true;
+        img.processed = sanitizeSpriteBackground(img);
+      };
       img.onerror = () => { console.warn('Missing sprite asset:', src); };
       img.src = src;
       spriteImages[charId][pose] = img;
@@ -250,14 +436,26 @@
     if (!fighter.onGround) return 'jump';
     if (fighter.guard) return 'guard';
     if (fighter.attackTimer > 0) return fighter.attackKind || 'light';
+    if (Math.abs(fighter.vx || 0) > 0.28) {
+      const movingTowardOpponent = Math.sign(fighter.vx) === Math.sign(fighter.facing || 1);
+      return movingTowardOpponent ? 'walk_forward' : 'walk_back';
+    }
     return 'idle';
   }
 
   function getFighterSprite(fighter) {
     const set = spriteImages[fighter.id];
     if (!set) return null;
-    const pose = fighterPose(fighter);
-    return set[pose] || set.idle || null;
+    const visualPose = fighterVisualPose(fighter);
+    const fallbackList = SPRITE_POSE_FALLBACKS[visualPose] || [visualPose, 'idle'];
+    const order = [...new Set([visualPose, ...fallbackList, 'idle'])];
+    for (const pose of order) {
+      const raw = set[pose];
+      if (!spriteIsUsable(raw)) continue;
+      fighter._lastDrawPose = pose;
+      return raw.processed || raw;
+    }
+    return null;
   }
 
   const state = {
@@ -806,7 +1004,8 @@
 
   // Canonical / expanded roster aliases for the current game build.
   characters.awar = characters.awar_aries;
-  characters.dante_aries = characters.dante_aries || { name: 'DANTE ARIES', role: 'Aries Warlord', age: '???', style: 'Dark Fire / Halberd', color: '#ba1717', bio: 'A darker Aries-form variant prepared for boss and arcade use.', stats: [94, 70, 92, 82, 96], hp: 158, speed: 3.25, power: 1.34, special: 'Abyssal War Cry' };
+  characters.dante_aries = characters.dante;
+  characters.dante = characters.dante_aries;
   characters.nox_aries = characters.nox_aries || { name: 'NOX ARIES', role: 'Dark Eclipse', age: '???', style: 'Void / Gravity', color: '#5f28d6', bio: 'An elegant nightmare-form fighter using void pressure and black flame.', stats: [88, 84, 76, 94, 90], hp: 128, speed: 4.18, power: 1.18, special: 'Eclipse Orb' };
   characters.seccla_aries = characters.seccla_aries || { name: 'SECCLA ARIES', role: 'Arcane Commander', age: '???', style: 'Magic / Blade', color: '#d9a545', bio: 'A tactical Aries variant who fights with sigils, blade control, and pressure traps.', stats: [82, 78, 72, 96, 84], hp: 120, speed: 3.95, power: 1.12, special: 'Golden Sigil' };
   characters.tenganisha = characters.tenganisha || { name: 'TENGANISHA', role: 'Fortress Handler', age: '??', style: 'Detachment / Body Split', color: '#111111', bio: 'A fortress elite linked to the captives, able to attack from bizarre angles through detachment.', stats: [76, 66, 70, 88, 92], hp: 128, speed: 3.75, power: 1.15, special: 'Detachment' };
@@ -827,7 +1026,7 @@
     // Rebellion / Aries row
     'nikki', 'vasta', 'awar_aries', 'rose', 'pierre',
     // Heavy hitters / bosses / special row
-    'goro', 'mammon', 'dante', 'dante_aries', 'diastre',
+    'goro', 'mammon', 'dante_aries', 'diastre',
     // Aries variants / final row
     'nox_aries', 'seccla_aries', 'roger', 'tenganisha', 'baburu',
     'machai', 'mahje', 'raijin', 'esther', 'semuda',
@@ -840,7 +1039,7 @@
     badge: ['rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke'],
     hathor: ['miwa', 'michelle', 'nikki', 'vasta'],
     rebellion: ['awar_aries', 'rose', 'pierre'],
-    aries: ['goro', 'mammon', 'dante', 'dante_aries', 'nox_aries', 'seccla_aries', 'baburu'],
+    aries: ['goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'baburu'],
     special: ['diastre', 'roger', 'tenganisha', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei']
   };
 
@@ -882,6 +1081,7 @@
 
   const SELECT_CARD_OVERRIDES = {
     awar: 'awar_aries',
+    dante: 'dante_aries',
     handler: 'tenganisha',
     tenganisha: 'tenganisha',
     danpen: 'danpen_shikake'
@@ -892,8 +1092,18 @@
     return `./assets/select_cards/${key}_select.png`;
   }
 
+  function spritePreviewSrc(id, pose='idle') {
+    const key = SPRITE_FILE_ALIASES[id] || id;
+    return `./assets/sprites/${key}/${key}_${pose}.png`;
+  }
+
   function safeCssUrl(src) {
     return `url("${String(src).replace(/"/g, '%22')}")`;
+  }
+
+  const CHARACTER_ALIASES = { awar: 'awar_aries', dante: 'dante_aries' };
+  function canonId(id) {
+    return CHARACTER_ALIASES[id] || id;
   }
 
   function isLockedCharacter(id) {
@@ -902,7 +1112,7 @@
 
 
   function clampTeam(team, fallback='rai') {
-    const cleaned = (Array.isArray(team) ? team : [fallback]).filter(id => characters[id] && !isLockedCharacter(id));
+    const cleaned = (Array.isArray(team) ? team : [fallback]).map(canonId).filter(id => characters[id] && !isLockedCharacter(id));
     if (!cleaned.length) cleaned.push(fallback);
     return cleaned.slice(0, 3);
   }
@@ -1523,6 +1733,7 @@
   }
 
   function setBattleCharacter(id) {
+    id = canonId(id);
     if (isLockedCharacter(id)) return;
     const side = state.battle.activeSide;
     if (side === 'p2' && state.battle.mode === 'training') return;
@@ -1576,6 +1787,21 @@
     return `<div class="team-slot-group"><h3>${label}</h3>${team.map((id, i) => `<button type="button" class="slot-card team-slot ${state.battle.activeSide === side && state.battle.activeSlot === i ? 'active' : ''}" data-team-slot="${side}" data-slot="${i}" ${disabled ? 'disabled' : ''}><span>${label} ${i + 1}</span><strong>${characters[id].name}</strong></button>`).join('')}</div>`;
   }
 
+  function renderSideSlotControls(side, label) {
+    const team = getBattleTeam(side);
+    const disabled = state.battle.mode === 'training' && side === 'p2';
+    const sideName = side === 'p1' ? t('player1') : t('player2');
+    if (disabled) {
+      return `<button type="button" class="side-select-main disabled" disabled>Training Dummy Shadow</button>`;
+    }
+    const slotButtons = team.map((id, i) => {
+      const c = characters[id] || characters.rai;
+      const active = state.battle.activeSide === side && state.battle.activeSlot === i;
+      return `<button type="button" class="side-slot-pick ${active ? 'active' : ''}" data-team-slot="${side}" data-slot="${i}"><span>${sideName} ${i + 1}</span><strong>${c.name}</strong></button>`;
+    }).join('');
+    return `<button type="button" class="side-select-main ${state.battle.activeSide === side ? 'active' : ''}" data-side-focus="${side}">Select ${sideName}</button><div class="side-slot-list">${slotButtons}</div>`;
+  }
+
   function renderCharacterMiniCard(id, slotLabel, side='p1') {
     const c = characters[id] || characters.rai;
     return `<div class="team-mini-card ${side}" data-character-id="${id}" data-overlay-role="team-slot" style="--fighter-color:${c.color};--portrait-image:${safeCssUrl(selectCardSrc(id))}">
@@ -1584,6 +1810,53 @@
       <strong>${c.name}</strong>
       <em>${c.style}</em>
     </div>`;
+  }
+
+  function fillPreviewArt(el, id) {
+    if (!el) return;
+    const c = characters[id] || characters.rai;
+    el.dataset.characterId = id;
+    el.style.setProperty('--fighter-color', c.color);
+    el.style.backgroundImage = '';
+    el.style.backgroundSize = '';
+    el.style.backgroundPosition = '';
+    el.innerHTML = '';
+    const img = document.createElement('img');
+    img.className = 'idle-sprite-preview';
+    img.alt = `${c.name} idle sprite`;
+    img.src = spritePreviewSrc(id, 'idle');
+    img.addEventListener('error', () => {
+      img.remove();
+      el.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.70)), url('${selectCardSrc(id)}')`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center 20%';
+    }, { once: true });
+    el.appendChild(img);
+  }
+
+  function updateBattlePrimaryPreview() {
+    const panel = document.getElementById('battleP1Preview');
+    const art = document.getElementById('battleP1PreviewArt');
+    const strip = document.getElementById('battleP1PreviewTeam');
+    const kicker = document.getElementById('battleSetupKicker');
+    const title = document.getElementById('battleSetupTitle');
+    const copy = document.getElementById('battleSetupCopy');
+    const team = getBattleTeam('p1');
+    const lead = team[0] || 'rai';
+    const c = characters[lead] || characters.rai;
+    if (panel) {
+      panel.dataset.side = 'p1';
+      panel.dataset.characterId = lead;
+      panel.classList.toggle('active-side', state.battle.activeSide === 'p1');
+      panel.style.setProperty('--fighter-color', c.color);
+    }
+    if (kicker) kicker.textContent = battleSideController('p1');
+    if (title) title.textContent = `${t('player1').toUpperCase()} • ${c.name}`;
+    if (copy) copy.textContent = state.battle.activeSide === 'p1'
+      ? `Selecting Player 1 slot ${(state.battle.activeSlot || 0) + 1}.`
+      : 'Click this side to select Player 1.';
+    fillPreviewArt(art, lead);
+    if (strip) strip.innerHTML = team.map((id, i) => renderCharacterMiniCard(id, i + 1, 'p1')).join('');
   }
 
   function updateBattleSidePreview() {
@@ -1598,15 +1871,11 @@
     const c = characters[lead] || characters.nico;
     panel.dataset.side = training ? 'dummy' : 'p2';
     panel.dataset.characterId = lead;
+    panel.classList.toggle('active-side', state.battle.activeSide === 'p2');
+    panel.classList.toggle('disabled-side', training);
     panel.style.setProperty('--fighter-color', c.color);
-    title.textContent = training ? t('trainingDummy') : `${t('player2').toUpperCase()} · ${c.name}`;
-    art.className = `big-avatar overlay-fullbody-slot ${lead}`;
-    art.dataset.characterId = lead;
-    art.dataset.assetKey = `${lead}_full`;
-    art.style.setProperty('--c', c.color);
-    art.style.setProperty('--avatar', c.color);
-    art.style.setProperty('--portrait-image', safeCssUrl(selectCardSrc(lead)));
-    art.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.70)), url('${selectCardSrc(lead)}')`;
+    title.textContent = training ? 'TRAINING DUMMY SHADOW' : `${t('player2').toUpperCase()} • ${c.name}`;
+    fillPreviewArt(art, lead);
     strip.innerHTML = team.map((id, i) => renderCharacterMiniCard(id, i + 1, 'p2')).join('');
   }
 
@@ -1712,15 +1981,9 @@
 
     ensureBattleActionBar();
 
-    document.getElementById('battleSetupKicker').textContent = battleModeLabel(mode);
-    document.getElementById('battleSetupTitle').textContent = training
-      ? `Choose Training Team (${p1Team.length})`
-      : (state.battle.format === '1v1' ? '1v1 Single Battle Select' : `${format} Team Battle Select`);
-    document.getElementById('battleSetupCopy').textContent = training
-      ? 'Pick 1–3 fighters for your practice team. The dummy stays passive. Team switching uses Q/E during training.'
-      : (state.battle.format === '1v1'
-        ? 'Single Battle behavior: one fighter per side, big P1/P2 preview zones, then stage wheel, ready screen, countdown, fight.'
-        : 'Team Battle behavior: choose each team slot explicitly, then stage wheel, ready screen, countdown, fight.');
+    document.getElementById('battleRandomNote').textContent = training
+      ? 'Player 1 is selected on the left. Training Dummy Shadow stays locked on the right.'
+      : 'Pick Player 1 on the left or Player 2 on the right, then choose from the center roster.';
     document.getElementById('battleP1Name').textContent = teamNames(p1Team);
     document.getElementById('battleP2Label').textContent = training ? 'OPPONENT' : 'PLAYER 2 TEAM';
     document.getElementById('battleP2Name').textContent = training ? 'TRAINING DUMMY' : teamNames(p2Team);
@@ -1729,45 +1992,32 @@
     document.getElementById('randomP2').disabled = training;
     document.getElementById('randomBoth').textContent = training ? t('randomTrainingTeam') : t('randomBoth');
 
-    const battleSlots = document.querySelector('.battle-slots');
-    const cpuSideToggle = mode === 'pvp-ai' ? `
-      <div class="cpu-side-toggle" aria-label="CPU side selection">
-        <span>${t('cpuControl')}</span>
-        <button type="button" data-cpu-side="p1" class="${state.battle.cpuSide === 'p1' ? 'active' : ''}">${t('cpuP1')}</button>
-        <button type="button" data-cpu-side="p2" class="${state.battle.cpuSide !== 'p1' ? 'active' : ''}">${t('cpuP2')}</button>
-      </div>` : '';
-    battleSlots.innerHTML = `
-      <div class="battle-format-pill">${format}</div>
-      ${cpuSideToggle}
-      <div class="team-size-panel explicit-format-panel">
-        ${renderTeamSizeButtons('p1', training ? 'Training Team Size' : `${battleSideSlotLabel('p1')} Slots`)}
-        ${training ? '' : renderTeamSizeButtons('p2', `${battleSideSlotLabel('p2')} Slots`)}
-      </div>
-      <div class="team-slots-wrap overlay-ready-slots" data-overlay-role="selection-slots">
-        ${renderTeamSlots('p1', battleSideSlotLabel('p1'))}
-        ${training ? '<div class="team-slot-group dummy-group"><h3>Dummy</h3><button type="button" class="slot-card team-slot" disabled><span>TRAINING TARGET</span><strong>TRAINING DUMMY</strong></button></div>' : renderTeamSlots('p2', battleSideSlotLabel('p2'))}
-      </div>`;
+    const p1Controls = document.getElementById('battleP1SlotControls');
+    const p2Controls = document.getElementById('battleP2SlotControls');
+    if (p1Controls) p1Controls.innerHTML = renderSideSlotControls('p1', battleSideSlotLabel('p1'));
+    if (p2Controls) p2Controls.innerHTML = training
+      ? `<button type="button" class="side-select-main disabled" disabled>Training Dummy Shadow</button>`
+      : renderSideSlotControls('p2', battleSideSlotLabel('p2'));
 
-    battleSlots.querySelectorAll('[data-team-size]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (state.battle.format !== 'custom' && mode !== 'training') return;
-        setTeamSize(btn.dataset.teamSize, btn.dataset.size);
-      });
+    document.querySelectorAll('[data-side-focus]').forEach(el => {
+      const side = el.dataset.sideFocus;
+      if (!side || (side === 'p2' && training)) return;
+      el.onclick = e => {
+        if (e.target.closest('[data-team-slot]')) return;
+        setBattleSide(side, state.battle.activeSide === side ? state.battle.activeSlot : 0);
+      };
     });
-    battleSlots.querySelectorAll('[data-team-slot]').forEach(btn => {
-      btn.addEventListener('click', () => setBattleSide(btn.dataset.teamSlot, btn.dataset.slot));
-    });
-    battleSlots.querySelectorAll('[data-cpu-side]').forEach(btn => {
-      btn.addEventListener('click', () => setBattleCpuSide(btn.dataset.cpuSide));
+    document.querySelectorAll('[data-team-slot]').forEach(btn => {
+      btn.onclick = () => setBattleSide(btn.dataset.teamSlot, btn.dataset.slot);
     });
 
     const activeId = activeBattleId();
     const activeLabel = state.battle.activeSide === 'p1' ? battleSideSlotLabel('p1') : battleSideSlotLabel('p2');
-    document.getElementById('battleRosterTitle').textContent = training
-      ? `PICK TRAINING FIGHTER ${state.battle.activeSlot + 1}`
-      : (state.battle.format === '1v1'
-        ? `PICK ${activeLabel}`
-        : `PICK ${activeLabel} SLOT ${state.battle.activeSlot + 1}`);
+    const activeTarget = document.getElementById('battleActiveTarget');
+    document.getElementById('battleRosterTitle').textContent = 'CHARACTER SELECT';
+    if (activeTarget) activeTarget.textContent = training
+      ? `Selecting training fighter ${(state.battle.activeSlot || 0) + 1}`
+      : `${activeLabel} • Slot ${(state.battle.activeSlot || 0) + 1}`;
 
     const grid = document.getElementById('battleRosterGrid');
     grid.innerHTML = '';
@@ -1800,6 +2050,7 @@
       grid.appendChild(card);
     });
 
+    updateBattlePrimaryPreview();
     updateBattleSidePreview();
   }
 
@@ -2359,20 +2610,24 @@
     draw() {
       const r = this.rect();
       const sprite = getFighterSprite(this);
-      if (sprite && sprite.complete && sprite.naturalWidth) {
+      const spriteW = sprite?.naturalWidth || sprite?.width || 0;
+      const spriteH = sprite?.naturalHeight || sprite?.height || 0;
+      if (sprite && spriteW && spriteH) {
         ctx.save();
         if (this.comboFlash > 0) { ctx.shadowColor = '#fff'; ctx.shadowBlur = 24; }
         ctx.fillStyle = 'rgba(0,0,0,.45)';
         ctx.beginPath(); ctx.ellipse(this.x + this.w/2, floorY+8, 52, 12, 0, 0, Math.PI*2); ctx.fill();
 
-        const imgW = sprite.naturalWidth || 900;
-        const imgH = sprite.naturalHeight || 900;
-        const pose = fighterPose(this);
-        const bounds = spriteBounds[this.id]?.[pose] || spriteBounds[this.id]?.idle || { sx: 0, sy: 0, sw: imgW, sh: imgH };
+        const imgW = spriteW || 900;
+        const imgH = spriteH || 900;
+        const pose = this._lastDrawPose || fighterVisualPose(this);
+        const dynamicBounds = sprite._visibleBounds || computeSpriteVisibleBounds(sprite);
+        if (dynamicBounds) sprite._visibleBounds = dynamicBounds;
+        const bounds = spriteBounds[this.id]?.[pose] || spriteBounds[this.id]?.idle || dynamicBounds || { sx: 0, sy: 0, sw: imgW, sh: imgH };
 
         // Draw the visible character bounds instead of the full transparent canvas.
         // This keeps Nico/Rai/Shanti from changing size when the pose image has extra padding.
-        const targetHByCharacter = { rai: 184, nico: 184, shanti: 184 };
+        const targetHByCharacter = { rai: 184, nico: 184, shanti: 184, awar_aries: 188, dante_aries: 210, goro: 208, mammon: 208, dummy: 184, training_dummy_shadow: 184 };
         const targetH = targetHByCharacter[this.id] || 178;
         const poseScale = pose === 'ko' ? 0.58 : (pose === 'heavy' || pose === 'special' ? 1.05 : 1);
         const drawH = targetH * poseScale;
@@ -2403,6 +2658,19 @@
       if (this.comboFlash > 0) { ctx.shadowColor = '#fff'; ctx.shadowBlur = 22; }
       // shadow
       ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.beginPath(); ctx.ellipse(this.x + this.w/2, floorY+8, 42, 10, 0, 0, Math.PI*2); ctx.fill();
+      if (this.id === 'dummy' || this.id === 'training_dummy_shadow') {
+        // Fallback only: if the uploaded training_dummy_shadow PNGs fail to load, draw a simple shadow target instead of a random fighter blob.
+        ctx.fillStyle = 'rgba(0,0,0,.86)';
+        ctx.strokeStyle = '#7f8a9a';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.roundRect(this.x+7, this.y-104, 38, 102, 14); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = 'rgba(15,18,24,.96)';
+        ctx.beginPath(); ctx.arc(this.x+26, this.y-126, 22, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#506070'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(this.x+13,this.y-56); ctx.lineTo(this.x-12,this.y-28); ctx.moveTo(this.x+39,this.y-56); ctx.lineTo(this.x+64,this.y-28); ctx.stroke();
+        ctx.restore();
+        return;
+      }
       // body cloak / torso
       ctx.fillStyle = '#0a0a0c'; ctx.strokeStyle = this.c.color; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.roundRect(this.x+8, this.y-82, 32, 76, 10); ctx.fill(); ctx.stroke();
@@ -2608,6 +2876,11 @@
       chapter: item.chapter || (isPvPLocal || isPvPAI || isCpuCpu ? 'PVP MODE' : isTraining ? 'TRAINING MODE' : 'STORY FIGHT'),
       timer: 0, roundTimeLimit: getConfiguredRoundFrames(isTraining), roundTimeRemaining: getConfiguredRoundFrames(isTraining), over: false, round: 1, p1Rounds: 0, p2Rounds: 0, roundResolving: false, roundIntro: isTraining ? 0 : 150, paused: false, bestOfThree: (isPvPLocal || isPvPAI || isCpuCpu || isTournament), pvp: isPvPLocal, mode: fightMode, training: isTraining, difficulty: activeDifficulty, cpuSide: pvpCpuSide
     };
+    const fightScreenEl = document.getElementById('fightScreen');
+    if (fightScreenEl) {
+      fightScreenEl.classList.toggle('training-mode', isTraining);
+      fightScreenEl.classList.toggle('team-battle-mode', state.battle.type === 'team');
+    }
     updateFightNames();
     document.getElementById('roundInfo').textContent = item.title || 'FIGHT';
     document.getElementById('p2Hint').style.display = (isPvPLocal || (isPvPAI && pvpCpuSide === 'p1')) ? 'inline' : 'none';
@@ -2955,7 +3228,10 @@
     const ri = document.getElementById('roundInfo');
     if (ri) {
       const clock = state.fight.training || !Number.isFinite(state.fight.roundTimeRemaining) ? '∞' : formatFightClock(state.fight.roundTimeRemaining || 0);
-      ri.innerHTML = `<strong>${clock}</strong>${state.fight.bestOfThree ? `<small>R${state.fight.round} · P1 ${state.fight.p1Rounds}-${state.fight.p2Rounds} P2</small>` : ''}`;
+      const stage = stageOptions.find(st => st.id === state.fight.stage);
+      const stageName = (stage?.name || state.fight.title || state.fight.stage || 'BATTLE STAGE').toUpperCase();
+      const score = state.fight.bestOfThree ? `R${state.fight.round} · P1 ${state.fight.p1Rounds}-${state.fight.p2Rounds} P2` : (state.fight.training ? 'TRAINING MODE' : 'SINGLE ROUND');
+      ri.innerHTML = `<span class="timer-flair">◆</span><strong>${clock}</strong><small>${stageName}</small><em>${score}</em>`;
     }
     document.querySelectorAll('.fighter-box.left .round-wins i').forEach((dot,i)=>dot.classList.toggle('won', i < (state.fight.p1Rounds || 0)));
     document.querySelectorAll('.fighter-box.right .round-wins i').forEach((dot,i)=>dot.classList.toggle('won', i < (state.fight.p2Rounds || 0)));

@@ -31,7 +31,12 @@
         <h2>Updated Battle Flow</h2>
         <p>Main Menu → Battle Mode Setup → Character Select → Battle Stage → Ready Screen → Countdown → Fight.</p>
       </aside>
-      <div class="press-start">Press ENTER / Tap a menu option</div>
+      <div class="press-start" aria-hidden="true">
+        <span class="press-start-flair">✦</span>
+        <span class="press-start-label">PRESS START</span>
+        <span class="press-start-flair">✦</span>
+        <small>ENTER THE CALAMITY</small>
+      </div>
     </div>
 
 
@@ -170,35 +175,38 @@
       <button class="back-btn" data-action="battle-back">← Battle Setup</button>
       <button class="settings-shortcut" data-action="options">⚙ Settings</button>
       <section class="select-layout battle-select-layout overlay-ui-shell" data-overlay-screen="character-select">
-        <div class="selected-panel battle-summary-panel">
-          <div class="kicker" id="battleSetupKicker">BATTLE SETUP</div>
-          <h2 id="battleSetupTitle">Choose Fighters</h2>
-          <p id="battleSetupCopy">Pick characters, or let Random choose the chaos for you.</p>
+        <aside id="battleP1Preview" class="selected-panel battle-side-panel p1-side" data-overlay-zone="p1-preview" data-side-focus="p1">
+          <div class="kicker" id="battleSetupKicker">PLAYER 1</div>
+          <h2 id="battleSetupTitle">Player 1 · Rai</h2>
+          <p id="battleSetupCopy">Select Player 1 on this side.</p>
           <div class="sr-only" aria-hidden="true"><span id="battleP2Label"></span><span id="battleP1Name"></span><span id="battleP2Name"></span></div>
-          <div class="battle-slots"></div>
-          <div class="battle-randoms">
-            <button id="randomP1" type="button">Random P1</button>
-            <button id="randomP2" type="button">Random P2</button>
-            <button id="randomBoth" type="button">Random Match Up</button>
-          </div>
-          <p class="small" id="battleRandomNote">Selected portraits, highlight boxes, and selection overlays can be layered later in the final UI art.</p>
-          <button id="confirmBattleCharacters" class="primary-wide" type="button">Continue to Battle Stage</button>
-        </div>
+          <div id="battleP1PreviewArt" class="big-avatar overlay-fullbody-slot" data-overlay-role="fullbody"></div>
+          <div id="battleP1PreviewTeam" class="overlay-team-strip" data-overlay-role="team-strip"></div>
+          <div id="battleP1SlotControls" class="side-slot-controls" data-side="p1"></div>
+        </aside>
+
         <div class="roster-panel battle-roster-panel">
-          <h1 id="battleRosterTitle">PICK PLAYER 1</h1>
-          <p class="sub">All playable characters plus Random are available here.</p>
+          <h1 id="battleRosterTitle">CHARACTER SELECT</h1>
+          <p id="battleActiveTarget" class="sub">Pick Player 1</p>
           <div id="battleRosterGrid" class="roster-grid battle-roster-grid"></div>
-          <div class="select-footer">
-            <span><b>Random</b> lets the game choose.</span>
-            <span><b>Next:</b> Battle Stage</span>
+          <div id="battleActionBar" class="battle-action-bar">
+            <div class="battle-randoms">
+              <button id="randomP1" type="button">Random P1</button>
+              <button id="randomP2" type="button">Random P2</button>
+              <button id="randomBoth" type="button">Random Match Up</button>
+            </div>
+            <p class="small" id="battleRandomNote">Select Player 1 on the left and Player 2 on the right.</p>
+            <button id="confirmBattleCharacters" class="primary-wide" type="button">Continue to Battle Stage</button>
           </div>
         </div>
-        <aside id="battleP2Preview" class="selected-panel battle-side-panel" data-overlay-zone="p2-preview">
+
+        <aside id="battleP2Preview" class="selected-panel battle-side-panel p2-side" data-overlay-zone="p2-preview" data-side-focus="p2">
           <div class="kicker">PLAYER 2</div>
-          <h2 id="battleSidePreviewTitle">P2 Preview</h2>
+          <h2 id="battleSidePreviewTitle">Player 2 Preview</h2>
+          <p class="side-copy">Select Player 2 on this side.</p>
           <div id="battleSidePreviewArt" class="big-avatar overlay-fullbody-slot" data-overlay-role="fullbody"></div>
           <div id="battleSidePreviewTeam" class="overlay-team-strip" data-overlay-role="team-strip"></div>
-          <p class="small">Overlay-ready zone: final full-body art, portraits, P1/P2 markers, and glow frames can be dropped in here later.</p>
+          <div id="battleP2SlotControls" class="side-slot-controls" data-side="p2"></div>
         </aside>
       </section>
     </div>
