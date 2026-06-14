@@ -1,0 +1,1 @@
+Adrian: no confirmed walk_forward sprite in the available generated sheet.
