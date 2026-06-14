@@ -64,38 +64,17 @@
 
   // Prototype sprite manifest. These are standardized transparent PNG canvases.
   // P2 sprites are mirrored in the canvas renderer by flipping on the x-axis when facing left.
-  const spriteSources = {
-    "rai": {
-        "idle": "./assets/sprites/rai/rai_idle.png",
-        "light": "./assets/sprites/rai/rai_light.png",
-        "heavy": "./assets/sprites/rai/rai_heavy.png",
-        "special": "./assets/sprites/rai/rai_special.png",
-        "guard": "./assets/sprites/rai/rai_guard.png",
-        "jump": "./assets/sprites/rai/rai_jump.png",
-        "hurt": "./assets/sprites/rai/rai_hurt.png",
-        "ko": "./assets/sprites/rai/rai_ko.png"
-    },
-    "nico": {
-        "idle": "./assets/sprites/nico/nico_idle.png",
-        "light": "./assets/sprites/nico/nico_light.png",
-        "heavy": "./assets/sprites/nico/nico_heavy.png",
-        "special": "./assets/sprites/nico/nico_special.png",
-        "guard": "./assets/sprites/nico/nico_guard.png",
-        "jump": "./assets/sprites/nico/nico_jump.png",
-        "hurt": "./assets/sprites/nico/nico_hurt.png",
-        "ko": "./assets/sprites/nico/nico_ko.png"
-    },
-    "shanti": {
-        "idle": "./assets/sprites/shanti/shanti_idle.png",
-        "light": "./assets/sprites/shanti/shanti_light.png",
-        "heavy": "./assets/sprites/shanti/shanti_heavy.png",
-        "special": "./assets/sprites/shanti/shanti_special.png",
-        "guard": "./assets/sprites/shanti/shanti_guard.png",
-        "jump": "./assets/sprites/shanti/shanti_jump.png",
-        "hurt": "./assets/sprites/shanti/shanti_hurt.png",
-        "ko": "./assets/sprites/shanti/shanti_ko.png"
-    }
-};
+  const SPRITE_POSES = ['idle', 'walk_forward', 'walk_back', 'crouch', 'light', 'heavy', 'special', 'guard', 'jump', 'hurt', 'ko', 'victory'];
+
+  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'vasta', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei', 'dummy', 'awar', 'handler', 'danpen'];
+
+  function standardSpriteSet(id) {
+    const folder = id;
+    const prefix = id;
+    return Object.fromEntries(SPRITE_POSES.map(pose => [pose, `./assets/sprites/${folder}/${prefix}_${pose}.png`]));
+  }
+
+  const spriteSources = Object.fromEntries(SPRITE_CHARACTER_IDS.map(id => [id, standardSpriteSet(id)]));
 
   // Visible alpha bounds for each sprite pose. Used to draw only the character silhouette,
   // so poses with extra transparent padding do not pop larger/smaller in battle.
@@ -289,6 +268,8 @@
     stageWheelIndex: 0,
     stageSpinTimer: null,
     stageHoverTimer: null,
+    randomHoverTimers: {},
+    randomHoverSnapshots: {},
     readyTimer: null,
     storyIndex: 0,
     lastStoryIndex: 0,
@@ -373,9 +354,9 @@
       miniGames: 'Mini Games', sportsCopy: 'Placeholder hub for character-based sports mini games. Basketball and Tennis are first; more can be added later as the project grows.', basketball: 'Basketball', tennis: 'Tennis', basketballCopy: 'Coming soon: pick Calamity War characters and play quick court battles.', tennisCopy: 'Coming soon: character tennis rallies with specials and power shots.', sportsChoose: 'Select a mini game. These are placeholder doors for now.',
       saveCopy: 'Five save slots for Story Mode progress. Save from a story scene, then load from here later.', characterRoster: 'Character Roster', rosterSub: 'Reference screen for the available fighters.',
       battleSetupTitle: 'Battle Setup', battleSetupCopy: 'Choose who is fighting, whether it is a single or team battle, and how many fighters each side brings before going to Character Select.', opponent: 'Opponent', playerVsPlayer: 'Player vs Player', playerVsCpu: 'Player vs CPU', cpuVsCpu: 'CPU vs CPU', battleFormat: 'Battle Format', cpuDifficulty: 'CPU Difficulty',
-      p1Fighters: 'Player 1 Fighters', p2Fighters: 'Player 2 / CPU Fighters', cpuControl: 'CPU Control', cpuP1: 'CPU controls Player 1', cpuP2: 'CPU controls Player 2', continueCharacterSelect: 'Continue to Character Select', pickPlayer1: 'Pick Player 1', chooseFighters: 'Choose Fighters', randomP1: 'Random P1', randomP2: 'Random P2 / CPU', randomBoth: 'Random Both', continueBattleStage: 'Continue to Battle Stage',
+      p1Fighters: 'Player 1 Fighters', p2Fighters: 'Player 2 Fighters', cpuControl: 'CPU Control', cpuP1: 'CPU controls Player 1', cpuP2: 'CPU controls Player 2', continueCharacterSelect: 'Continue to Character Select', pickPlayer1: 'Pick Player 1', chooseFighters: 'Choose Fighters', randomP1: 'Random P1', randomP2: 'Random P2', randomBoth: 'Random Match Up', dummyLocked: 'Dummy Locked', randomTrainingTeam: 'Random Training Team', continueBattleStage: 'Continue to Battle Stage',
       battleStageSelect: 'Battle Stage Select', stageSetupCopy: 'Choose the arena after choosing fighters, or hit Random Stage and let the game pick where the fight happens.', stageHelp: 'Rotate the stage wheel, tap a stage thumbnail, or let the AI randomize the arena.', selected: 'Selected', aiShuffling: 'AI shuffling',
-      ready: 'Ready?', readySubcopy: 'Selected stage appears below READY? and the countdown launches the fight automatically.', player1: 'Player 1', player2: 'Player 2', player2Cpu: 'Player 2 / CPU', trainingDummy: 'Training Dummy',
+      ready: 'Ready?', readySubcopy: 'Selected stage appears below READY? and the countdown launches the fight automatically.', player1: 'Player 1', player2: 'Player 2', player2Cpu: 'Player 2', trainingDummy: 'Training Dummy',
       galleryCopy: 'Placeholder hub for unlockables and reference screens. We can flesh these out later.', galleryChoose: 'Choose a gallery section.', galleryCharactersCopy: 'Roster profiles, move notes, and character art.', galleryStagesCopy: 'Battle backgrounds and arena previews.', galleryCutscenesCopy: 'Story CGs and cinematic moments.', galleryExtrasCopy: 'Bonus art, concepts, credits, and unlockables.', stageGallery: 'Stage Gallery', stageGalleryCopy: 'Backgrounds generated first so the demo has real fight-stage identity.',
       settingsTitle: 'Settings', showHitboxes: 'Show hitboxes', storyAssistHints: 'Story mode assist hints', muteMenuSounds: 'Mute menu sounds', announcerVoice: 'Announcer voice placeholder', gameVolume: 'Game Volume', roundTimeTitle: 'Battle / Tournament Round Time', roundTimeNote: 'Set the round timer like a digital clock. Minimum is 00:30. 10:00 is the max timed round; going over 10:00 becomes ∞.', minDown: '− Min', minUp: '+ Min', secDown: '− Sec', secUp: '+ Sec', healthBarsTitle: 'Battle Mode Health Bars', healthBarsNote: 'Default is 3 layers. Set P1 or P2/CPU from 1–5 for handicap-style matches.', language: 'Language', languageNote: 'Language changes the hardcoded game UI text for this demo. Story/dialogue localization can keep expanding as scenes are finalized.', handicap: 'Handicap', off: 'Off',
       storySetup: 'Story Setup', storySetupCopy: 'Choose the story difficulty, then start from the beginning or jump to a mission/chapter beat.', storyDifficulty: 'Story Difficulty', startFullStory: 'Start Full Story', missionSelect: 'Mission Select', missionSelectCopy: 'Jump to Forest Ambush, Stone Wall Labyrinth, Diastre, Fire and Steel, or the current endpoint.',
@@ -393,9 +374,9 @@
       miniGames: 'Minijuegos', sportsCopy: 'Centro provisional para minijuegos con personajes. Baloncesto y Tenis son los primeros; se pueden agregar más después.', basketball: 'Baloncesto', tennis: 'Tenis', basketballCopy: 'Próximamente: elige personajes de Calamity War y juega batallas rápidas en cancha.', tennisCopy: 'Próximamente: rallies de tenis con especiales y golpes poderosos.', sportsChoose: 'Elige un minijuego. Por ahora son puertas provisionales.',
       saveCopy: 'Cinco espacios de guardado para el progreso del Modo Historia. Guarda desde una escena y carga desde aquí después.', characterRoster: 'Lista de Personajes', rosterSub: 'Pantalla de referencia para los luchadores disponibles.',
       battleSetupTitle: 'Configuración de Batalla', battleSetupCopy: 'Elige quién pelea, si será combate individual o por equipos, y cuántos luchadores trae cada lado antes de seleccionar personajes.', opponent: 'Oponente', playerVsPlayer: 'Jugador vs Jugador', playerVsCpu: 'Jugador vs CPU', cpuVsCpu: 'CPU vs CPU', battleFormat: 'Formato de Batalla', cpuDifficulty: 'Dificultad CPU',
-      p1Fighters: 'Luchadores Jugador 1', p2Fighters: 'Luchadores Jugador 2 / CPU', cpuControl: 'Control de CPU', cpuP1: 'CPU controla Jugador 1', cpuP2: 'CPU controla Jugador 2', continueCharacterSelect: 'Continuar a Selección de Personaje', pickPlayer1: 'Elige Jugador 1', chooseFighters: 'Elige Luchadores', randomP1: 'Aleatorio J1', randomP2: 'Aleatorio J2 / CPU', randomBoth: 'Ambos Aleatorios', continueBattleStage: 'Continuar a Escenario',
+      p1Fighters: 'Luchadores Jugador 1', p2Fighters: 'Luchadores Jugador 2 / CPU', cpuControl: 'Control de CPU', cpuP1: 'CPU controla Jugador 1', cpuP2: 'CPU controla Jugador 2', continueCharacterSelect: 'Continuar a Selección de Personaje', pickPlayer1: 'Elige Jugador 1', chooseFighters: 'Elige Luchadores', randomP1: 'Aleatorio J1', randomP2: 'Aleatorio J2', randomBoth: 'Encuentro Aleatorio', dummyLocked: 'Dummy bloqueado', randomTrainingTeam: 'Equipo de entrenamiento aleatorio', continueBattleStage: 'Continuar a Escenario',
       battleStageSelect: 'Selección de Escenario', stageSetupCopy: 'Elige la arena después de elegir luchadores, o usa Escenario Aleatorio para que el juego decida.', stageHelp: 'Gira la rueda de escenarios, toca una miniatura, o deja que la IA aleatorice la arena.', selected: 'Seleccionado', aiShuffling: 'IA mezclando',
-      ready: '¿Listos?', readySubcopy: 'El escenario elegido aparece debajo de READY? y la cuenta regresiva inicia la pelea automáticamente.', player1: 'Jugador 1', player2: 'Jugador 2', player2Cpu: 'Jugador 2 / CPU', trainingDummy: 'Muñeco de Práctica',
+      ready: '¿Listos?', readySubcopy: 'El escenario elegido aparece debajo de READY? y la cuenta regresiva inicia la pelea automáticamente.', player1: 'Jugador 1', player2: 'Jugador 2', player2Cpu: 'Jugador 2', trainingDummy: 'Muñeco de Práctica',
       galleryCopy: 'Centro provisional para desbloqueables y pantallas de referencia. Podemos detallarlo después.', galleryChoose: 'Elige una sección de la galería.', galleryCharactersCopy: 'Perfiles, notas de movimientos y arte de personajes.', galleryStagesCopy: 'Fondos de batalla y vistas previas de arenas.', galleryCutscenesCopy: 'CGs de historia y momentos cinemáticos.', galleryExtrasCopy: 'Arte extra, conceptos, créditos y desbloqueables.', stageGallery: 'Galería de Escenarios', stageGalleryCopy: 'Los fondos se generaron primero para que el demo tenga identidad visual de arenas.',
       settingsTitle: 'Ajustes', showHitboxes: 'Mostrar hitboxes', storyAssistHints: 'Ayudas del Modo Historia', muteMenuSounds: 'Silenciar sonidos del menú', announcerVoice: 'Voz provisional del anunciador', gameVolume: 'Volumen del Juego', roundTimeTitle: 'Tiempo de Ronda Batalla / Torneo', roundTimeNote: 'Configura el temporizador como reloj digital. Mínimo 00:30. 10:00 es el máximo; pasar de 10:00 se vuelve ∞.', minDown: '− Min', minUp: '+ Min', secDown: '− Seg', secUp: '+ Seg', healthBarsTitle: 'Barras de Salud del Modo Batalla', healthBarsNote: 'El valor predeterminado es 3 capas. Ajusta J1 o J2/CPU de 1–5 como handicap.', language: 'Idioma', languageNote: 'El idioma cambia el texto de interfaz codificado para este demo. La historia puede traducirse más a medida que se finalice.', handicap: 'Handicap', off: 'Desactivado',
       storySetup: 'Configuración de Historia', storySetupCopy: 'Elige la dificultad de historia y empieza desde el principio o salta a una misión.', storyDifficulty: 'Dificultad de Historia', startFullStory: 'Comenzar Historia Completa', missionSelect: 'Selección de Misión', missionSelectCopy: 'Salta a Emboscada del Bosque, Laberinto de Piedra, Diastre, Fuego y Acero, o el punto actual.',
@@ -413,9 +394,9 @@
       miniGames: 'ミニゲーム', sportsCopy: 'キャラクターを使ったミニゲーム用の仮ハブ。まずはバスケットボールとテニス。後で追加できます。', basketball: 'バスケットボール', tennis: 'テニス', basketballCopy: '近日追加：キャラクターを選んでクイックなコートバトル。', tennisCopy: '近日追加：必殺技とパワーショットつきテニス。', sportsChoose: 'ミニゲームを選んでください。今は仮の入口です。',
       saveCopy: 'ストーリーモード進行用の5つのセーブスロット。シーンから保存し、ここからロードできます。', characterRoster: 'キャラクター一覧', rosterSub: '使用可能ファイターの参照画面。',
       battleSetupTitle: 'バトル設定', battleSetupCopy: '誰が戦うか、個人戦かチーム戦か、各サイドの人数を選んでからキャラクター選択へ進みます。', opponent: '相手', playerVsPlayer: 'プレイヤー vs プレイヤー', playerVsCpu: 'プレイヤー vs CPU', cpuVsCpu: 'CPU vs CPU', battleFormat: 'バトル形式', cpuDifficulty: 'CPU難易度',
-      p1Fighters: 'プレイヤー1人数', p2Fighters: 'プレイヤー2 / CPU人数', cpuControl: 'CPU操作', cpuP1: 'CPUがプレイヤー1を操作', cpuP2: 'CPUがプレイヤー2を操作', continueCharacterSelect: 'キャラクター選択へ', pickPlayer1: 'プレイヤー1を選択', chooseFighters: 'ファイター選択', randomP1: 'P1ランダム', randomP2: 'P2 / CPUランダム', randomBoth: '両方ランダム', continueBattleStage: 'ステージ選択へ',
+      p1Fighters: 'プレイヤー1人数', p2Fighters: 'プレイヤー2人数', cpuControl: 'CPU操作', cpuP1: 'CPUがプレイヤー1を操作', cpuP2: 'CPUがプレイヤー2を操作', continueCharacterSelect: 'キャラクター選択へ', pickPlayer1: 'プレイヤー1を選択', chooseFighters: 'ファイター選択', randomP1: 'P1ランダム', randomP2: 'P2ランダム', randomBoth: 'ランダム対戦', dummyLocked: 'ダミー固定', randomTrainingTeam: 'トレーニングチームランダム', continueBattleStage: 'ステージ選択へ',
       battleStageSelect: 'バトルステージ選択', stageSetupCopy: 'ファイターを選んだ後にアリーナを選ぶか、ランダムで決定します。', stageHelp: 'ステージホイールを回す、サムネイルを押す、またはランダムにします。', selected: '選択中', aiShuffling: 'AIシャッフル中',
-      ready: 'READY?', readySubcopy: '選択ステージがREADY?の下に表示され、カウントダウン後に自動で開始します。', player1: 'プレイヤー1', player2: 'プレイヤー2', player2Cpu: 'プレイヤー2 / CPU', trainingDummy: 'トレーニングダミー',
+      ready: 'READY?', readySubcopy: '選択ステージがREADY?の下に表示され、カウントダウン後に自動で開始します。', player1: 'プレイヤー1', player2: 'プレイヤー2', player2Cpu: 'プレイヤー2', trainingDummy: 'トレーニングダミー',
       galleryCopy: 'アンロック要素と参照画面の仮ハブ。後で fleshing out できます。', galleryChoose: 'ギャラリー項目を選択。', galleryCharactersCopy: 'プロフィール、技メモ、キャラクターアート。', galleryStagesCopy: 'バトル背景とアリーナプレビュー。', galleryCutscenesCopy: 'ストーリーCGとシネマ演出。', galleryExtrasCopy: 'ボーナスアート、コンセプト、クレジット、アンロック要素。', stageGallery: 'ステージギャラリー', stageGalleryCopy: 'デモにステージ個性を出すため、背景を先に作成。',
       settingsTitle: '設定', showHitboxes: 'ヒットボックス表示', storyAssistHints: 'ストーリー補助ヒント', muteMenuSounds: 'メニュー音をミュート', announcerVoice: '仮アナウンサー音声', gameVolume: 'ゲーム音量', roundTimeTitle: 'バトル / トーナメント ラウンド時間', roundTimeNote: 'デジタル時計のように設定。最小00:30。最大10:00で、それを超えると∞になります。', minDown: '− 分', minUp: '+ 分', secDown: '− 秒', secUp: '+ 秒', healthBarsTitle: 'バトルモード体力バー', healthBarsNote: '初期値は3レイヤー。P1またはP2/CPUを1〜5に設定してハンデとして使えます。', language: '言語', languageNote: 'このデモではハードコードされたUIテキストを切り替えます。ストーリー翻訳はシーン確定後に拡張できます。', handicap: 'ハンデ', off: 'オフ',
       storySetup: 'ストーリー設定', storySetupCopy: 'ストーリー難易度を選び、最初から始めるかミッションにジャンプします。', storyDifficulty: 'ストーリー難易度', startFullStory: 'ストーリー開始', missionSelect: 'ミッション選択', missionSelectCopy: '森の奇襲、石壁迷宮、ディアストレ、炎と鋼、現在地点へジャンプ。',
@@ -558,6 +539,7 @@
     setText('#readyTitle', t('ready'));
     setText('.ready-subcopy', t('readySubcopy'));
     setText('.ready-team-p1 h2', t('player1'));
+    setText('.ready-team-p2 h2', t('player2'));
 
     setText('#galleryScreen .kicker', t('gallery').toUpperCase());
     setText('#galleryScreen h1', t('gallery'));
@@ -691,7 +673,7 @@
     ambusher: { name: 'AMBUSHER', role: 'Masked Soldier', age: '??', style: 'Blade Mob', color: '#34343b', bio: 'Rank-and-file masked enemy.', stats: [48, 42, 40, 32, 25], hp: 80, speed: 2.8, power: .82, special: 'Rush Slash' },
     guard: { name: 'FORTRESS GUARD', role: 'Fortress Soldier', age: '??', style: 'Blade Guard', color: '#3f424d', bio: 'A stronger fortress soldier.', stats: [55, 46, 52, 44, 35], hp: 90, speed: 3.1, power: .9, special: 'Counter Slash' },
     wraith: { name: 'WRAITH', role: 'Shadow Vessel', age: '???', style: 'Drain / Nightmare', color: '#34135c', bio: 'A shadow bound to Diego’s inner world, feeding on hatred, loss, and life force.', stats: [78, 66, 70, 80, 88], hp: 120, speed: 3.8, power: 1.12, special: 'Soul Drain' },
-    awar: { name: 'AWAR', role: 'Rebellion King', age: 12, style: 'Darkness / Gunblade', color: '#8b1c24', bio: 'A rejected prodigy and rebel leader whose defeat changes nothing about the storm coming.', stats: [86, 86, 68, 90, 84], hp: 120, speed: 4.25, power: 1.12, special: 'Perfect Counter' },
+    awar_aries: { name: 'AWAR ARIES', role: 'Rebellion King', age: 12, style: 'Darkness / Gunblade', color: '#8b1c24', bio: 'A rejected prodigy and rebel leader whose defeat changes nothing about the storm coming.', stats: [86, 86, 68, 90, 84], hp: 120, speed: 4.25, power: 1.12, special: 'Perfect Counter' },
     rose: { name: 'ROSE', role: 'Double Agent', age: '??', style: 'Saber / Spycraft', color: '#179b57', bio: 'A decorated warrior and secret agent whose loyalty points where the rebellion tells it to.', stats: [76, 78, 70, 86, 72], hp: 108, speed: 4.0, power: 1.02, special: 'Silent Shield' },
     pierre: { name: 'PIERRE', role: 'Shadow Strategist', age: 13, style: 'Katana / Firearm', color: '#9d1b22', bio: 'Awar’s right hand. Tactical, cold, and always looking three moves ahead.', stats: [74, 76, 62, 94, 70], hp: 105, speed: 3.9, power: 1.0, special: 'Red Line' },
     goro: { name: 'GORO VOSS', role: 'Iron Fortress', age: 14, style: 'Earth / Club', color: '#8f2424', bio: 'A heavy assault specialist built like a wall and proud of it.', stats: [90, 42, 96, 45, 92], hp: 155, speed: 2.65, power: 1.35, special: 'Judgment' },
@@ -699,6 +681,20 @@
     danpen: { name: 'DANPEN', role: 'Shadowbound Duo', age: '???', style: 'Clock / Trap', color: '#4a2577', bio: 'Locked. Two figures draped in shadow whose power is tied to Diego’s past.', stats: [95, 85, 80, 98, 98], hp: 150, speed: 4.2, power: 1.3, special: 'Clock Trap' },
     dummy: { name: 'TRAINING DUMMY', role: 'Practice Target', age: 'N/A', style: 'Training', color: '#777777', bio: 'A non-attacking practice dummy used for move timing, spacing, and special-meter testing.', stats: [0, 0, 100, 0, 0], hp: 999, speed: 0, power: 0, special: 'None' }
   };
+
+
+  // Canonical / expanded roster aliases for the current game build.
+  characters.awar = characters.awar_aries;
+  characters.dante_aries = characters.dante_aries || { name: 'DANTE ARIES', role: 'Aries Warlord', age: '???', style: 'Dark Fire / Halberd', color: '#ba1717', bio: 'A darker Aries-form variant prepared for boss and arcade use.', stats: [94, 70, 92, 82, 96], hp: 158, speed: 3.25, power: 1.34, special: 'Abyssal War Cry' };
+  characters.nox_aries = characters.nox_aries || { name: 'NOX ARIES', role: 'Dark Eclipse', age: '???', style: 'Void / Gravity', color: '#5f28d6', bio: 'An elegant nightmare-form fighter using void pressure and black flame.', stats: [88, 84, 76, 94, 90], hp: 128, speed: 4.18, power: 1.18, special: 'Eclipse Orb' };
+  characters.seccla_aries = characters.seccla_aries || { name: 'SECCLA ARIES', role: 'Arcane Commander', age: '???', style: 'Magic / Blade', color: '#d9a545', bio: 'A tactical Aries variant who fights with sigils, blade control, and pressure traps.', stats: [82, 78, 72, 96, 84], hp: 120, speed: 3.95, power: 1.12, special: 'Golden Sigil' };
+  characters.tenganisha = characters.tenganisha || { name: 'TENGANISHA', role: 'Fortress Handler', age: '??', style: 'Detachment / Body Split', color: '#111111', bio: 'A fortress elite linked to the captives, able to attack from bizarre angles through detachment.', stats: [76, 66, 70, 88, 92], hp: 128, speed: 3.75, power: 1.15, special: 'Detachment' };
+  characters.handler = characters.tenganisha;
+  characters.semuda = characters.semuda || { name: 'SEMUDA', role: 'Calamity Witch', age: '??', style: 'Pink Flame / Command', color: '#e92aa4', bio: 'A stylish, dangerous fighter who turns charm and pressure into battlefield control.', stats: [86, 80, 72, 92, 88], hp: 118, speed: 4.1, power: 1.16, special: 'Velvet Calamity' };
+  characters.danpen_shikake = characters.danpen_shikake || { name: 'DANPEN SHIKAKE', role: 'Shadowbound Duo', age: '???', style: 'Trap / Mechanism', color: '#4a2577', bio: 'Locked. One half of the shadowbound Danpen pair.', stats: [95, 85, 80, 98, 98], hp: 150, speed: 4.2, power: 1.3, special: 'Trap Mechanism' };
+  characters.danpen_tokei = characters.danpen_tokei || { name: 'DANPEN TOKEI', role: 'Shadowbound Duo', age: '???', style: 'Clock / Time Snare', color: '#5b2a94', bio: 'Locked. One half of the shadowbound Danpen pair. Danpen Toukei is treated as an old typo and is intentionally omitted.', stats: [94, 84, 80, 99, 98], hp: 150, speed: 4.2, power: 1.3, special: 'Clock Snare' };
+  characters.danpen = characters.danpen_shikake;
+
 
   const roster = [
     // Core story row
@@ -708,21 +704,23 @@
     // Ten’no / Hathor row
     'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle',
     // Rebellion / Aries row
-    'nikki', 'vasta', 'awar', 'rose', 'pierre',
+    'nikki', 'vasta', 'awar_aries', 'rose', 'pierre',
     // Heavy hitters / bosses / special row
-    'goro', 'mammon', 'dante', 'diastre', 'roger',
-    // Future legacy + special row
-    'handler', 'baburu', 'machai', 'mahje', 'raijin',
-    'esther', 'danpen'
+    'goro', 'mammon', 'dante', 'dante_aries', 'diastre',
+    // Aries variants / final row
+    'nox_aries', 'seccla_aries', 'roger', 'tenganisha', 'baburu',
+    'machai', 'mahje', 'raijin', 'esther', 'semuda',
+    // locked future duo
+    'danpen_shikake', 'danpen_tokei'
   ];
 
   const rosterGroups = {
     core: ['rai', 'nico', 'shanti', 'adrian', 'malachai'],
     badge: ['rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke'],
     hathor: ['miwa', 'michelle', 'nikki', 'vasta'],
-    rebellion: ['awar', 'rose', 'pierre'],
-    aries: ['goro', 'mammon', 'dante', 'baburu'],
-    special: ['diastre', 'roger', 'handler', 'machai', 'mahje', 'raijin', 'esther', 'danpen']
+    rebellion: ['awar_aries', 'rose', 'pierre'],
+    aries: ['goro', 'mammon', 'dante', 'dante_aries', 'nox_aries', 'seccla_aries', 'baburu'],
+    special: ['diastre', 'roger', 'tenganisha', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei']
   };
 
 
@@ -749,7 +747,7 @@
   }
 
   function playableCharacters() {
-    return roster.filter(id => id !== 'danpen' && characters[id]);
+    return roster.filter(id => !isLockedCharacter(id) && characters[id]);
   }
 
   function randomCharacter(excludeId = null) {
@@ -761,8 +759,29 @@
     return randomChoice(stageOptions).id;
   }
 
+  const SELECT_CARD_OVERRIDES = {
+    awar: 'awar_aries',
+    handler: 'tenganisha',
+    tenganisha: 'tenganisha',
+    danpen: 'danpen_shikake'
+  };
+
+  function selectCardSrc(id) {
+    const key = SELECT_CARD_OVERRIDES[id] || id;
+    return `./assets/select_cards/${key}_select.png`;
+  }
+
+  function safeCssUrl(src) {
+    return `url("${String(src).replace(/"/g, '%22')}")`;
+  }
+
+  function isLockedCharacter(id) {
+    return id === 'danpen' || id === 'danpen_shikake' || id === 'danpen_tokei';
+  }
+
+
   function clampTeam(team, fallback='rai') {
-    const cleaned = (Array.isArray(team) ? team : [fallback]).filter(id => characters[id] && id !== 'danpen');
+    const cleaned = (Array.isArray(team) ? team : [fallback]).filter(id => characters[id] && !isLockedCharacter(id));
     if (!cleaned.length) cleaned.push(fallback);
     return cleaned.slice(0, 3);
   }
@@ -1051,11 +1070,13 @@
     roster.forEach(id => {
       const c = characters[id];
       const card = document.createElement('button');
-      card.className = 'card' + (id === state.selected ? ' selected' : '') + (id === 'danpen' ? ' locked' : '');
+      card.className = 'card' + (id === state.selected ? ' selected' : '') + (isLockedCharacter(id) ? ' locked' : '');
       card.style.setProperty('--c', c.color);
-      card.innerHTML = `<strong>${c.name}${id === 'danpen' ? '<br>LOCKED' : ''}</strong>${id === state.selected ? '<span class="p1">P1</span>' : ''}`;
+      card.style.setProperty('--fighter-color', c.color);
+      card.style.setProperty('--portrait-image', safeCssUrl(selectCardSrc(id)));
+      card.innerHTML = `<span class="portrait-slot" data-overlay-role="portrait" data-asset-key="${id}_portrait"></span><strong>${c.name}${isLockedCharacter(id) ? '<br>LOCKED' : ''}</strong>${id === state.selected ? '<span class="p1">P1</span>' : ''}`;
       card.addEventListener('click', () => {
-        if (id === 'danpen') return;
+        if (isLockedCharacter(id)) return;
         state.selected = id;
         updateSelectedPanel(id);
         renderRoster();
@@ -1227,7 +1248,7 @@
       btn.classList.toggle('active', active);
       btn.disabled = !custom;
     });
-    if (p2Row) p2Row.querySelector('span').textContent = mode === 'pvp-local' ? 'Player 2 Fighters' : mode === 'cpu-cpu' ? 'CPU 2 Fighters' : 'CPU Fighters';
+    if (p2Row) p2Row.querySelector('span').textContent = t('p2Fighters');
   }
 
   function setBattleSetupMode(mode) {
@@ -1264,9 +1285,7 @@
   }
 
   function battleSideSlotLabel(side) {
-    if (state.battle.mode === 'pvp-ai') return `${side === 'p1' ? 'P1' : 'P2'} · ${battleSideController(side)}`;
-    if (state.battle.mode === 'cpu-cpu') return side === 'p1' ? 'CPU 1' : 'CPU 2';
-    return side === 'p1' ? 'P1' : 'P2';
+    return side === 'p1' ? t('player1').toUpperCase() : t('player2').toUpperCase();
   }
 
   function setBattleCpuSide(side) {
@@ -1284,10 +1303,10 @@
       : ['rai', 'nico', 'shanti'];
     const output = [];
     defaults.forEach(id => {
-      if (output.length < size && characters[id] && id !== 'danpen') output.push(id);
+      if (output.length < size && characters[id] && !isLockedCharacter(id)) output.push(id);
     });
     roster.forEach(id => {
-      if (output.length < size && characters[id] && id !== 'danpen' && !output.includes(id)) output.push(id);
+      if (output.length < size && characters[id] && !isLockedCharacter(id) && !output.includes(id)) output.push(id);
     });
     return output.slice(0, size);
   }
@@ -1310,7 +1329,7 @@
   }
 
   function startTournamentMode() {
-    const player = (state.selected && characters[state.selected] && state.selected !== 'danpen') ? state.selected : 'rai';
+    const player = (state.selected && characters[state.selected] && !isLockedCharacter(state.selected)) ? state.selected : 'rai';
     const stagePool = shuffled(stageOptions.map(s => s.id)).slice(0, 13);
     while (stagePool.length < 13) stagePool.push(randomStage());
     const enemyPool = shuffled(playableCharacters().filter(id => id !== player));
@@ -1356,7 +1375,7 @@
     const p1Team = clampTeam(getBattleTeam('p1'), 'rai').slice(0, p1Size);
     const p1Defaults = defaultTeam('p1', p1Size);
     while (p1Team.length < p1Size) p1Team.push(p1Defaults[p1Team.length] || randomCharacter());
-    if (state.selected && characters[state.selected] && state.selected !== 'danpen') p1Team[0] = state.selected;
+    if (state.selected && characters[state.selected] && !isLockedCharacter(state.selected)) p1Team[0] = state.selected;
     setBattleTeam('p1', p1Team);
 
     if (mode === 'training') {
@@ -1381,7 +1400,7 @@
   }
 
   function setBattleCharacter(id) {
-    if (id === 'danpen') return;
+    if (isLockedCharacter(id)) return;
     const side = state.battle.activeSide;
     if (side === 'p2' && state.battle.mode === 'training') return;
     const team = getBattleTeam(side).slice();
@@ -1434,7 +1453,7 @@
 
   function renderCharacterMiniCard(id, slotLabel, side='p1') {
     const c = characters[id] || characters.rai;
-    return `<div class="team-mini-card ${side}" data-character-id="${id}" data-overlay-role="team-slot" style="--fighter-color:${c.color}">
+    return `<div class="team-mini-card ${side}" data-character-id="${id}" data-overlay-role="team-slot" style="--fighter-color:${c.color};--portrait-image:${safeCssUrl(selectCardSrc(id))}">
       <span class="slot-number">${slotLabel}</span>
       <span class="portrait-slot" data-overlay-role="portrait" data-asset-key="${id}_portrait"></span>
       <strong>${c.name}</strong>
@@ -1455,13 +1474,98 @@
     panel.dataset.side = training ? 'dummy' : 'p2';
     panel.dataset.characterId = lead;
     panel.style.setProperty('--fighter-color', c.color);
-    title.textContent = training ? 'TRAINING DUMMY' : `${state.battle.mode === 'pvp-ai' ? battleSideSlotLabel('p2') : state.battle.mode === 'pvp-local' ? 'P2' : 'CPU'} · ${c.name}`;
+    title.textContent = training ? t('trainingDummy') : `${t('player2').toUpperCase()} · ${c.name}`;
     art.className = `big-avatar overlay-fullbody-slot ${lead}`;
     art.dataset.characterId = lead;
     art.dataset.assetKey = `${lead}_full`;
     art.style.setProperty('--c', c.color);
+    art.style.setProperty('--avatar', c.color);
+    art.style.setProperty('--portrait-image', safeCssUrl(selectCardSrc(lead)));
+    art.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.70)), url('${selectCardSrc(lead)}')`;
     strip.innerHTML = team.map((id, i) => renderCharacterMiniCard(id, i + 1, 'p2')).join('');
   }
+
+
+  function ensureBattleActionBar() {
+    const rosterPanel = document.querySelector('.battle-roster-panel');
+    const grid = document.getElementById('battleRosterGrid');
+    const randoms = document.querySelector('.battle-randoms');
+    const continueBtn = document.getElementById('confirmBattleCharacters');
+    if (!rosterPanel || !grid || !randoms || !continueBtn) return;
+    let bar = document.getElementById('battleActionBar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'battleActionBar';
+      bar.className = 'battle-action-bar';
+    }
+    if (!bar.contains(randoms)) bar.appendChild(randoms);
+    if (!bar.contains(continueBtn)) bar.appendChild(continueBtn);
+    if (grid.nextElementSibling !== bar) grid.insertAdjacentElement('afterend', bar);
+  }
+
+  function snapshotBattleRandomState(kind) {
+    return {
+      p1Team: getBattleTeam('p1').slice(),
+      p2Team: getBattleTeam('p2').slice(),
+      activeSide: state.battle.activeSide,
+      activeSlot: state.battle.activeSlot
+    };
+  }
+
+  function restoreBattleRandomSnapshot(snapshot) {
+    if (!snapshot) return;
+    state.battle.p1Team = snapshot.p1Team.slice();
+    state.battle.p2Team = snapshot.p2Team.slice();
+    state.battle.activeSide = snapshot.activeSide;
+    state.battle.activeSlot = snapshot.activeSlot;
+  }
+
+  function characterRandomPreviewAction(kind) {
+    if (kind === 'p1') return randomizeBattleCharacter('p1');
+    if (kind === 'p2') return randomizeBattleCharacter('p2');
+    return randomizeBattleBoth();
+  }
+
+  function startCharacterRandomHover(kind) {
+    if (state.randomHoverTimers[kind]) return;
+    const btn = document.querySelector(`[data-random-kind="${kind}"]`) || document.getElementById(kind === 'p1' ? 'randomP1' : kind === 'p2' ? 'randomP2' : 'randomBoth');
+    if (btn?.disabled) return;
+    state.randomHoverSnapshots[kind] = snapshotBattleRandomState(kind);
+    btn?.classList.add('preview-spinning');
+    state.randomHoverTimers[kind] = setInterval(() => characterRandomPreviewAction(kind), 88);
+  }
+
+  function stopCharacterRandomHover(kind, keepCurrent = false) {
+    if (!state.randomHoverTimers[kind]) return;
+    clearInterval(state.randomHoverTimers[kind]);
+    state.randomHoverTimers[kind] = null;
+    const btn = document.querySelector(`[data-random-kind="${kind}"]`) || document.getElementById(kind === 'p1' ? 'randomP1' : kind === 'p2' ? 'randomP2' : 'randomBoth');
+    btn?.classList.remove('preview-spinning');
+    if (!keepCurrent) restoreBattleRandomSnapshot(state.randomHoverSnapshots[kind]);
+    state.randomHoverSnapshots[kind] = null;
+    renderBattleCharacters();
+  }
+
+  function commitCharacterRandom(kind) {
+    if (state.randomHoverTimers[kind]) {
+      stopCharacterRandomHover(kind, true);
+      flashSmall(kind === 'both' ? 'Random matchup locked.' : `${kind.toUpperCase()} random selection locked.`);
+      return;
+    }
+    characterRandomPreviewAction(kind);
+  }
+
+  function wireCharacterRandomButton(id, kind) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.dataset.randomKind = kind;
+    btn.addEventListener('click', () => commitCharacterRandom(kind));
+    btn.addEventListener('mouseenter', () => startCharacterRandomHover(kind));
+    btn.addEventListener('mouseleave', () => stopCharacterRandomHover(kind, false));
+    btn.addEventListener('focus', () => startCharacterRandomHover(kind));
+    btn.addEventListener('blur', () => stopCharacterRandomHover(kind, false));
+  }
+
 
   function renderBattleCharacters() {
     const mode = state.battle.mode;
@@ -1481,6 +1585,8 @@
       screen.style.setProperty('--character-template-bg', `url('${state.battle.format === '1v1' ? assets.select1v1Template : assets.selectTeamTemplate}')`);
     }
 
+    ensureBattleActionBar();
+
     document.getElementById('battleSetupKicker').textContent = battleModeLabel(mode);
     document.getElementById('battleSetupTitle').textContent = training
       ? `Choose Training Team (${p1Team.length})`
@@ -1491,12 +1597,12 @@
         ? 'Single Battle behavior: one fighter per side, big P1/P2 preview zones, then stage wheel, ready screen, countdown, fight.'
         : 'Team Battle behavior: choose each team slot explicitly, then stage wheel, ready screen, countdown, fight.');
     document.getElementById('battleP1Name').textContent = teamNames(p1Team);
-    document.getElementById('battleP2Label').textContent = training ? 'OPPONENT' : (mode === 'pvp-local' ? 'PLAYER 2 TEAM' : mode === 'pvp-ai' ? `${battleSideSlotLabel('p2')} TEAM` : 'CPU / PLAYER 2 TEAM');
+    document.getElementById('battleP2Label').textContent = training ? 'OPPONENT' : 'PLAYER 2 TEAM';
     document.getElementById('battleP2Name').textContent = training ? 'TRAINING DUMMY' : teamNames(p2Team);
-    document.getElementById('randomP1').textContent = state.battle.type === 'single' ? 'Random P1' : 'Random P1 Slot';
-    document.getElementById('randomP2').textContent = training ? 'Dummy Locked' : (state.battle.type === 'single' ? `Random ${battleSideSlotLabel('p2')}` : `Random ${battleSideSlotLabel('p2')} Slot`);
+    document.getElementById('randomP1').textContent = t('randomP1');
+    document.getElementById('randomP2').textContent = training ? t('dummyLocked') : t('randomP2');
     document.getElementById('randomP2').disabled = training;
-    document.getElementById('randomBoth').textContent = training ? 'Random Training Team' : (state.battle.type === 'single' ? 'Random Matchup' : 'Random Both Teams');
+    document.getElementById('randomBoth').textContent = training ? t('randomTrainingTeam') : t('randomBoth');
 
     const battleSlots = document.querySelector('.battle-slots');
     const cpuSideToggle = mode === 'pvp-ai' ? `
@@ -1547,7 +1653,7 @@
       const p1Slot = p1Team.indexOf(id);
       const p2Slot = p2Team.indexOf(id);
       const selected = id === activeId;
-      const locked = id === 'danpen';
+      const locked = isLockedCharacter(id);
       const card = document.createElement('button');
       card.className = [
         'card',
@@ -1559,11 +1665,12 @@
       ].filter(Boolean).join(' ');
       card.style.setProperty('--c', c.color);
       card.style.setProperty('--fighter-color', c.color);
+      card.style.setProperty('--portrait-image', safeCssUrl(selectCardSrc(id)));
       card.dataset.characterId = id;
       card.dataset.rosterIndex = String(rosterIndex + 1);
       card.dataset.assetKey = `${id}_portrait`;
       const badges = `${p1Slot >= 0 ? `<span class="slot-badge p1-badge">P1-${p1Slot + 1}</span>` : ''}${p2Slot >= 0 ? `<span class="slot-badge p2-badge">P2-${p2Slot + 1}</span>` : ''}${selected ? '<span class="p1 active-slot">ACTIVE</span>' : ''}`;
-      card.innerHTML = `<span class="portrait-slot" data-overlay-role="portrait"></span><strong>${c.name}${locked ? '<br>LOCKED' : ''}</strong>${badges}`;
+      card.innerHTML = `<span class="portrait-slot" data-overlay-role="portrait" data-asset-key="${id}_portrait"></span><strong>${c.name}${locked ? '<br>LOCKED' : ''}</strong>${badges}`;
       card.addEventListener('click', () => setBattleCharacter(id));
       grid.appendChild(card);
     });
@@ -1694,7 +1801,7 @@
     document.getElementById('readyTitle').textContent = 'READY?';
     document.getElementById('readyStageName').textContent = stageLabel(state.battle.stage);
     const p2Header = document.querySelector('.ready-team-p2 h2');
-    if (p2Header) p2Header.textContent = mode === 'training' ? 'TRAINING DUMMY' : (mode === 'pvp-ai' ? battleSideSlotLabel('p2') : mode === 'pvp-local' ? 'PLAYER 2' : mode === 'cpu-cpu' ? 'CPU 2' : 'CPU');
+    if (p2Header) p2Header.textContent = mode === 'training' ? t('trainingDummy').toUpperCase() : t('player2').toUpperCase();
     renderReadyTeam('readyP1Team', p1Team, 'p1');
     renderReadyTeam('readyP2Team', p2Team, 'p2');
     showScreen('ready');
@@ -1872,9 +1979,9 @@
   document.querySelectorAll('#battleModeButtons [data-battle-mode]').forEach(btn => btn.addEventListener('click', () => setBattleSetupMode(btn.dataset.battleMode)));
   document.querySelectorAll('#battleFormatButtons [data-battle-format]').forEach(btn => btn.addEventListener('click', () => setBattleFormat(btn.dataset.battleFormat)));
   document.querySelectorAll('[data-setup-size]').forEach(btn => btn.addEventListener('click', () => setSetupSize(btn.dataset.setupSize, btn.dataset.size)));
-  document.getElementById('randomP1').addEventListener('click', () => randomizeBattleCharacter('p1'));
-  document.getElementById('randomP2').addEventListener('click', () => randomizeBattleCharacter('p2'));
-  document.getElementById('randomBoth').addEventListener('click', randomizeBattleBoth);
+  wireCharacterRandomButton('randomP1', 'p1');
+  wireCharacterRandomButton('randomP2', 'p2');
+  wireCharacterRandomButton('randomBoth', 'both');
   document.getElementById('confirmBattleCharacters').addEventListener('click', showBattleStageSelect);
   document.getElementById('randomStage').addEventListener('click', randomizeStageSpin);
   document.getElementById('randomStage').addEventListener('mouseenter', startStageHoverPreview);
@@ -2761,7 +2868,7 @@
     f.p1.draw(); f.p2.draw(); updateHud();
     ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(12, H-104, 560, 38);
     ctx.fillStyle = '#f2eee6'; ctx.font = '14px Trebuchet MS';
-    const modeText = f.training ? 'Training team: infinite health/meter. Q/E switches P1 teammates. Press R to reset spacing.' : f.mode === 'tournament' ? `Tournament stage ${(state.tournament?.index || 0) + 1}/13. Best 2 of 3 · 2:00 rounds. Difficulty: ${difficultyLabel(f.difficulty)}.` : f.mode === 'cpu-cpu' ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.mode === 'pvp-ai' ? `${f.cpuSide === 'p1' ? 'CPU controls Player 1. Human controls Player 2.' : 'Player 1 fights CPU-controlled Player 2.'} Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.pvp ? 'Local team PvP: P1 Q/E tag, P2 0 tag. Press R for a rematch.' : `Story battle. Difficulty: ${difficultyLabel(f.difficulty)}. Defeat the opponent to advance.`;
+    const modeText = f.training ? 'Training team: infinite health/meter. Q/E switches P1 teammates. Press R to reset spacing.' : f.mode === 'tournament' ? `Tournament stage ${(state.tournament?.index || 0) + 1}/13. Best 2 of 3 · 2:00 rounds. Difficulty: ${difficultyLabel(f.difficulty)}.` : f.mode === 'cpu-cpu' ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.mode === 'pvp-ai' ? `${f.cpuSide === 'p1' ? 'CPU controls Player 1. Human controls Player 2.' : 'Player 1 fights CPU-controlled opponent.'} Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.pvp ? 'Local team PvP: P1 Q/E tag, P2 0 tag. Press R for a rematch.' : `Story battle. Difficulty: ${difficultyLabel(f.difficulty)}. Defeat the opponent to advance.`;
     ctx.fillText(modeText, 22, H-82);
     if (f.team1.length > 1 || f.team2.length > 1) {
       ctx.fillStyle = 'rgba(255,255,255,.78)';
