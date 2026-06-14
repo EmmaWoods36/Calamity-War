@@ -1,0 +1,32 @@
+{
+  "note": "Original synthesized placeholder audio generated for Calamity War. Replace later with final music/SFX as desired.",
+  "music": {
+    "battle_theme_loop_placeholder.wav": "assets/audio/music/battle_theme_loop_placeholder.wav",
+    "stage_select_loop_placeholder.wav": "assets/audio/music/stage_select_loop_placeholder.wav",
+    "title_theme_loop_placeholder.wav": "assets/audio/music/title_theme_loop_placeholder.wav",
+    "training_loop_placeholder.wav": "assets/audio/music/training_loop_placeholder.wav"
+  },
+  "sfx": {
+    "character_select_lock.wav": "assets/audio/sfx/character_select_lock.wav",
+    "fight_start.wav": "assets/audio/sfx/fight_start.wav",
+    "game_over_stinger.wav": "assets/audio/sfx/game_over_stinger.wav",
+    "guard_block.wav": "assets/audio/sfx/guard_block.wav",
+    "hit_heavy.wav": "assets/audio/sfx/hit_heavy.wav",
+    "hit_light.wav": "assets/audio/sfx/hit_light.wav",
+    "jump.wav": "assets/audio/sfx/jump.wav",
+    "ko_impact.wav": "assets/audio/sfx/ko_impact.wav",
+    "land.wav": "assets/audio/sfx/land.wav",
+    "menu_back.wav": "assets/audio/sfx/menu_back.wav",
+    "menu_confirm.wav": "assets/audio/sfx/menu_confirm.wav",
+    "menu_cursor.wav": "assets/audio/sfx/menu_cursor.wav",
+    "menu_error.wav": "assets/audio/sfx/menu_error.wav",
+    "pause_close.wav": "assets/audio/sfx/pause_close.wav",
+    "pause_open.wav": "assets/audio/sfx/pause_open.wav",
+    "random_roll.wav": "assets/audio/sfx/random_roll.wav",
+    "round_start.wav": "assets/audio/sfx/round_start.wav",
+    "special_charge.wav": "assets/audio/sfx/special_charge.wav",
+    "special_release.wav": "assets/audio/sfx/special_release.wav",
+    "stage_select_whoosh.wav": "assets/audio/sfx/stage_select_whoosh.wav",
+    "victory_stinger.wav": "assets/audio/sfx/victory_stinger.wav"
+  }
+}
