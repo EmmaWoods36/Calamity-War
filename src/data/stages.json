@@ -1,0 +1,98 @@
+[
+  {
+    "id": "forest",
+    "name": "Moonlit Forest Path",
+    "tag": "Forest Trial",
+    "desc": "Clean night-forest arena for early story fights."
+  },
+  {
+    "id": "moonlitRuins",
+    "name": "Moonlit Forest Ruins",
+    "tag": "Labyrinth Woods",
+    "desc": "Ancient forest ruins under the full moon."
+  },
+  {
+    "id": "stoneRuins",
+    "name": "Mystical Stone Ruins",
+    "tag": "Ancient Labyrinth",
+    "desc": "Moonlit runes, ruined walls, and a clean center lane for duels."
+  },
+  {
+    "id": "southernRidge",
+    "name": "Southern Ridge Gate",
+    "tag": "Badge Trials",
+    "desc": "A mountain path beneath the moon, leading toward the next phase."
+  },
+  {
+    "id": "redForest",
+    "name": "Valdore Nightmare Forest",
+    "tag": "Fear Monger",
+    "desc": "Corrupted red forest for Diastre and nightmare battles."
+  },
+  {
+    "id": "stoneCorridor",
+    "name": "Stone Wall Labyrinth",
+    "tag": "Badge Trials",
+    "desc": "Blue-lit corridor arena with wind banners."
+  },
+  {
+    "id": "terraPlaza",
+    "name": "Terra Registration Plaza",
+    "tag": "Tournament City",
+    "desc": "The bright city plaza where the Badge Trials begin."
+  },
+  {
+    "id": "academy",
+    "name": "Kemt Academy Courtyard",
+    "tag": "Training Grounds",
+    "desc": "Daylight practice arena with weapon racks and target posts."
+  },
+  {
+    "id": "airship",
+    "name": "Hovercraft Sky Deck",
+    "tag": "Airship Route",
+    "desc": "Sunset deck battle high above the clouds."
+  },
+  {
+    "id": "darkEsplanade",
+    "name": "Dark Esplanade",
+    "tag": "Inner World",
+    "desc": "Diego’s chained nightmare realm made into a battle arena."
+  },
+  {
+    "id": "courtyard",
+    "name": "Fortress Courtyard",
+    "tag": "Fortress",
+    "desc": "Exterior fortress fight space."
+  },
+  {
+    "id": "hall",
+    "name": "Purple Torch Hall",
+    "tag": "Fortress Interior",
+    "desc": "Interior hall for rescue and handler fights."
+  },
+  {
+    "id": "experimentLab",
+    "name": "Kekku Experiment Lab",
+    "tag": "Memory of Blood",
+    "desc": "Chains, machines, and purple electric arcs."
+  },
+  {
+    "id": "ruinedLab",
+    "name": "Ruined Laboratory Arena",
+    "tag": "Destroyed Lab",
+    "desc": "The aftermath of experiments and rebellion."
+  },
+  {
+    "id": "village",
+    "name": "Hidden Mountain Village",
+    "tag": "Refuge",
+    "desc": "Warm village at twilight beneath the mountains."
+  },
+  {
+    "id": "dojo",
+    "name": "Malachai Manor Ruins",
+    "tag": "Origin",
+    "desc": "The ruined training grounds where Rai’s path begins."
+  }
+]
