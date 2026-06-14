@@ -1,0 +1,18 @@
+CALAMITY WAR CODING HANDOFF - SUPERLITE
+
+This is the smaller, coding-ready package.
+
+Included:
+- assets/sprites/ = battle sprites
+- assets/select_cards/ = final character select portrait cards
+- manifest.csv = asset lookup
+- README.md = handoff notes
+
+Removed to reduce size:
+- duplicate flat_character_cards/
+- duplicate assets/head_cards/
+- old/legacy select cards
+- preview contact sheets
+- raw/source 10-pose cards after splicing
+
+Semuda, Tenganisha, and Training Dummy Shadow have already been spliced into individual transparent 900x900 sprites.
