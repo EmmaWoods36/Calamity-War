@@ -1,0 +1,1 @@
+Akila: no confirmed crouch sprite in the available generated sheet.
