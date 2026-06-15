@@ -2014,3 +2014,322 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   .fight-screen .ornate-fighter-box::after{left:0!important;right:0!important;}
   .fight-screen .team-hud-slots,.fight-screen .team-hud-slots.right{margin-left:0!important;margin-right:0!important;}
 }
+
+
+/* === v0.43 training dummy settings in pause menu === */
+.pause-content .training-dummy-settings{
+  margin-top:1rem;
+  padding:.9rem;
+  border:1px solid rgba(214,179,122,.34);
+  background:linear-gradient(145deg,rgba(10,10,14,.78),rgba(28,10,18,.42));
+  box-shadow:inset 0 0 28px rgba(0,0,0,.32),0 0 20px rgba(120,35,70,.18);
+}
+.pause-content .training-dummy-settings h4{
+  margin:0 0 .7rem;
+  color:#e9d6a5;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  font-size:.92rem;
+}
+.pause-content .training-dummy-settings .select-label{
+  display:grid;
+  gap:.3rem;
+  margin:.55rem 0;
+  color:#e8dfd3;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:.72rem;
+}
+.pause-content .training-dummy-settings select{
+  width:100%;
+  padding:.55rem .65rem;
+  border:1px solid rgba(214,179,122,.48);
+  background:rgba(5,5,8,.88);
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.pause-content .training-dummy-settings .muted-row{
+  opacity:.45;
+}
+.pause-content .training-dummy-status{
+  margin:.7rem 0 0;
+  color:#8fd3ff;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+
+/* === v0.44 menu + character select polish === */
+
+/* Language dropdown labels are now localized in JS: English / Español / 日本語. */
+
+/* Main menu: black ornate/sword bars by default; red only for hover/selected. */
+.main-menu .main-buttons button{
+  background:
+    linear-gradient(90deg, rgba(3,3,5,.94), rgba(13,11,14,.92) 48%, rgba(4,4,6,.92)),
+    radial-gradient(circle at 18% 50%, rgba(215,164,93,.14), transparent 34%) !important;
+  border:1px solid rgba(211,170,101,.62) !important;
+  color:#f0e8dc !important;
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.48),
+    inset 0 0 0 1px rgba(255,255,255,.035),
+    inset 0 0 28px rgba(211,170,101,.055) !important;
+}
+.main-menu .main-buttons button::before{
+  content:"♈" !important;
+  display:grid;
+  place-items:center;
+  color:#d6a75f;
+  font-family:Georgia,serif;
+  font-size:.92rem;
+  background:
+    radial-gradient(circle at center, rgba(211,170,101,.18), rgba(5,5,8,.96) 56%),
+    linear-gradient(135deg, rgba(20,18,22,.98), rgba(3,3,6,.98)) !important;
+  border-color:rgba(211,170,101,.82) !important;
+}
+.main-menu .main-buttons button::after{
+  content:"" !important;
+  width:34px !important;
+  height:1px !important;
+  border:0 !important;
+  background:linear-gradient(90deg, transparent, rgba(211,170,101,.7), transparent);
+  transform:translateY(-50%) !important;
+}
+.main-menu .main-buttons button:hover,
+.main-menu .main-buttons button:focus,
+.main-menu .main-buttons button.selected{
+  background:
+    linear-gradient(90deg, rgba(151,18,27,.98), rgba(77,10,15,.96) 63%, rgba(18,6,9,.94)),
+    radial-gradient(circle at 18% 50%, rgba(255,206,132,.2), transparent 34%) !important;
+  color:#fff6e8 !important;
+  transform:translateX(12px) !important;
+  border-color:rgba(255,209,132,.78) !important;
+  box-shadow:
+    0 0 28px rgba(222,43,43,.45),
+    0 12px 24px rgba(0,0,0,.5),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    inset 0 0 34px rgba(255,148,88,.12) !important;
+}
+.main-menu .main-buttons button:hover::before,
+.main-menu .main-buttons button:focus::before,
+.main-menu .main-buttons button.selected::before{
+  color:#ffe0a0;
+  background:
+    radial-gradient(circle at center, rgba(235,76,54,.72), rgba(42,4,8,.98) 58%),
+    linear-gradient(135deg, rgba(115,12,16,.98), rgba(16,4,8,.98)) !important;
+  box-shadow:0 0 18px rgba(255,70,46,.55), inset 0 0 10px rgba(255,208,135,.14) !important;
+}
+
+/* Character select: let the painted template title/subtitle show. Center panel should be mostly cards only. */
+.battle-setup-screen .battle-select-layout{
+  grid-template-columns:minmax(260px,330px) minmax(720px,1fr) minmax(260px,330px) !important;
+  gap:1.15rem !important;
+  inset:5.2vh 2.6vw 3.6vh !important;
+}
+.battle-setup-screen .battle-roster-panel{
+  padding:clamp(82px,10.5vh,118px) .85rem .85rem !important;
+  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.18)) !important;
+  border-color:rgba(184,144,82,.18) !important;
+  box-shadow:none !important;
+}
+.battle-setup-screen .battle-roster-panel h1,
+.battle-setup-screen .battle-roster-panel .sub{
+  display:none !important;
+}
+.battle-setup-screen .battle-roster-grid{
+  grid-template-columns:repeat(5,minmax(132px,1fr)) !important;
+  grid-auto-rows:auto !important;
+  gap:.58rem !important;
+  max-height:calc(100vh - 245px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:.22rem .32rem .4rem !important;
+  scrollbar-color:rgba(210,161,95,.72) rgba(0,0,0,.28);
+}
+.battle-setup-screen .roster-card{
+  aspect-ratio:1.62/1 !important;
+  min-height:104px !important;
+  padding:0 !important;
+  border:1px solid rgba(193,151,88,.78) !important;
+  background-color:rgba(2,2,4,.74) !important;
+  background-image:var(--portrait-image) !important;
+  background-size:contain !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  border-radius:3px !important;
+  box-shadow:0 8px 18px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.025) !important;
+}
+.battle-setup-screen .roster-card strong{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0 0 0 0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+.battle-setup-screen .roster-card .slot-badge{
+  opacity:.82 !important;
+  transform:scale(.82);
+  transform-origin:top left;
+}
+.battle-setup-screen .roster-card .p1,
+.battle-setup-screen .roster-card .p2,
+.battle-setup-screen .roster-card .active-slot{
+  z-index:5 !important;
+}
+.battle-setup-screen .roster-card.selected,
+.battle-setup-screen .roster-card.selected-p1,
+.battle-setup-screen .roster-card.selected-p2{
+  border-color:rgba(255,222,153,.98) !important;
+  outline:2px solid rgba(255,222,153,.52) !important;
+  outline-offset:1px !important;
+}
+.battle-setup-screen .random-card{
+  background-image:
+    radial-gradient(circle at 50% 36%, rgba(255,255,255,.14), transparent 22%),
+    linear-gradient(145deg, rgba(14,14,18,.98), rgba(2,2,4,.98)) !important;
+  display:grid !important;
+  place-items:center !important;
+}
+.battle-setup-screen .random-card strong{
+  all:unset !important;
+  display:grid !important;
+  place-items:center !important;
+  color:#f1e7d6 !important;
+  font-size:.82rem !important;
+  text-transform:uppercase !important;
+  letter-spacing:.08em !important;
+}
+.battle-setup-screen .battle-action-bar{
+  margin-top:.48rem !important;
+  padding-top:.45rem !important;
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.24),transparent);
+}
+
+/* Side panels: bigger selected idle previews until final full-body select art exists. */
+.battle-setup-screen .battle-side-panel,
+.battle-setup-screen .battle-summary-panel{
+  background:linear-gradient(145deg,rgba(3,3,5,.72),rgba(9,8,10,.48)) !important;
+}
+.battle-setup-screen .battle-side-panel h2,
+.battle-setup-screen .battle-summary-panel h2{
+  font-size:clamp(1.15rem,1.45vw,1.55rem) !important;
+  color:#f6ead7 !important;
+}
+.battle-setup-screen .overlay-fullbody-slot{
+  min-height:clamp(330px,49vh,520px) !important;
+  background:
+    radial-gradient(circle at 50% 22%,rgba(255,255,255,.06),transparent 40%),
+    linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.58)) !important;
+}
+.battle-setup-screen .idle-sprite-preview{
+  width:118% !important;
+  height:108% !important;
+  max-width:none !important;
+  object-fit:contain !important;
+  object-position:center bottom !important;
+  transform:scale(1.12) !important;
+  transform-origin:center bottom !important;
+}
+.battle-setup-screen .overlay-team-strip{
+  min-height:84px;
+}
+
+/* In very wide screens, preserve the 1v1/team battle template text at the top center. */
+@media (min-width:1280px){
+  .battle-setup-screen .battle-roster-grid{max-height:calc(100vh - 265px) !important}
+}
+
+/* Smaller laptops: keep card frames visible without crushing. */
+@media(max-width:1180px){
+  .battle-setup-screen .battle-select-layout{grid-template-columns:1fr !important;inset:5vh 4vw 4vh !important;overflow:auto !important}
+  .battle-setup-screen .battle-roster-panel{padding-top:1rem !important}
+  .battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(3,minmax(132px,1fr)) !important;max-height:none !important}
+}
+
+
+/* === v0.45 character select no-runtime-header + scrollable roster === */
+
+/* The art template already says CHARACTER SELECT / 1v1 / Team Battle.
+   Do not print a second giant runtime title over it. */
+#battleCharacterScreen .battle-roster-panel > h1,
+#battleCharacterScreen .battle-roster-panel > .sub,
+#battleCharacterScreen .battle-roster-panel > p.sub,
+#battleCharacterScreen .battle-roster-panel #battleRandomNote,
+#battleCharacterScreen .battle-roster-panel .battle-random-note,
+#battleCharacterScreen .battle-roster-panel [id*="battleRandomNote"]{
+  display:none !important;
+  visibility:hidden !important;
+  height:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+/* No giant blank header zone above the cards. Go straight to the character icons. */
+#battleCharacterScreen .battle-roster-panel{
+  padding-top:.45rem !important;
+  padding-left:.75rem !important;
+  padding-right:.75rem !important;
+  padding-bottom:.7rem !important;
+  display:flex !important;
+  flex-direction:column !important;
+  min-height:0 !important;
+}
+
+/* The roster is the scrollable part, not the whole page. */
+#battleCharacterScreen #battleRosterGrid{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  max-height:calc(100vh - 210px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:.18rem .42rem .75rem .18rem !important;
+  margin:0 !important;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(220,174,96,.88) rgba(0,0,0,.35);
+}
+
+/* Visible scrollbar for Chrome/Edge. */
+#battleCharacterScreen #battleRosterGrid::-webkit-scrollbar{
+  width:12px;
+}
+#battleCharacterScreen #battleRosterGrid::-webkit-scrollbar-track{
+  background:rgba(0,0,0,.36);
+  border:1px solid rgba(205,163,97,.18);
+}
+#battleCharacterScreen #battleRosterGrid::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(238,196,111,.92),rgba(113,66,30,.92));
+  border:2px solid rgba(0,0,0,.35);
+  border-radius:10px;
+}
+
+/* Keep buttons below the scrollable card grid. */
+#battleCharacterScreen #battleActionBar{
+  flex:0 0 auto !important;
+  margin-top:.55rem !important;
+}
+
+/* Slightly improve laptop fit after removing the title block. */
+@media(max-height:780px){
+  #battleCharacterScreen #battleRosterGrid{
+    max-height:calc(100vh - 175px) !important;
+  }
+  #battleCharacterScreen .roster-card{
+    min-height:92px !important;
+  }
+}
+
+@media(max-width:1180px){
+  #battleCharacterScreen #battleRosterGrid{
+    max-height:70vh !important;
+  }
+}

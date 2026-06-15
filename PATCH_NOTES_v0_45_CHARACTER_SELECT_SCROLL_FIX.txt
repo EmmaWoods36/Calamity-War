@@ -1,0 +1,15 @@
+CALAMITY WAR v0.45 CHARACTER SELECT SCROLL FIX
+
+Upload/replace:
+- game.js
+- style.css
+
+Fixes:
+- Removes the huge runtime "Pick Player 1" / center header overlay from Character Select.
+- Removes the blank overlaid space above character cards.
+- Makes the character card grid start immediately in the center panel.
+- Adds a visible scrollbar to the character card grid.
+- Keeps the action buttons below the scrollable roster.
+- Re-applies Vasta removal from playable roster in case the previous patch did not stick.
+
+No sprite or asset folder reupload required.

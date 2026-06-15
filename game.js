@@ -76,7 +76,19 @@
     danpen: 'danpen_shikake'
   };
 
-  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'vasta', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei', 'dummy', 'training_dummy_shadow', 'awar', 'handler', 'danpen'];
+  function trainingDummyVariantKey() {
+    return state?.settings?.trainingDummyType === 'ninja' ? 'training_dummy_ninja' : 'training_dummy_shadow';
+  }
+
+  function trainingDummyDisplayName() {
+    return state?.settings?.trainingDummyType === 'ninja' ? 'TRAINING DUMMY NINJA' : 'TRAINING DUMMY SHADOW';
+  }
+
+  function isTrainingDummyId(id) {
+    return id === 'dummy' || id === 'training_dummy_shadow' || id === 'training_dummy_ninja';
+  }
+
+  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei', 'dummy', 'training_dummy_shadow', 'training_dummy_ninja', 'awar', 'handler', 'danpen'];
 
   function standardSpriteSet(id) {
     const fileId = SPRITE_FILE_ALIASES[id] || id;
@@ -444,7 +456,9 @@
   }
 
   function getFighterSprite(fighter) {
-    const set = spriteImages[fighter.id];
+    const spriteId = isTrainingDummyId(fighter.id) ? trainingDummyVariantKey() : fighter.id;
+    let set = spriteImages[spriteId];
+    if ((!set || Object.values(set).every(img => !spriteIsUsable(img))) && isTrainingDummyId(fighter.id)) set = spriteImages.training_dummy_shadow;
     if (!set) return null;
     const visualPose = fighterVisualPose(fighter);
     const fallbackList = SPRITE_POSE_FALLBACKS[visualPose] || [visualPose, 'idle'];
@@ -477,7 +491,7 @@
     cpuDifficulty: 'normal',
     handicap: 'off',
     menuIndex: 0,
-    settings: { mute: false, volume: 0.7, language: 'english', announcer: true, roundTimeSeconds: 120, p1HealthBars: 3, p2HealthBars: 3 },
+    settings: { mute: false, volume: 0.7, language: 'english', announcer: true, roundTimeSeconds: 120, p1HealthBars: 3, p2HealthBars: 3, trainingDummyType: 'shadow', trainingDummyBehavior: 'idle', trainingDummyDifficulty: 'normal' },
     pvp: false,
     fightMode: 'story',
     lastFightItem: null,
@@ -661,8 +675,8 @@
 
   const LANGUAGE_LABELS = {
     english: 'English',
-    spanish: 'Spanish',
-    japanese: 'Japanese'
+    spanish: 'Español',
+    japanese: '日本語'
   };
 
   const LOCALIZATION = {
@@ -945,6 +959,73 @@
     return descs[key] || descs.normal;
   }
 
+  function trainingDummyBehaviorLabel(key = state.settings.trainingDummyBehavior) {
+    return ({ idle: 'Idle', block: 'Block', attack: 'Attack' })[key] || 'Idle';
+  }
+
+  function applyTrainingDummyDifficulty(fighter) {
+    if (!fighter) return;
+    const behavior = state.settings.trainingDummyBehavior || 'idle';
+    const diffKey = state.settings.trainingDummyDifficulty || 'normal';
+    const diff = difficultySettings[diffKey] || difficultySettings.normal;
+    fighter.isTrainingDummy = true;
+    fighter.dummyBehavior = behavior;
+    fighter.dummyDifficulty = diffKey;
+    fighter.name = trainingDummyDisplayName();
+    fighter.id = 'dummy';
+    fighter.c = { ...fighter.c, name: trainingDummyDisplayName(), color: state.settings.trainingDummyType === 'ninja' ? '#7e43ff' : '#777777' };
+    fighter.isAI = behavior === 'attack';
+    fighter.guard = behavior === 'block';
+    fighter.aiAggression = diff.aiAggression;
+    fighter.aiGuard = behavior === 'block' ? 1 : diff.aiGuard;
+    fighter.aiSpecial = diff.aiSpecial;
+    fighter.aiCooldownMin = diff.aiCooldownMin;
+    fighter.aiCooldownMax = diff.aiCooldownMax;
+    fighter.aiMovement = behavior === 'attack' ? diff.aiMovement : 0;
+    fighter.damageMod = behavior === 'attack' ? Math.max(.35, diff.enemyDamage || 1) : 0;
+  }
+
+  function applyTrainingDummySettingsLive() {
+    const f = state.fight;
+    if (!f || !f.training) return;
+    const dummy = f.team2?.[0] || f.p2;
+    applyTrainingDummyDifficulty(dummy);
+    if (dummy) {
+      dummy.hp = dummy.maxHp;
+      dummy.meter = dummy.maxMeter;
+      dummy.dead = false;
+      dummy.attackTimer = 0;
+      dummy.attackKind = null;
+      dummy.hitCooldown = 0;
+      dummy.x = Math.max(dummy.x, 640);
+      dummy.facing = -1;
+    }
+    f.p2 = dummy;
+    updateFightNames();
+    updateRoundSplash();
+    const modeHint = document.getElementById('modeHint');
+    if (modeHint) modeHint.textContent = `TRAINING: ${trainingDummyDisplayName()} · ${trainingDummyBehaviorLabel()}${state.settings.trainingDummyBehavior === 'attack' ? ` · CPU ${difficultyLabel(state.settings.trainingDummyDifficulty)}` : ''} · Q/E switch · R reset`;
+  }
+
+  function wireTrainingDummyPauseControls() {
+    const typeSelect = document.getElementById('trainingDummyTypeSelect');
+    const behaviorSelect = document.getElementById('trainingDummyBehaviorSelect');
+    const difficultySelect = document.getElementById('trainingDummyDifficultySelect');
+    const difficultyRow = document.getElementById('trainingDummyDifficultyRow');
+    const status = document.getElementById('trainingDummySettingsStatus');
+    const sync = () => {
+      if (typeSelect) state.settings.trainingDummyType = typeSelect.value === 'ninja' ? 'ninja' : 'shadow';
+      if (behaviorSelect) state.settings.trainingDummyBehavior = ['idle','block','attack'].includes(behaviorSelect.value) ? behaviorSelect.value : 'idle';
+      if (difficultySelect) state.settings.trainingDummyDifficulty = ['easy','normal','hard','extreme'].includes(difficultySelect.value) ? difficultySelect.value : 'normal';
+      if (difficultyRow) difficultyRow.classList.toggle('muted-row', state.settings.trainingDummyBehavior !== 'attack');
+      if (difficultySelect) difficultySelect.disabled = state.settings.trainingDummyBehavior !== 'attack';
+      applyTrainingDummySettingsLive();
+      if (status) status.textContent = `${trainingDummyDisplayName()} · ${trainingDummyBehaviorLabel()}${state.settings.trainingDummyBehavior === 'attack' ? ` · CPU ${difficultyLabel(state.settings.trainingDummyDifficulty)}` : ''}`;
+    };
+    [typeSelect, behaviorSelect, difficultySelect].forEach(el => el?.addEventListener('change', sync));
+    sync();
+  }
+
   function refreshDifficultyUI(updateLanguage = true) {
     const storyCopy = document.getElementById('storyDifficultyText');
     const cpuCopy = document.getElementById('cpuDifficultyText');
@@ -1024,7 +1105,7 @@
     // Ten’no / Hathor row
     'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle',
     // Rebellion / Aries row
-    'nikki', 'vasta', 'awar_aries', 'rose', 'pierre',
+    'nikki', 'awar_aries', 'rose', 'pierre',
     // Heavy hitters / bosses / special row
     'goro', 'mammon', 'dante_aries', 'diastre',
     // Aries variants / final row
@@ -1037,7 +1118,7 @@
   const rosterGroups = {
     core: ['rai', 'nico', 'shanti', 'adrian', 'malachai'],
     badge: ['rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke'],
-    hathor: ['miwa', 'michelle', 'nikki', 'vasta'],
+    hathor: ['miwa', 'michelle', 'nikki'],
     rebellion: ['awar_aries', 'rose', 'pierre'],
     aries: ['goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'baburu'],
     special: ['diastre', 'roger', 'tenganisha', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei']
@@ -1067,7 +1148,7 @@
   }
 
   function playableCharacters() {
-    return roster.filter(id => !isLockedCharacter(id) && characters[id]);
+    return roster.filter(id => !isLockedCharacter(id) && id !== 'vasta' && characters[id]);
   }
 
   function randomCharacter(excludeId = null) {
@@ -1851,10 +1932,12 @@
       panel.style.setProperty('--fighter-color', c.color);
     }
     if (kicker) kicker.textContent = battleSideController('p1');
-    if (title) title.textContent = `${t('player1').toUpperCase()} • ${c.name}`;
+    if (title) title.textContent = state.battle.activeSide === 'p1'
+      ? `PICK ${t('player1').toUpperCase()} • ${c.name}`
+      : `${t('player1').toUpperCase()} • ${c.name}`;
     if (copy) copy.textContent = state.battle.activeSide === 'p1'
-      ? `Selecting Player 1 slot ${(state.battle.activeSlot || 0) + 1}.`
-      : 'Click this side to select Player 1.';
+      ? `Selecting slot ${(state.battle.activeSlot || 0) + 1}.`
+      : 'Click this side to pick Player 1.';
     fillPreviewArt(art, lead);
     if (strip) strip.innerHTML = team.map((id, i) => renderCharacterMiniCard(id, i + 1, 'p1')).join('');
   }
@@ -1874,7 +1957,9 @@
     panel.classList.toggle('active-side', state.battle.activeSide === 'p2');
     panel.classList.toggle('disabled-side', training);
     panel.style.setProperty('--fighter-color', c.color);
-    title.textContent = training ? 'TRAINING DUMMY SHADOW' : `${t('player2').toUpperCase()} • ${c.name}`;
+    title.textContent = training
+      ? 'TRAINING DUMMY SHADOW'
+      : (state.battle.activeSide === 'p2' ? `PICK ${t('player2').toUpperCase()} • ${c.name}` : `${t('player2').toUpperCase()} • ${c.name}`);
     fillPreviewArt(art, lead);
     strip.innerHTML = team.map((id, i) => renderCharacterMiniCard(id, i + 1, 'p2')).join('');
   }
@@ -1981,9 +2066,7 @@
 
     ensureBattleActionBar();
 
-    document.getElementById('battleRandomNote').textContent = training
-      ? 'Player 1 is selected on the left. Training Dummy Shadow stays locked on the right.'
-      : 'Pick Player 1 on the left or Player 2 on the right, then choose from the center roster.';
+    document.getElementById('battleRandomNote').textContent = '';
     document.getElementById('battleP1Name').textContent = teamNames(p1Team);
     document.getElementById('battleP2Label').textContent = training ? 'OPPONENT' : 'PLAYER 2 TEAM';
     document.getElementById('battleP2Name').textContent = training ? 'TRAINING DUMMY' : teamNames(p2Team);
@@ -2506,6 +2589,21 @@
     rect() { return { x: this.x, y: this.y - this.h, w: this.w, h: this.h }; }
     input(enemy) {
       if (this.dead) return;
+      if (this.isTrainingDummy) {
+        const behavior = state.settings.trainingDummyBehavior || this.dummyBehavior || 'idle';
+        this.dummyBehavior = behavior;
+        if (behavior === 'idle') {
+          this.vx = 0;
+          this.guard = false;
+          return;
+        }
+        if (behavior === 'block') {
+          this.vx = 0;
+          this.guard = true;
+          return;
+        }
+        this.isAI = true;
+      }
       let left=false, right=false, jump=false, light=false, heavy=false, special=false, guard=false;
       if (this.isAI) {
         const dist = enemy.x - this.x;
@@ -2627,7 +2725,7 @@
 
         // Draw the visible character bounds instead of the full transparent canvas.
         // This keeps Nico/Rai/Shanti from changing size when the pose image has extra padding.
-        const targetHByCharacter = { rai: 184, nico: 184, shanti: 184, awar_aries: 188, dante_aries: 210, goro: 208, mammon: 208, dummy: 184, training_dummy_shadow: 184 };
+        const targetHByCharacter = { rai: 184, nico: 184, shanti: 184, awar_aries: 188, dante_aries: 210, goro: 208, mammon: 208, dummy: 184, training_dummy_shadow: 184, training_dummy_ninja: 184 };
         const targetH = targetHByCharacter[this.id] || 178;
         const poseScale = pose === 'ko' ? 0.58 : (pose === 'heavy' || pose === 'special' ? 1.05 : 1);
         const drawH = targetH * poseScale;
@@ -2658,7 +2756,7 @@
       if (this.comboFlash > 0) { ctx.shadowColor = '#fff'; ctx.shadowBlur = 22; }
       // shadow
       ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.beginPath(); ctx.ellipse(this.x + this.w/2, floorY+8, 42, 10, 0, 0, Math.PI*2); ctx.fill();
-      if (this.id === 'dummy' || this.id === 'training_dummy_shadow') {
+      if (isTrainingDummyId(this.id)) {
         // Fallback only: if the uploaded training_dummy_shadow PNGs fail to load, draw a simple shadow target instead of a random fighter blob.
         ctx.fillStyle = 'rgba(0,0,0,.86)';
         ctx.strokeStyle = '#7f8a9a';
@@ -2833,12 +2931,14 @@
 
     const p1Ids = clampTeam(item.team1 || [((isPvPLocal || isPvPAI || isTraining || isCpuCpu) ? (item.player || state.selected) : item.player)], item.player || 'rai');
     const p2Ids = isTraining ? ['dummy'] : clampTeam(item.team2 || [((isPvPLocal || isPvPAI || isCpuCpu) ? (item.enemy || state.battle.p2 || 'nico') : item.enemy)], item.enemy || 'nico');
-    const activeDifficulty = isStory ? state.storyDifficulty : (isPvPAI || isCpuCpu || isTournament ? state.cpuDifficulty : 'normal');
+    const activeDifficulty = isTraining ? (state.settings.trainingDummyDifficulty || 'normal') : (isStory ? state.storyDifficulty : (isPvPAI || isCpuCpu || isTournament ? state.cpuDifficulty : 'normal'));
     const diff = difficultySettings[activeDifficulty] || difficultySettings.normal;
     const pvpCpuSide = isPvPAI ? (item.cpuSide || state.battle.cpuSide || 'p2') : null;
 
     const team1 = p1Ids.map((id, idx) => new Fighter(id, idx === 0 ? 175 : 125, 1, { left:'a', right:'d', jump:'w', light:'j', heavy:'k', special:'l', guard:'s' }, isCpuCpu || (isPvPAI && pvpCpuSide === 'p1')));
     const team2 = p2Ids.map((id, idx) => new Fighter(id, idx === 0 ? 720 : 770, -1, { left:'arrowleft', right:'arrowright', jump:'arrowup', light:'1', heavy:'2', special:'3', guard:'arrowdown' }, isStory || isCpuCpu || isTournament || (isPvPAI && pvpCpuSide !== 'p1') ? true : false));
+
+    if (isTraining) team2.forEach(applyTrainingDummyDifficulty);
 
     // Fighting-game style layered health: every on-screen fighter has one visible bar, with 1–5 selectable HP layers per side.
     applyHealthBarSettings(team1, 'p1');
@@ -2886,7 +2986,7 @@
     document.getElementById('p2Hint').style.display = (isPvPLocal || (isPvPAI && pvpCpuSide === 'p1')) ? 'inline' : 'none';
     const modeHint = document.getElementById('modeHint');
     if (modeHint) {
-      modeHint.textContent = isTraining ? 'TRAINING TEAM: Q/E switch · infinite health/meter · R reset' : isTournament ? `TOURNAMENT: Stage ${(state.tournament?.index || 0) + 1}/13 · ${difficultyLabel(activeDifficulty)} · Best 2 of 3 · ${formatRoundSetting(state.settings.roundTimeSeconds)} rounds` : isCpuCpu ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(activeDifficulty)} · R rematch` : isPvPAI ? `${pvpCpuSide === 'p1' ? 'CPU controls P1 · Human controls P2' : 'Human controls P1 · CPU controls P2'} · ${difficultyLabel(activeDifficulty)} · R rematch` : isPvPLocal ? 'LOCAL TEAM BATTLE: P1 Q/E tag · P2 0 tag · R rematch' : isStory ? `STORY: ${difficultyLabel(activeDifficulty)}` : '';
+      modeHint.textContent = isTraining ? `TRAINING: ${trainingDummyDisplayName()} · ${trainingDummyBehaviorLabel()}${state.settings.trainingDummyBehavior === 'attack' ? ` · CPU ${difficultyLabel(state.settings.trainingDummyDifficulty)}` : ''} · Q/E switch · R reset` : isTournament ? `TOURNAMENT: Stage ${(state.tournament?.index || 0) + 1}/13 · ${difficultyLabel(activeDifficulty)} · Best 2 of 3 · ${formatRoundSetting(state.settings.roundTimeSeconds)} rounds` : isCpuCpu ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(activeDifficulty)} · R rematch` : isPvPAI ? `${pvpCpuSide === 'p1' ? 'CPU controls P1 · Human controls P2' : 'Human controls P1 · CPU controls P2'} · ${difficultyLabel(activeDifficulty)} · R rematch` : isPvPLocal ? 'LOCAL TEAM BATTLE: P1 Q/E tag · P2 0 tag · R rematch' : isStory ? `STORY: ${difficultyLabel(activeDifficulty)}` : '';
       modeHint.style.display = modeHint.textContent ? 'inline' : 'none';
     }
     showScreen('fight');
@@ -3072,8 +3172,34 @@
           <li><b>${t('storyAssist')}:</b> ${state.storyAssist ? t('on') : t('off')}</li>
           <li><b>${t('handicap')}:</b> ${state.handicap || t('off')}</li>
         </ul>
+        ${f.training ? `<div class="training-dummy-settings">
+          <h4>Training Dummy</h4>
+          <label class="select-label">Dummy Type
+            <select id="trainingDummyTypeSelect" class="language-select-control">
+              <option value="shadow" ${state.settings.trainingDummyType !== 'ninja' ? 'selected' : ''}>Shadow</option>
+              <option value="ninja" ${state.settings.trainingDummyType === 'ninja' ? 'selected' : ''}>Ninja</option>
+            </select>
+          </label>
+          <label class="select-label">Dummy Action
+            <select id="trainingDummyBehaviorSelect" class="language-select-control">
+              <option value="idle" ${state.settings.trainingDummyBehavior === 'idle' ? 'selected' : ''}>Idle</option>
+              <option value="block" ${state.settings.trainingDummyBehavior === 'block' ? 'selected' : ''}>Block</option>
+              <option value="attack" ${state.settings.trainingDummyBehavior === 'attack' ? 'selected' : ''}>Attack</option>
+            </select>
+          </label>
+          <label class="select-label" id="trainingDummyDifficultyRow">Attack CPU Difficulty
+            <select id="trainingDummyDifficultySelect" class="language-select-control">
+              <option value="easy" ${state.settings.trainingDummyDifficulty === 'easy' ? 'selected' : ''}>Easy</option>
+              <option value="normal" ${state.settings.trainingDummyDifficulty === 'normal' ? 'selected' : ''}>Normal</option>
+              <option value="hard" ${state.settings.trainingDummyDifficulty === 'hard' ? 'selected' : ''}>Hard</option>
+              <option value="extreme" ${state.settings.trainingDummyDifficulty === 'extreme' ? 'selected' : ''}>Extreme</option>
+            </select>
+          </label>
+          <p id="trainingDummySettingsStatus" class="training-dummy-status"></p>
+        </div>` : ''}
         <p>${t('languageNote')}</p>`;
       wireInlineLanguageSelect(document.getElementById('pauseLanguageSelect'));
+      if (f.training) wireTrainingDummyPauseControls();
     } else if (tab === 'moves') {
       content.innerHTML = `<h3>Move List</h3>
         <ul>
@@ -3309,7 +3435,7 @@
     f.p1.draw(); f.p2.draw(); updateHud();
     ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(12, H-104, 560, 38);
     ctx.fillStyle = '#f2eee6'; ctx.font = '14px Trebuchet MS';
-    const modeText = f.training ? 'Training team: infinite health/meter. Q/E switches P1 teammates. Press R to reset spacing.' : f.mode === 'tournament' ? `Tournament stage ${(state.tournament?.index || 0) + 1}/13. Best 2 of 3 · 2:00 rounds. Difficulty: ${difficultyLabel(f.difficulty)}.` : f.mode === 'cpu-cpu' ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.mode === 'pvp-ai' ? `${f.cpuSide === 'p1' ? 'CPU controls Player 1. Human controls Player 2.' : 'Player 1 fights CPU-controlled opponent.'} Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.pvp ? 'Local team PvP: P1 Q/E tag, P2 0 tag. Press R for a rematch.' : `Story battle. Difficulty: ${difficultyLabel(f.difficulty)}. Defeat the opponent to advance.`;
+    const modeText = f.training ? `Training: ${trainingDummyDisplayName()} is set to ${trainingDummyBehaviorLabel()}${state.settings.trainingDummyBehavior === 'attack' ? ` · CPU ${difficultyLabel(state.settings.trainingDummyDifficulty)}` : ''}. Q/E switches P1 teammates. Press R to reset spacing.` : f.mode === 'tournament' ? `Tournament stage ${(state.tournament?.index || 0) + 1}/13. Best 2 of 3 · 2:00 rounds. Difficulty: ${difficultyLabel(f.difficulty)}.` : f.mode === 'cpu-cpu' ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.mode === 'pvp-ai' ? `${f.cpuSide === 'p1' ? 'CPU controls Player 1. Human controls Player 2.' : 'Player 1 fights CPU-controlled opponent.'} Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.pvp ? 'Local team PvP: P1 Q/E tag, P2 0 tag. Press R for a rematch.' : `Story battle. Difficulty: ${difficultyLabel(f.difficulty)}. Defeat the opponent to advance.`;
     ctx.fillText(modeText, 22, H-82);
     if (f.team1.length > 1 || f.team2.length > 1) {
       ctx.fillStyle = 'rgba(255,255,255,.78)';
