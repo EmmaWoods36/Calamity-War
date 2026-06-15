@@ -2695,3 +2695,148 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   #stageSelectScreen .stage-nav.prev{left:.55rem !important}
   #stageSelectScreen .stage-nav.next{right:.55rem !important}
 }
+
+
+/* === v0.49 main menu ornate endcaps + HUD select-card portraits === */
+
+/* Main menu options: closer to the more decorative template with ornate right-end borders. */
+.main-menu .main-buttons{
+  width:min(414px,36vw) !important;
+  gap:.6rem !important;
+}
+.main-menu .main-buttons button{
+  position:relative !important;
+  height:48px !important;
+  width:min(402px,35.5vw) !important;
+  max-width:35.5vw !important;
+  padding:.58rem 2.35rem .58rem 76px !important;
+  border:1px solid rgba(209,170,96,.86) !important;
+  border-left:0 !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  clip-path:polygon(0 0, calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 0 100%, 0 50%) !important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 40%),
+    linear-gradient(90deg,rgba(8,8,10,.98) 0%,rgba(7,7,10,.96) 63%,rgba(15,9,13,.96) 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.03),
+    inset 0 -8px 18px rgba(0,0,0,.44),
+    0 9px 22px rgba(0,0,0,.38) !important;
+  text-shadow:0 2px 6px rgba(0,0,0,.92) !important;
+  letter-spacing:.11em !important;
+}
+.main-menu .main-buttons button::before{
+  content:"" !important;
+  position:absolute !important;
+  left:-26px !important;
+  top:50% !important;
+  width:37px !important;
+  height:37px !important;
+  transform:translateY(-50%) rotate(45deg) !important;
+  border:2px solid rgba(215,180,104,.92) !important;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(131,145,255,.82),rgba(73,82,167,.55) 35%,rgba(0,0,0,.82) 70%),
+    linear-gradient(145deg,rgba(8,8,10,.98),rgba(35,16,16,.86)) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06) inset,
+    0 0 16px rgba(0,0,0,.52),
+    0 0 18px rgba(230,185,81,.16) !important;
+  z-index:2 !important;
+}
+.main-menu .main-buttons button::after{
+  content:"" !important;
+  position:absolute !important;
+  right:-1px !important;
+  top:-1px !important;
+  width:66px !important;
+  height:calc(100% + 2px) !important;
+  pointer-events:none !important;
+  border-top:1px solid rgba(217,183,108,.92) !important;
+  border-right:1px solid rgba(217,183,108,.92) !important;
+  border-bottom:1px solid rgba(217,183,108,.92) !important;
+  clip-path:polygon(16% 0,100% 0,82% 18%,100% 50%,82% 82%,100% 100%,16% 100%,0 80%,19% 50%,0 20%) !important;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(255,211,131,.05) 26%,rgba(0,0,0,0) 60%),
+    linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.08)) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025) !important;
+}
+.main-menu .main-buttons button:hover,
+.main-menu .main-buttons button:focus,
+.main-menu .main-buttons button.selected{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 40%),
+    linear-gradient(90deg,rgba(146,10,18,.98) 0%,rgba(111,8,12,.96) 58%,rgba(52,7,9,.92) 100%) !important;
+  border-color:rgba(255,90,50,1) !important;
+  box-shadow:
+    0 0 22px rgba(255,42,18,.42),
+    inset 0 0 18px rgba(255,111,65,.16),
+    inset 0 -8px 18px rgba(0,0,0,.44) !important;
+}
+.main-menu .main-buttons button:hover::before,
+.main-menu .main-buttons button:focus::before,
+.main-menu .main-buttons button.selected::before{
+  border-color:rgba(255,88,46,1) !important;
+  box-shadow:
+    0 0 18px rgba(255,38,18,.58),
+    0 0 24px rgba(255,187,80,.2),
+    inset 0 0 18px rgba(255,83,42,.2) !important;
+}
+.main-menu .main-buttons button:hover::after,
+.main-menu .main-buttons button:focus::after,
+.main-menu .main-buttons button.selected::after{
+  border-color:rgba(255,86,49,1) !important;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(255,215,140,.09) 30%,rgba(0,0,0,0) 65%),
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.12)) !important;
+}
+.main-menu .main-buttons button span,
+.main-menu .main-buttons button strong{
+  position:relative !important;
+  z-index:3 !important;
+}
+
+/* HUD lead portrait uses the character-select card so faces no longer get chopped. */
+.lead-portrait{
+  background-repeat:no-repeat !important;
+  background-position:center center !important;
+}
+.lead-portrait.has-card-art{
+  width:128px !important;
+  height:72px !important;
+  margin-top:4px !important;
+  transform:none !important;
+  border-radius:7px !important;
+  clip-path:none !important;
+  border:2px solid rgba(218,184,104,.76) !important;
+  background-color:rgba(4,4,6,.98) !important;
+  background-size:100% 100%, contain !important;
+  box-shadow:
+    0 0 16px color-mix(in srgb,var(--portrait-color,#d2212f) 32%,transparent),
+    inset 0 0 18px rgba(0,0,0,.62) !important;
+  font-size:0 !important;
+  color:transparent !important;
+}
+.lead-portrait.has-card-art b,
+.lead-portrait.has-card-art span{
+  display:none !important;
+}
+
+/* Hide the extra slot area in 1v1; keep it for team battles only (handled in JS). */
+.team-hud-slots[style*="display: none"]{
+  visibility:hidden !important;
+  min-height:0 !important;
+  height:0 !important;
+  margin:0 !important;
+}
+
+/* Slightly tighter fit after widening the portrait card. */
+.hud-main-row{
+  grid-template-columns:132px 1fr !important;
+}
+.ornate-fighter-box.right .hud-main-row{
+  grid-template-columns:1fr 132px !important;
+}
+
+@media(max-width:980px){
+  .lead-portrait.has-card-art{display:none !important;}
+}

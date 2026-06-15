@@ -2832,10 +2832,21 @@
     return String(name).split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
   }
 
+  function battlePortraitCardSrc(fighter) {
+    if (!fighter) return '';
+    const id = fighter.id || fighter.charId || fighter.canonId || fighter.characterId || fighter.c?.id || '';
+    return id ? selectCardSrc(id) : '';
+  }
+
   function renderTeamHudSlots(containerId, team, activeIndex, side='p1') {
     const box = document.getElementById(containerId);
     if (!box || !team) return;
     box.innerHTML = '';
+    if (team.length <= 1) {
+      box.style.display = 'none';
+      return;
+    }
+    box.style.display = 'flex';
     team.slice(0, 3).forEach((fighter, index) => {
       const slot = document.createElement('div');
       slot.className = `team-hud-slot ${index === activeIndex ? 'active' : ''} ${fighter.dead || fighter.hp <= 0 ? 'down' : ''}`;
@@ -2855,14 +2866,22 @@
 
     const p1Portrait = document.getElementById('p1LeadPortrait');
     const p2Portrait = document.getElementById('p2LeadPortrait');
-    if (p1Portrait && f.p1) {
-      p1Portrait.textContent = hudInitials(f.p1.name);
-      p1Portrait.style.setProperty('--portrait-color', f.p1.c?.color || '#d2212f');
-    }
-    if (p2Portrait && f.p2) {
-      p2Portrait.textContent = hudInitials(f.p2.name);
-      p2Portrait.style.setProperty('--portrait-color', f.p2.c?.color || '#3da2ff');
-    }
+    const applyLeadPortrait = (el, fighter, fallbackColor) => {
+      if (!el) return;
+      const accent = fighter?.c?.color || fallbackColor;
+      el.style.setProperty('--portrait-color', accent);
+      el.classList.remove('has-card-art');
+      el.textContent = fighter ? hudInitials(fighter.name) : '';
+      el.style.backgroundImage = '';
+      const src = battlePortraitCardSrc(fighter);
+      if (src) {
+        el.classList.add('has-card-art');
+        el.textContent = '';
+        el.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.42)), url("${src}")`;
+      }
+    };
+    applyLeadPortrait(p1Portrait, f.p1, '#d2212f');
+    applyLeadPortrait(p2Portrait, f.p2, '#3da2ff');
 
     renderTeamHudSlots('p1TeamHud', f.team1, f.p1Index, 'p1');
     renderTeamHudSlots('p2TeamHud', f.team2, f.p2Index, 'p2');

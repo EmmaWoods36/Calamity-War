@@ -1,0 +1,15 @@
+CALAMITY WAR v0.49 MENU ORNAMENT + HUD PORTRAIT FIX
+
+Upload/replace:
+- game.js
+- style.css
+- PATCH_NOTES_v0_49_MENU_ORNAMENT_HUD_PORTRAIT_FIX.txt
+
+Fixes:
+- Main menu option bars now use a more decorative/ornate right-end border treatment closer to the preferred template.
+- Keeps non-selected buttons dark and selected/hovered buttons red.
+- Battle HUD lead portraits now use the character-select card art so heads are no longer cut off.
+- In 1v1, the extra team-slot portrait area by the KANI gauge is hidden.
+- Team-slot boxes still appear for real team battles (2v2 / 3v3).
+
+No new image assets required.
