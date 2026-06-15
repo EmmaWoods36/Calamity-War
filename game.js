@@ -791,6 +791,36 @@
     select.addEventListener('change', e => setLanguage(e.target.value));
   }
 
+
+  // v0.50: Ornate main-menu selector support.
+  // The main-menu buttons are no longer plain text boxes. Each one is a real button
+  // containing a left diamond, stretchable center bar, right ornate arrow tip, and a label.
+  function decorateMainMenuButton(btn) {
+    if (!btn || btn.querySelector('.menu-selector-frame')) return;
+    const labelText = (btn.textContent || '').trim();
+    btn.textContent = '';
+    const frame = document.createElement('span');
+    frame.className = 'menu-selector-frame';
+    frame.setAttribute('aria-hidden', 'true');
+    frame.innerHTML = '<span class="selector-left"></span><span class="selector-center"></span><span class="selector-right"></span>';
+    const label = document.createElement('span');
+    label.className = 'menu-label';
+    label.textContent = labelText;
+    btn.append(frame, label);
+  }
+
+  function decorateMainMenuButtons() {
+    document.querySelectorAll('.main-menu .main-buttons button').forEach(decorateMainMenuButton);
+  }
+
+  function setOrnateMainMenuButtonLabel(btn, label) {
+    if (!btn) return;
+    decorateMainMenuButton(btn);
+    const menuLabel = btn.querySelector('.menu-label');
+    if (menuLabel) menuLabel.textContent = label;
+    else btn.textContent = label;
+  }
+
   function setLanguage(language) {
     state.settings.language = LOCALIZATION[language] ? language : 'english';
     applyLanguage();
@@ -806,9 +836,11 @@
       story: t('storyMode'), 'load-game': t('loadGame'), tournament: t('tournament'), pvp: t('battleMode'), training: t('trainingMode'), 'calamity-sports': t('calamitySports'), gallery: t('gallery'), options: t('settings'),
       'gallery-characters': t('characters'), 'gallery-stages': t('stages'), 'gallery-cutscenes': t('cutScenes'), 'gallery-extras': t('extras')
     };
+    decorateMainMenuButtons();
     Object.entries(actionLabels).forEach(([action, label]) => {
       document.querySelectorAll(`[data-action="${action}"]`).forEach(btn => {
-        if (btn.matches('.settings-shortcut')) btn.textContent = `⚙ ${t('settings')}`;
+        if (btn.matches('.main-menu .main-buttons button')) setOrnateMainMenuButtonLabel(btn, label);
+        else if (btn.matches('.settings-shortcut')) btn.textContent = `⚙ ${t('settings')}`;
         else if (btn.querySelector('strong')) btn.querySelector('strong').textContent = label;
         else btn.textContent = label;
       });
@@ -1547,6 +1579,7 @@
     stopStageHoverPreview(true);
     const randomBtn = document.getElementById('randomStage');
     if (state.stageSpinTimer) clearInterval(state.stageSpinTimer);
+    document.getElementById('stageWheel')?.classList.add('spinning');
     const target = Math.floor(Math.random() * stageOptions.length);
     let ticks = 0;
     const totalTicks = 18 + Math.floor(Math.random() * 10);
@@ -1558,6 +1591,7 @@
       if (ticks >= totalTicks) {
         clearInterval(state.stageSpinTimer);
         state.stageSpinTimer = null;
+        document.getElementById('stageWheel')?.classList.remove('spinning');
         setStageByIndex(target);
         renderStageSelect(false);
         flashSmall(`AI chose ${stageLabel(state.battle.stage)}.`);
@@ -2387,6 +2421,7 @@
   }
 
   function wireMainMenuSelection() {
+    decorateMainMenuButtons();
     mainMenuButtons().forEach((btn, i) => {
       btn.addEventListener('mouseenter', () => selectMainMenuIndex(i));
       btn.addEventListener('focus', () => selectMainMenuIndex(i));

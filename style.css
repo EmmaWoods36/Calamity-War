@@ -2842,228 +2842,226 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 }
 
 
-/* === v0.50 MAIN MENU FINALER: fixed menu bars, full blank diamonds, ornate sheath tips ===
-   This sits at the very bottom so it wins over earlier menu styling. */
+/* ==========================================================
+   v0.50 BEGINNER-SAFE OVERRIDE
+   Main Menu: replace the old coded selector bars/diamond rail with the ornate
+   black/gold selector asset. Hover/keyboard-selected state turns red and elongates.
+   ========================================================== */
 .main-menu .main-buttons{
   position:absolute !important;
-  left:94px !important;
-  top:232px !important;
-  width:560px !important;
-  max-width:none !important;
-  min-width:560px !important;
-  gap:8px !important;
-  transform:none !important;
-  z-index:25 !important;
+  top:25.8vh !important;
+  left:5.2vw !important;
+  width:min(520px,44vw) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:.42rem !important;
+  z-index:20 !important;
 }
 .main-menu .main-buttons button{
   position:relative !important;
-  display:block !important;
-  width:500px !important;
-  min-width:500px !important;
-  max-width:500px !important;
-  height:50px !important;
-  min-height:50px !important;
-  max-height:50px !important;
-  margin:0 !important;
-  padding:0 70px 0 94px !important;
+  width:390px !important;
+  max-width:none !important;
+  height:58px !important;
+  padding:0 0 0 76px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
   overflow:visible !important;
+  border:0 !important;
+  outline:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  clip-path:none !important;
   transform:none !important;
-  clip-path:none !important;
-  border-radius:0 !important;
-  border:1px solid rgba(218,185,103,.90) !important;
-  border-left:0 !important;
-  color:#fff8ee !important;
-  line-height:50px !important;
-  text-align:left !important;
-  letter-spacing:.105em !important;
-  text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 6px rgba(255,244,214,.16) !important;
-  background:
-    linear-gradient(180deg,rgba(255,239,173,.055),rgba(255,255,255,0) 44%,rgba(0,0,0,.18)),
-    linear-gradient(90deg,rgba(3,4,7,.98),rgba(7,7,9,.96) 66%,rgba(15,11,10,.96)) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,237,176,.12),
-    inset 0 -11px 20px rgba(0,0,0,.42),
-    0 7px 16px rgba(0,0,0,.35) !important;
-  transition:background .14s ease,border-color .14s ease,box-shadow .14s ease !important;
+  transition:width .22s ease, transform .22s ease, filter .22s ease !important;
 }
-
-/* Full blank left diamond. No blue. No rune. Just black/gold. */
-.main-menu .main-buttons button::before{
-  content:"" !important;
-  position:absolute !important;
-  left:-38px !important;
-  top:50% !important;
-  width:48px !important;
-  height:48px !important;
-  transform:translateY(-50%) rotate(45deg) !important;
-  clip-path:none !important;
-  border:2px solid rgba(223,191,112,.96) !important;
-  border-radius:0 !important;
-  background:
-    linear-gradient(135deg,rgba(2,3,5,.99),rgba(10,8,8,.98)) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,238,177,.08),
-    inset 0 0 17px rgba(0,0,0,.88),
-    0 0 12px rgba(0,0,0,.58) !important;
-  color:transparent !important;
-  text-shadow:none !important;
-  z-index:4 !important;
-}
-
-/* Connector line passing into the blank diamond. */
-.main-menu .main-buttons button strong::before,
-.main-menu .main-buttons button span::before{
-  content:"" !important;
-  position:absolute !important;
-  left:-88px !important;
-  top:50% !important;
-  width:86px !important;
-  height:1px !important;
-  transform:translateY(-50%) !important;
-  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(224,190,112,.90) 28%,rgba(224,190,112,.62)) !important;
-  pointer-events:none !important;
-}
-
-/* Ornate right end: a gold sword-sheath/filigree cap instead of a blank arrow. */
+.main-menu .main-buttons button::before,
 .main-menu .main-buttons button::after{
-  content:"" !important;
-  position:absolute !important;
-  right:-68px !important;
-  top:-1px !important;
-  width:104px !important;
-  height:52px !important;
-  clip-path:polygon(
-    0 0,
-    61% 0,
-    70% 11%,
-    89% 11%,
-    79% 31%,
-    100% 50%,
-    79% 69%,
-    89% 89%,
-    70% 89%,
-    61% 100%,
-    0 100%,
-    15% 81%,
-    5% 50%,
-    15% 19%
-  ) !important;
-  background:
-    linear-gradient(90deg,
-      rgba(224,188,103,.98) 0%,
-      rgba(255,229,147,.98) 7%,
-      rgba(57,42,20,.98) 9%,
-      rgba(9,8,8,.98) 38%,
-      rgba(26,17,9,.98) 55%,
-      rgba(248,207,112,.95) 57%,
-      rgba(255,232,154,.98) 64%,
-      rgba(75,44,17,.95) 67%,
-      rgba(10,8,8,.98) 73%,
-      rgba(220,177,85,.98) 100%) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,236,166,.42),
-    inset -10px 0 16px rgba(0,0,0,.45),
-    0 0 12px rgba(224,188,103,.18) !important;
-  pointer-events:none !important;
-  z-index:1 !important;
+  display:none !important;
+  content:none !important;
+  background:none !important;
+  border:0 !important;
+  box-shadow:none !important;
+  clip-path:none !important;
 }
-
-/* Text stays above all ornamental pieces. */
-.main-menu .main-buttons button strong,
-.main-menu .main-buttons button span{
-  position:relative !important;
-  z-index:5 !important;
-}
-
-/* Etched gold ornament drawn on top of the right tip. */
-.main-menu .main-buttons button strong::after,
-.main-menu .main-buttons button span::after{
-  content:"" !important;
+.main-menu .main-buttons button .menu-selector-frame{
   position:absolute !important;
-  right:-84px !important;
+  left:-58px !important;
   top:50% !important;
-  width:72px !important;
-  height:38px !important;
+  width:calc(100% + 158px) !important;
+  height:64px !important;
   transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
   pointer-events:none !important;
-  opacity:.84 !important;
-  background:
-    radial-gradient(circle at 18% 50%,transparent 0 8px,rgba(255,225,142,.78) 8.5px 9.5px,transparent 10px),
-    radial-gradient(circle at 42% 31%,transparent 0 6px,rgba(255,225,142,.72) 6.5px 7.5px,transparent 8px),
-    radial-gradient(circle at 42% 69%,transparent 0 6px,rgba(255,225,142,.72) 6.5px 7.5px,transparent 8px),
-    linear-gradient(90deg,transparent 0 8%,rgba(255,225,142,.72) 9% 12%,transparent 13% 100%),
-    linear-gradient(35deg,transparent 0 38%,rgba(255,225,142,.70) 39% 41%,transparent 42% 100%),
-    linear-gradient(-35deg,transparent 0 38%,rgba(255,225,142,.70) 39% 41%,transparent 42% 100%) !important;
+  z-index:0 !important;
+  filter:drop-shadow(0 10px 15px rgba(0,0,0,.58)) !important;
+  transition:filter .22s ease, transform .22s ease !important;
 }
-
+.main-menu .main-buttons button .selector-left,
+.main-menu .main-buttons button .selector-center,
+.main-menu .main-buttons button .selector-right{
+  display:block !important;
+  height:100% !important;
+  background-repeat:no-repeat !important;
+  pointer-events:none !important;
+}
+.main-menu .main-buttons button .selector-left{
+  flex:0 0 67px !important;
+  background-image:url('./assets/ui/main_menu/selector_left.png') !important;
+  background-size:contain !important;
+  background-position:center !important;
+}
+.main-menu .main-buttons button .selector-center{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  background-image:url('./assets/ui/main_menu/selector_center.png') !important;
+  background-size:100% 100% !important;
+  background-position:center !important;
+}
+.main-menu .main-buttons button .selector-right{
+  flex:0 0 92px !important;
+  margin-left:-2px !important;
+  background-image:url('./assets/ui/main_menu/selector_right.png') !important;
+  background-size:contain !important;
+  background-position:left center !important;
+}
+.main-menu .main-buttons button .menu-label{
+  position:relative !important;
+  z-index:2 !important;
+  display:block !important;
+  max-width:320px !important;
+  color:#f6ead5 !important;
+  font-family:Georgia,'Times New Roman',serif !important;
+  font-size:clamp(.78rem,1.06vw,1.06rem) !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  letter-spacing:.12em !important;
+  text-transform:uppercase !important;
+  text-align:left !important;
+  white-space:nowrap !important;
+  text-shadow:0 2px 7px rgba(0,0,0,.95),0 0 8px rgba(214,177,95,.16) !important;
+  transition:color .22s ease, text-shadow .22s ease, transform .22s ease !important;
+}
 .main-menu .main-buttons button:hover,
 .main-menu .main-buttons button:focus,
 .main-menu .main-buttons button.selected{
-  width:500px !important;
-  min-width:500px !important;
-  max-width:500px !important;
-  height:50px !important;
-  min-height:50px !important;
-  max-height:50px !important;
-  transform:none !important;
-  border-color:rgba(255,93,48,1) !important;
-  background:
-    linear-gradient(180deg,rgba(255,235,177,.075),rgba(255,255,255,0) 42%,rgba(0,0,0,.14)),
-    linear-gradient(90deg,rgba(158,14,18,.99),rgba(126,9,13,.98) 58%,rgba(55,7,9,.96)) !important;
-  box-shadow:
-    0 0 23px rgba(255,42,18,.42),
-    inset 0 0 22px rgba(255,111,65,.14),
-    inset 0 -11px 20px rgba(0,0,0,.42) !important;
+  width:464px !important;
+  max-width:none !important;
+  transform:translateX(8px) !important;
+  background:transparent !important;
+  box-shadow:none !important;
 }
-.main-menu .main-buttons button:hover::before,
-.main-menu .main-buttons button:focus::before,
-.main-menu .main-buttons button.selected::before{
-  background:linear-gradient(135deg,rgba(14,4,5,.99),rgba(26,5,6,.98)) !important;
-  border-color:rgba(255,93,48,1) !important;
-  box-shadow:
-    inset 0 0 18px rgba(0,0,0,.78),
-    0 0 18px rgba(255,48,18,.56) !important;
+.main-menu .main-buttons button:hover .selector-left,
+.main-menu .main-buttons button:focus .selector-left,
+.main-menu .main-buttons button.selected .selector-left{
+  background-image:url('./assets/ui/main_menu/selector_left_red.png') !important;
 }
-.main-menu .main-buttons button:hover::after,
-.main-menu .main-buttons button:focus::after,
-.main-menu .main-buttons button.selected::after{
-  background:
-    linear-gradient(90deg,
-      rgba(255,93,48,.98) 0%,
-      rgba(255,210,115,.98) 7%,
-      rgba(62,12,10,.98) 9%,
-      rgba(125,7,13,.99) 38%,
-      rgba(65,7,9,.98) 55%,
-      rgba(255,204,108,.96) 57%,
-      rgba(255,232,154,.98) 64%,
-      rgba(105,21,12,.96) 67%,
-      rgba(64,7,9,.98) 73%,
-      rgba(255,91,48,.98) 100%) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,236,166,.42),
-    inset -10px 0 16px rgba(0,0,0,.45),
-    0 0 18px rgba(255,49,18,.36) !important;
+.main-menu .main-buttons button:hover .selector-center,
+.main-menu .main-buttons button:focus .selector-center,
+.main-menu .main-buttons button.selected .selector-center{
+  background-image:url('./assets/ui/main_menu/selector_center_red.png') !important;
 }
-
-/* Make the menu stable under browser zoom/reflow: no vw sizing fallback. */
+.main-menu .main-buttons button:hover .selector-right,
+.main-menu .main-buttons button:focus .selector-right,
+.main-menu .main-buttons button.selected .selector-right{
+  background-image:url('./assets/ui/main_menu/selector_right_red.png') !important;
+}
+.main-menu .main-buttons button:hover .menu-selector-frame,
+.main-menu .main-buttons button:focus .menu-selector-frame,
+.main-menu .main-buttons button.selected .menu-selector-frame{
+  filter:drop-shadow(0 0 18px rgba(255,42,25,.58)) drop-shadow(0 12px 18px rgba(0,0,0,.62)) !important;
+}
+.main-menu .main-buttons button:hover .menu-label,
+.main-menu .main-buttons button:focus .menu-label,
+.main-menu .main-buttons button.selected .menu-label{
+  color:#fff4df !important;
+  text-shadow:0 2px 8px rgba(0,0,0,1),0 0 13px rgba(255,61,30,.72),0 0 4px rgba(255,210,140,.55) !important;
+  transform:translateX(4px) !important;
+}
 @media(max-width:900px){
-  .main-menu .main-buttons{
-    left:86px !important;
-    top:220px !important;
-    width:540px !important;
-    min-width:540px !important;
-    max-width:none !important;
-  }
-  .main-menu .main-buttons button,
+  .main-menu .main-buttons{left:8vw !important;width:86vw !important;}
+  .main-menu .main-buttons button{width:62vw !important;height:54px !important;padding-left:66px !important;}
   .main-menu .main-buttons button:hover,
   .main-menu .main-buttons button:focus,
-  .main-menu .main-buttons button.selected{
-    width:480px !important;
-    min-width:480px !important;
-    max-width:480px !important;
-    height:48px !important;
-    min-height:48px !important;
-    max-height:48px !important;
-    line-height:48px !important;
-  }
+  .main-menu .main-buttons button.selected{width:72vw !important;}
+  .main-menu .main-buttons button .menu-selector-frame{height:58px !important;left:-52px !important;width:calc(100% + 142px) !important;}
+  .main-menu .main-buttons button .selector-left{flex-basis:61px !important;}
+  .main-menu .main-buttons button .selector-right{flex-basis:82px !important;}
+  .main-menu .main-buttons button .menu-label{font-size:.78rem !important;letter-spacing:.08em !important;max-width:52vw !important;}
+}
+
+/* Character Select: transparent center grid area, smaller full portrait cards, no stretching/cropping. */
+#battleCharacterScreen .battle-roster-panel{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  padding-top:clamp(58px,7vh,86px) !important;
+}
+#battleCharacterScreen #battleRosterGrid{
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(78px,104px)) !important;
+  justify-content:center !important;
+  align-content:start !important;
+  gap:.48rem .56rem !important;
+  max-height:calc(100vh - 230px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+#battleCharacterScreen .roster-card{
+  aspect-ratio:2 / 3 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  background-color:transparent !important;
+  background-image:var(--portrait-image) !important;
+  background-size:contain !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+#battleCharacterScreen .roster-card.selected,
+#battleCharacterScreen .roster-card.selected-p1,
+#battleCharacterScreen .roster-card.selected-p2{
+  outline:2px solid rgba(255,224,150,.78) !important;
+  outline-offset:2px !important;
+  box-shadow:0 0 16px rgba(255,60,35,.38) !important;
+}
+#battleCharacterScreen .random-card{
+  border:1px solid rgba(214,174,104,.48) !important;
+  border-radius:4px !important;
+  background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.16),transparent 26%),linear-gradient(145deg,rgba(11,11,16,.92),rgba(3,3,6,.88)) !important;
+  box-shadow:0 8px 18px rgba(0,0,0,.38) !important;
+}
+@media(max-width:1180px){
+  #battleCharacterScreen #battleRosterGrid{grid-template-columns:repeat(4,minmax(76px,104px)) !important;}
+}
+
+/* Stage Select: keep the ring/circular carousel visible. Random spin adds motion instead of just instantly swapping. */
+#stageSelectScreen .stage-wheel.spinning{
+  animation:calamityStageSpinPulse .18s linear infinite;
+}
+@keyframes calamityStageSpinPulse{
+  from{filter:drop-shadow(0 0 10px rgba(255,210,120,.10));}
+  50%{filter:drop-shadow(0 0 22px rgba(255,58,30,.42));}
+  to{filter:drop-shadow(0 0 10px rgba(255,210,120,.10));}
+}
+#stageSelectScreen .stage-wheel-card{
+  will-change:transform, opacity, filter !important;
+}
+#stageSelectScreen .stage-wheel-card.active{
+  transform:
+    translate(-50%,-50%)
+    translateX(var(--tx))
+    translateY(var(--ty))
+    scale(calc(var(--scale) * 1.08))
+    rotateZ(0deg) !important;
 }
