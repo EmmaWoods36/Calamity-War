@@ -1,0 +1,16 @@
+CALAMITY WAR v0.50 MAIN MENU SELECTION DESIGN FIX
+
+Upload/replace:
+- style.css
+- game.js
+- PATCH_NOTES_v0_50_MAIN_MENU_SELECTION_DESIGN_FIX.txt
+
+Fixes:
+- Main menu bars now use fixed CSS-pixel geometry instead of viewport-width sizing.
+- Selected/hovered bar no longer stretches wider than the dark bars.
+- Left marker is a full blank gold-outlined diamond with no blue fill/rune.
+- Right end now has an ornate gold sword-sheath/filigree cap instead of an empty/incomplete arrow point.
+- Non-selected items stay dark; hovered/selected item turns red.
+
+Note:
+- Browser zoom will still scale the whole webpage visually because that is browser zoom, but the menu should no longer reflow/change bar proportions from vw sizing.

@@ -2840,3 +2840,230 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 @media(max-width:980px){
   .lead-portrait.has-card-art{display:none !important;}
 }
+
+
+/* === v0.50 MAIN MENU FINALER: fixed menu bars, full blank diamonds, ornate sheath tips ===
+   This sits at the very bottom so it wins over earlier menu styling. */
+.main-menu .main-buttons{
+  position:absolute !important;
+  left:94px !important;
+  top:232px !important;
+  width:560px !important;
+  max-width:none !important;
+  min-width:560px !important;
+  gap:8px !important;
+  transform:none !important;
+  z-index:25 !important;
+}
+.main-menu .main-buttons button{
+  position:relative !important;
+  display:block !important;
+  width:500px !important;
+  min-width:500px !important;
+  max-width:500px !important;
+  height:50px !important;
+  min-height:50px !important;
+  max-height:50px !important;
+  margin:0 !important;
+  padding:0 70px 0 94px !important;
+  overflow:visible !important;
+  transform:none !important;
+  clip-path:none !important;
+  border-radius:0 !important;
+  border:1px solid rgba(218,185,103,.90) !important;
+  border-left:0 !important;
+  color:#fff8ee !important;
+  line-height:50px !important;
+  text-align:left !important;
+  letter-spacing:.105em !important;
+  text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 6px rgba(255,244,214,.16) !important;
+  background:
+    linear-gradient(180deg,rgba(255,239,173,.055),rgba(255,255,255,0) 44%,rgba(0,0,0,.18)),
+    linear-gradient(90deg,rgba(3,4,7,.98),rgba(7,7,9,.96) 66%,rgba(15,11,10,.96)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,237,176,.12),
+    inset 0 -11px 20px rgba(0,0,0,.42),
+    0 7px 16px rgba(0,0,0,.35) !important;
+  transition:background .14s ease,border-color .14s ease,box-shadow .14s ease !important;
+}
+
+/* Full blank left diamond. No blue. No rune. Just black/gold. */
+.main-menu .main-buttons button::before{
+  content:"" !important;
+  position:absolute !important;
+  left:-38px !important;
+  top:50% !important;
+  width:48px !important;
+  height:48px !important;
+  transform:translateY(-50%) rotate(45deg) !important;
+  clip-path:none !important;
+  border:2px solid rgba(223,191,112,.96) !important;
+  border-radius:0 !important;
+  background:
+    linear-gradient(135deg,rgba(2,3,5,.99),rgba(10,8,8,.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,238,177,.08),
+    inset 0 0 17px rgba(0,0,0,.88),
+    0 0 12px rgba(0,0,0,.58) !important;
+  color:transparent !important;
+  text-shadow:none !important;
+  z-index:4 !important;
+}
+
+/* Connector line passing into the blank diamond. */
+.main-menu .main-buttons button strong::before,
+.main-menu .main-buttons button span::before{
+  content:"" !important;
+  position:absolute !important;
+  left:-88px !important;
+  top:50% !important;
+  width:86px !important;
+  height:1px !important;
+  transform:translateY(-50%) !important;
+  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(224,190,112,.90) 28%,rgba(224,190,112,.62)) !important;
+  pointer-events:none !important;
+}
+
+/* Ornate right end: a gold sword-sheath/filigree cap instead of a blank arrow. */
+.main-menu .main-buttons button::after{
+  content:"" !important;
+  position:absolute !important;
+  right:-68px !important;
+  top:-1px !important;
+  width:104px !important;
+  height:52px !important;
+  clip-path:polygon(
+    0 0,
+    61% 0,
+    70% 11%,
+    89% 11%,
+    79% 31%,
+    100% 50%,
+    79% 69%,
+    89% 89%,
+    70% 89%,
+    61% 100%,
+    0 100%,
+    15% 81%,
+    5% 50%,
+    15% 19%
+  ) !important;
+  background:
+    linear-gradient(90deg,
+      rgba(224,188,103,.98) 0%,
+      rgba(255,229,147,.98) 7%,
+      rgba(57,42,20,.98) 9%,
+      rgba(9,8,8,.98) 38%,
+      rgba(26,17,9,.98) 55%,
+      rgba(248,207,112,.95) 57%,
+      rgba(255,232,154,.98) 64%,
+      rgba(75,44,17,.95) 67%,
+      rgba(10,8,8,.98) 73%,
+      rgba(220,177,85,.98) 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,236,166,.42),
+    inset -10px 0 16px rgba(0,0,0,.45),
+    0 0 12px rgba(224,188,103,.18) !important;
+  pointer-events:none !important;
+  z-index:1 !important;
+}
+
+/* Text stays above all ornamental pieces. */
+.main-menu .main-buttons button strong,
+.main-menu .main-buttons button span{
+  position:relative !important;
+  z-index:5 !important;
+}
+
+/* Etched gold ornament drawn on top of the right tip. */
+.main-menu .main-buttons button strong::after,
+.main-menu .main-buttons button span::after{
+  content:"" !important;
+  position:absolute !important;
+  right:-84px !important;
+  top:50% !important;
+  width:72px !important;
+  height:38px !important;
+  transform:translateY(-50%) !important;
+  pointer-events:none !important;
+  opacity:.84 !important;
+  background:
+    radial-gradient(circle at 18% 50%,transparent 0 8px,rgba(255,225,142,.78) 8.5px 9.5px,transparent 10px),
+    radial-gradient(circle at 42% 31%,transparent 0 6px,rgba(255,225,142,.72) 6.5px 7.5px,transparent 8px),
+    radial-gradient(circle at 42% 69%,transparent 0 6px,rgba(255,225,142,.72) 6.5px 7.5px,transparent 8px),
+    linear-gradient(90deg,transparent 0 8%,rgba(255,225,142,.72) 9% 12%,transparent 13% 100%),
+    linear-gradient(35deg,transparent 0 38%,rgba(255,225,142,.70) 39% 41%,transparent 42% 100%),
+    linear-gradient(-35deg,transparent 0 38%,rgba(255,225,142,.70) 39% 41%,transparent 42% 100%) !important;
+}
+
+.main-menu .main-buttons button:hover,
+.main-menu .main-buttons button:focus,
+.main-menu .main-buttons button.selected{
+  width:500px !important;
+  min-width:500px !important;
+  max-width:500px !important;
+  height:50px !important;
+  min-height:50px !important;
+  max-height:50px !important;
+  transform:none !important;
+  border-color:rgba(255,93,48,1) !important;
+  background:
+    linear-gradient(180deg,rgba(255,235,177,.075),rgba(255,255,255,0) 42%,rgba(0,0,0,.14)),
+    linear-gradient(90deg,rgba(158,14,18,.99),rgba(126,9,13,.98) 58%,rgba(55,7,9,.96)) !important;
+  box-shadow:
+    0 0 23px rgba(255,42,18,.42),
+    inset 0 0 22px rgba(255,111,65,.14),
+    inset 0 -11px 20px rgba(0,0,0,.42) !important;
+}
+.main-menu .main-buttons button:hover::before,
+.main-menu .main-buttons button:focus::before,
+.main-menu .main-buttons button.selected::before{
+  background:linear-gradient(135deg,rgba(14,4,5,.99),rgba(26,5,6,.98)) !important;
+  border-color:rgba(255,93,48,1) !important;
+  box-shadow:
+    inset 0 0 18px rgba(0,0,0,.78),
+    0 0 18px rgba(255,48,18,.56) !important;
+}
+.main-menu .main-buttons button:hover::after,
+.main-menu .main-buttons button:focus::after,
+.main-menu .main-buttons button.selected::after{
+  background:
+    linear-gradient(90deg,
+      rgba(255,93,48,.98) 0%,
+      rgba(255,210,115,.98) 7%,
+      rgba(62,12,10,.98) 9%,
+      rgba(125,7,13,.99) 38%,
+      rgba(65,7,9,.98) 55%,
+      rgba(255,204,108,.96) 57%,
+      rgba(255,232,154,.98) 64%,
+      rgba(105,21,12,.96) 67%,
+      rgba(64,7,9,.98) 73%,
+      rgba(255,91,48,.98) 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,236,166,.42),
+    inset -10px 0 16px rgba(0,0,0,.45),
+    0 0 18px rgba(255,49,18,.36) !important;
+}
+
+/* Make the menu stable under browser zoom/reflow: no vw sizing fallback. */
+@media(max-width:900px){
+  .main-menu .main-buttons{
+    left:86px !important;
+    top:220px !important;
+    width:540px !important;
+    min-width:540px !important;
+    max-width:none !important;
+  }
+  .main-menu .main-buttons button,
+  .main-menu .main-buttons button:hover,
+  .main-menu .main-buttons button:focus,
+  .main-menu .main-buttons button.selected{
+    width:480px !important;
+    min-width:480px !important;
+    max-width:480px !important;
+    height:48px !important;
+    min-height:48px !important;
+    max-height:48px !important;
+    line-height:48px !important;
+  }
+}
