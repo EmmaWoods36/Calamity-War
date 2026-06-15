@@ -1,0 +1,15 @@
+CALAMITY WAR v0.48 BATTLE STAGE RING SELECT FIX
+
+Upload/replace:
+- game.js
+- style.css
+- PATCH_NOTES_v0_48_BATTLE_STAGE_RING_SELECT.txt
+
+Fixes:
+- Hides the runtime duplicate "Battle Stage Select" title because the background/template already has it.
+- Makes the selected stage show as a larger central preview box.
+- Reworks the stage carousel optics into an oval/ring layout instead of a flat row.
+- Keeps the carousel behavior: arrows, Random, and Continue still work.
+- Hides the extra thumbnail strip so the ring is the main stage picker.
+
+No stage asset reupload required.

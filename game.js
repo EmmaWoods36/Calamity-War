@@ -2168,16 +2168,18 @@
         card.className = 'stage-wheel-card' + (i === selectedIndex ? ' active' : '') + (Math.abs(offset) > 3 ? ' hidden-wheel-card' : '');
         const absOffset = Math.min(Math.abs(offset), 4);
         const direction = offset < 0 ? -1 : offset > 0 ? 1 : 0;
-        const ringX = direction * (absOffset === 0 ? 0 : 205 + (absOffset - 1) * 172);
-        const ringY = Math.pow(absOffset, 1.45) * 26;
-        const ringRot = direction * (absOffset === 0 ? 0 : 5 + absOffset * 4);
+        // v0.48: ring/oval carousel optics. The selected stage is shown big in the preview box,
+        // while the wheel cards orbit around it instead of sitting in a flat row.
+        const ringX = direction * (absOffset === 0 ? 0 : 250 + (absOffset - 1) * 190);
+        const ringY = absOffset === 0 ? 118 : 48 + Math.pow(absOffset, 1.42) * 32;
+        const ringRot = direction * (absOffset === 0 ? 0 : 7 + absOffset * 6);
         card.style.setProperty('--offset', offset);
         card.style.setProperty('--tx', `${ringX}px`);
         card.style.setProperty('--ty', `${ringY}px`);
-        card.style.setProperty('--scale', Math.max(0.66, 1 - absOffset * 0.095).toFixed(2));
+        card.style.setProperty('--scale', (absOffset === 0 ? 0.86 : Math.max(0.54, 0.88 - absOffset * 0.085)).toFixed(2));
         card.style.setProperty('--rot', `${ringRot}deg`);
-        card.style.setProperty('--opacity', Math.max(0, 1 - absOffset * 0.20).toFixed(2));
-        card.style.setProperty('--z', String(20 - absOffset));
+        card.style.setProperty('--opacity', (absOffset === 0 ? 0.88 : Math.max(0, 1 - absOffset * 0.19)).toFixed(2));
+        card.style.setProperty('--z', String(absOffset === 0 ? 18 : 16 - absOffset));
         card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.72)), url('${assets[stage.id]}')`;
         card.innerHTML = `<span>${stage.tag}</span><strong>${stage.name}</strong>`;
         card.addEventListener('click', () => selectStage(stage.id));
