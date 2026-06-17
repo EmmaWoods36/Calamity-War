@@ -1,0 +1,252 @@
+/* Calamity War - Ornate Main Menu Selector
+   Drop this file in assets/ui/main_menu/ and import it after your main stylesheet.
+   It supports the selector design as 3 pieces so the middle elongates without distorting the diamond or arrow tip. */
+
+:root {
+  --cw-selector-base-width: min(38vw, 560px);
+  --cw-selector-hover-width: min(43vw, 635px);
+  --cw-selector-height: clamp(70px, 6.5vw, 104px);
+  --cw-selector-left-cap: clamp(78px, 8vw, 128px);
+  --cw-selector-right-cap: clamp(120px, 12vw, 190px);
+  --cw-selector-label-pad-left: clamp(92px, 8.5vw, 138px);
+}
+
+/* Use this on the vertical menu wrapper. */
+.cw-menu-list,
+.main-menu-list,
+.main-menu-options,
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(7px, 0.85vh, 12px);
+  align-items: flex-start;
+}
+
+/* Preferred class: .cw-menu-option. Common existing menu classes are included as fallbacks. */
+.cw-menu-option,
+.main-menu-option,
+.menu-option,
+.menu-choice {
+  position: relative;
+  isolation: isolate;
+  width: var(--cw-selector-base-width);
+  min-height: clamp(42px, 5.2vh, 62px);
+  display: flex;
+  align-items: center;
+  padding-left: var(--cw-selector-label-pad-left);
+  padding-right: clamp(22px, 2vw, 38px);
+  border: 0 !important;
+  background: transparent !important;
+  color: #f8f2df;
+  text-shadow: 0 2px 4px rgba(0,0,0,.85), 0 0 8px rgba(255,185,80,.2);
+  letter-spacing: .06em;
+  line-height: 1;
+  transition: width .22s ease, color .18s ease, text-shadow .18s ease, transform .18s ease;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.cw-menu-option:hover,
+.cw-menu-option.is-selected,
+.cw-menu-option.selected,
+.cw-menu-option.active,
+.main-menu-option:hover,
+.main-menu-option.is-selected,
+.main-menu-option.selected,
+.main-menu-option.active,
+.menu-option:hover,
+.menu-option.is-selected,
+.menu-option.selected,
+.menu-option.active,
+.menu-choice:hover,
+.menu-choice.is-selected,
+.menu-choice.selected,
+.menu-choice.active {
+  width: var(--cw-selector-hover-width);
+  color: #fff7e6;
+  text-shadow: 0 2px 4px rgba(0,0,0,.9), 0 0 10px rgba(255,42,42,.95), 0 0 18px rgba(255,104,20,.75);
+}
+
+/* Injected frame. Works with either real .cw-selector-frame spans or auto pseudo-frame fallback. */
+.cw-selector-frame,
+.cw-menu-option::before,
+.main-menu-option::before,
+.menu-option::before,
+.menu-choice::before,
+.cw-menu-option::after,
+.main-menu-option::after,
+.menu-option::after,
+.menu-choice::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  left: calc(var(--cw-selector-left-cap) * -0.82);
+  top: 50%;
+  width: calc(100% + var(--cw-selector-left-cap) * .92 + var(--cw-selector-right-cap) * .36);
+  height: var(--cw-selector-height);
+  transform: translateY(-50%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity .18s ease, filter .22s ease, transform .22s ease;
+}
+
+/* Fallback full-image version. This still looks exact; use the real 3-piece HTML below for no cap distortion. */
+.cw-menu-option::before,
+.main-menu-option::before,
+.menu-option::before,
+.menu-choice::before {
+  background: url("./menu_selector_full.png") left center / 100% 100% no-repeat;
+}
+.cw-menu-option::after,
+.main-menu-option::after,
+.menu-option::after,
+.menu-choice::after {
+  background: url("./menu_selector_full_red.png") left center / 100% 100% no-repeat;
+  opacity: 0;
+  filter: drop-shadow(0 0 9px rgba(255,0,0,.75)) drop-shadow(0 0 16px rgba(255,70,0,.5));
+}
+
+.cw-menu-option:hover::before,
+.cw-menu-option.is-selected::before,
+.cw-menu-option.selected::before,
+.cw-menu-option.active::before,
+.main-menu-option:hover::before,
+.main-menu-option.is-selected::before,
+.main-menu-option.selected::before,
+.main-menu-option.active::before,
+.menu-option:hover::before,
+.menu-option.is-selected::before,
+.menu-option.selected::before,
+.menu-option.active::before,
+.menu-choice:hover::before,
+.menu-choice.is-selected::before,
+.menu-choice.selected::before,
+.menu-choice.active::before {
+  opacity: 1;
+}
+
+.cw-menu-option:hover::after,
+.cw-menu-option.is-selected::after,
+.cw-menu-option.selected::after,
+.cw-menu-option.active::after,
+.main-menu-option:hover::after,
+.main-menu-option.is-selected::after,
+.main-menu-option.selected::after,
+.main-menu-option.active::after,
+.menu-option:hover::after,
+.menu-option.is-selected::after,
+.menu-option.selected::after,
+.menu-option.active::after,
+.menu-choice:hover::after,
+.menu-choice.is-selected::after,
+.menu-choice.selected::after,
+.menu-choice.active::after {
+  opacity: .86;
+  transform: translateY(-50%) translateX(10px) scaleX(1.035);
+}
+
+/* 3-piece version: add <span class="cw-selector-frame"> inside each menu option for the cleanest elongation. */
+.cw-menu-option.has-cw-selector::before,
+.cw-menu-option.has-cw-selector::after,
+.main-menu-option.has-cw-selector::before,
+.main-menu-option.has-cw-selector::after,
+.menu-option.has-cw-selector::before,
+.menu-option.has-cw-selector::after,
+.menu-choice.has-cw-selector::before,
+.menu-choice.has-cw-selector::after {
+  display: none;
+}
+
+.cw-selector-frame {
+  display: grid;
+  grid-template-columns: var(--cw-selector-left-cap) minmax(160px, 1fr) var(--cw-selector-right-cap);
+  align-items: center;
+  opacity: 1;
+}
+
+.cw-selector-frame .cw-selector-piece {
+  display: block;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+.cw-selector-frame .cw-selector-left { background-image: url("./selector_left.png"); }
+.cw-selector-frame .cw-selector-center { background-image: url("./selector_center.png"); }
+.cw-selector-frame .cw-selector-right { background-image: url("./selector_right.png"); }
+
+.cw-selector-frame.cw-selector-red {
+  opacity: 0;
+  filter: drop-shadow(0 0 9px rgba(255,0,0,.78)) drop-shadow(0 0 18px rgba(255,90,0,.55));
+}
+.cw-selector-frame.cw-selector-red .cw-selector-left { background-image: url("./selector_left_red.png"); }
+.cw-selector-frame.cw-selector-red .cw-selector-center { background-image: url("./selector_center_red.png"); }
+.cw-selector-frame.cw-selector-red .cw-selector-right { background-image: url("./selector_right_red.png"); }
+
+.cw-menu-option.has-cw-selector .cw-selector-frame,
+.main-menu-option.has-cw-selector .cw-selector-frame,
+.menu-option.has-cw-selector .cw-selector-frame,
+.menu-choice.has-cw-selector .cw-selector-frame {
+  left: calc(var(--cw-selector-left-cap) * -0.82);
+  width: calc(100% + var(--cw-selector-left-cap) * .92 + var(--cw-selector-right-cap) * .36);
+  opacity: 0;
+}
+
+.cw-menu-option.has-cw-selector:hover .cw-selector-frame:not(.cw-selector-red),
+.cw-menu-option.has-cw-selector.is-selected .cw-selector-frame:not(.cw-selector-red),
+.cw-menu-option.has-cw-selector.selected .cw-selector-frame:not(.cw-selector-red),
+.cw-menu-option.has-cw-selector.active .cw-selector-frame:not(.cw-selector-red),
+.main-menu-option.has-cw-selector:hover .cw-selector-frame:not(.cw-selector-red),
+.main-menu-option.has-cw-selector.is-selected .cw-selector-frame:not(.cw-selector-red),
+.main-menu-option.has-cw-selector.selected .cw-selector-frame:not(.cw-selector-red),
+.main-menu-option.has-cw-selector.active .cw-selector-frame:not(.cw-selector-red),
+.menu-option.has-cw-selector:hover .cw-selector-frame:not(.cw-selector-red),
+.menu-option.has-cw-selector.is-selected .cw-selector-frame:not(.cw-selector-red),
+.menu-option.has-cw-selector.selected .cw-selector-frame:not(.cw-selector-red),
+.menu-option.has-cw-selector.active .cw-selector-frame:not(.cw-selector-red),
+.menu-choice.has-cw-selector:hover .cw-selector-frame:not(.cw-selector-red),
+.menu-choice.has-cw-selector.is-selected .cw-selector-frame:not(.cw-selector-red),
+.menu-choice.has-cw-selector.selected .cw-selector-frame:not(.cw-selector-red),
+.menu-choice.has-cw-selector.active .cw-selector-frame:not(.cw-selector-red) {
+  opacity: 1;
+}
+
+.cw-menu-option.has-cw-selector:hover .cw-selector-red,
+.cw-menu-option.has-cw-selector.is-selected .cw-selector-red,
+.cw-menu-option.has-cw-selector.selected .cw-selector-red,
+.cw-menu-option.has-cw-selector.active .cw-selector-red,
+.main-menu-option.has-cw-selector:hover .cw-selector-red,
+.main-menu-option.has-cw-selector.is-selected .cw-selector-red,
+.main-menu-option.has-cw-selector.selected .cw-selector-red,
+.main-menu-option.has-cw-selector.active .cw-selector-red,
+.menu-option.has-cw-selector:hover .cw-selector-red,
+.menu-option.has-cw-selector.is-selected .cw-selector-red,
+.menu-option.has-cw-selector.selected .cw-selector-red,
+.menu-option.has-cw-selector.active .cw-selector-red,
+.menu-choice.has-cw-selector:hover .cw-selector-red,
+.menu-choice.has-cw-selector.is-selected .cw-selector-red,
+.menu-choice.has-cw-selector.selected .cw-selector-red,
+.menu-choice.has-cw-selector.active .cw-selector-red {
+  opacity: .82;
+  transform: translateY(-50%) translateX(10px) scaleX(1.035);
+}
+
+/* Keep labels above the selector. */
+.cw-menu-option > span:not(.cw-selector-frame),
+.main-menu-option > span:not(.cw-selector-frame),
+.menu-option > span:not(.cw-selector-frame),
+.menu-choice > span:not(.cw-selector-frame) {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --cw-selector-base-width: min(60vw, 500px);
+    --cw-selector-hover-width: min(68vw, 570px);
+    --cw-selector-height: clamp(58px, 9vw, 88px);
+    --cw-selector-left-cap: clamp(64px, 12vw, 104px);
+    --cw-selector-right-cap: clamp(92px, 16vw, 150px);
+  }
+}
