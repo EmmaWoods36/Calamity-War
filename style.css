@@ -3771,3 +3771,88 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   .world-map-orb{min-height:260px;}
   .world-map-regions{grid-template-columns:1fr;overflow:visible;}
 }
+
+/* ==========================================================
+   v0.55 MAIN MENU BUTTON LENGTH FIX
+   Buttons stay compact black/gold at rest. Red + elongation ONLY on mouse hover.
+   The .selected class is used for keyboard/game state, but it must NOT make the
+   whole menu look permanently elongated/red.
+   ========================================================== */
+.main-menu .main-buttons{
+  width:min(430px,34vw) !important;
+}
+.main-menu .main-buttons button,
+.main-menu .main-buttons button.selected,
+.main-menu .main-buttons button:focus,
+.main-menu .main-buttons button:focus-visible{
+  width:315px !important;
+  max-width:none !important;
+  transform:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+.main-menu .main-buttons button .menu-selector-frame,
+.main-menu .main-buttons button.selected .menu-selector-frame,
+.main-menu .main-buttons button:focus .menu-selector-frame,
+.main-menu .main-buttons button:focus-visible .menu-selector-frame{
+  filter:drop-shadow(0 10px 15px rgba(0,0,0,.58)) !important;
+}
+.main-menu .main-buttons button .selector-left,
+.main-menu .main-buttons button.selected .selector-left,
+.main-menu .main-buttons button:focus .selector-left,
+.main-menu .main-buttons button:focus-visible .selector-left{
+  background-image:url('./assets/ui/main_menu/selector_left.png') !important;
+}
+.main-menu .main-buttons button .selector-center,
+.main-menu .main-buttons button.selected .selector-center,
+.main-menu .main-buttons button:focus .selector-center,
+.main-menu .main-buttons button:focus-visible .selector-center{
+  background-image:url('./assets/ui/main_menu/selector_center.png') !important;
+}
+.main-menu .main-buttons button .selector-right,
+.main-menu .main-buttons button.selected .selector-right,
+.main-menu .main-buttons button:focus .selector-right,
+.main-menu .main-buttons button:focus-visible .selector-right{
+  background-image:url('./assets/ui/main_menu/selector_right.png') !important;
+}
+.main-menu .main-buttons button .menu-label,
+.main-menu .main-buttons button.selected .menu-label,
+.main-menu .main-buttons button:focus .menu-label,
+.main-menu .main-buttons button:focus-visible .menu-label{
+  color:#f6ead5 !important;
+  text-shadow:0 2px 7px rgba(0,0,0,.95),0 0 8px rgba(214,177,95,.16) !important;
+  transform:none !important;
+}
+.main-menu .main-buttons button:hover{
+  width:390px !important;
+  max-width:none !important;
+  transform:translateX(8px) !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.main-menu .main-buttons button:hover .selector-left{
+  background-image:url('./assets/ui/main_menu/selector_left_red.png') !important;
+}
+.main-menu .main-buttons button:hover .selector-center{
+  background-image:url('./assets/ui/main_menu/selector_center_red.png') !important;
+}
+.main-menu .main-buttons button:hover .selector-right{
+  background-image:url('./assets/ui/main_menu/selector_right_red.png') !important;
+}
+.main-menu .main-buttons button:hover .menu-selector-frame{
+  filter:drop-shadow(0 0 18px rgba(255,42,25,.58)) drop-shadow(0 12px 18px rgba(0,0,0,.62)) !important;
+}
+.main-menu .main-buttons button:hover .menu-label{
+  color:#fff4df !important;
+  text-shadow:0 2px 8px rgba(0,0,0,1),0 0 13px rgba(255,61,30,.72),0 0 4px rgba(255,210,140,.55) !important;
+  transform:translateX(4px) !important;
+}
+@media(max-width:900px){
+  .main-menu .main-buttons{top:19vh !important;left:7vw !important;width:76vw !important;gap:.34rem !important;}
+  .main-menu .main-buttons button,
+  .main-menu .main-buttons button.selected,
+  .main-menu .main-buttons button:focus,
+  .main-menu .main-buttons button:focus-visible{width:58vw !important;height:40px !important;}
+  .main-menu .main-buttons button:hover{width:70vw !important;}
+}
