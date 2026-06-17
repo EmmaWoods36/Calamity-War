@@ -3856,3 +3856,40 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   .main-menu .main-buttons button:focus-visible{width:58vw !important;height:40px !important;}
   .main-menu .main-buttons button:hover{width:70vw !important;}
 }
+
+/* ==========================================================
+   v0.56 MAIN MENU HOVER ELONGATION TUNE
+   User request: hover elongation was too exaggerated. Keep the black/gold
+   idle size, but make red hover extend only slightly instead of nearly doubling.
+   ========================================================== */
+.main-menu .main-buttons button:hover,
+.main-menu .main-buttons button.selected:hover,
+.main-menu .main-buttons button:focus:hover,
+.main-menu .main-buttons button:focus-visible:hover{
+  width:350px !important;
+  max-width:none !important;
+  transform:translateX(4px) !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.main-menu .main-buttons button:hover .menu-label,
+.main-menu .main-buttons button.selected:hover .menu-label,
+.main-menu .main-buttons button:focus:hover .menu-label,
+.main-menu .main-buttons button:focus-visible:hover .menu-label{
+  transform:translateX(2px) !important;
+}
+.main-menu .main-buttons button:hover .menu-selector-frame,
+.main-menu .main-buttons button.selected:hover .menu-selector-frame,
+.main-menu .main-buttons button:focus:hover .menu-selector-frame,
+.main-menu .main-buttons button:focus-visible:hover .menu-selector-frame{
+  filter:drop-shadow(0 0 15px rgba(255,42,25,.50)) drop-shadow(0 11px 16px rgba(0,0,0,.60)) !important;
+}
+@media(max-width:900px){
+  .main-menu .main-buttons button:hover,
+  .main-menu .main-buttons button.selected:hover,
+  .main-menu .main-buttons button:focus:hover,
+  .main-menu .main-buttons button:focus-visible:hover{
+    width:63vw !important;
+    transform:translateX(3px) !important;
+  }
+}
