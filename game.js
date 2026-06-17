@@ -6,6 +6,7 @@
     select: document.getElementById('characterScreen'),
     loadGame: document.getElementById('loadGameScreen'),
     calamitySports: document.getElementById('calamitySportsScreen'),
+    worldMap: document.getElementById('worldMapScreen'),
     battleCharacters: document.getElementById('battleCharacterScreen'),
     stageSelect: document.getElementById('stageSelectScreen'),
     ready: document.getElementById('readyScreen'),
@@ -27,6 +28,7 @@
     selectTeamTemplate: './assets/character_select_team_template.png',
     stageSelectTemplate: './assets/stage_select_template.png',
     readyVsTemplate: './assets/ready_vs_template.png',
+    randomSelectCard: './assets/ui/character_select/random_card.jpg',
     gameOverDefeat: './assets/game_over_story_defeat.png',
     dojo: './assets/bg_dojo_ruins.jpg',
     forest: './assets/bg_forest.jpg',
@@ -681,7 +683,7 @@
 
   const LOCALIZATION = {
     english: {
-      storyMode: 'Story Mode', loadGame: 'Load Game', tournament: 'Tournament', battleMode: 'Battle Mode', trainingMode: 'Training Mode', calamitySports: 'Calamity Sports', gallery: 'Gallery', settings: 'Settings',
+      storyMode: 'Story Mode', worldMap: 'World Map', worldMapKicker: 'Story Route', worldMapCopy: 'Choose a region to preview Calamity War locations. This is the story world hub placeholder and will later connect to missions, routes, and unlocked areas.', worldMapReadout: 'Select a region. The chosen region will be remembered as the current stage preview.', loadGame: 'Load Game', tournament: 'Tournament', battleMode: 'Battle Mode', trainingMode: 'Training Mode', calamitySports: 'Calamity Sports', gallery: 'Gallery', settings: 'Settings',
       characters: 'Characters', stages: 'Stages', cutScenes: 'Cut Scenes', extras: 'Extras', back: 'Back', mainMenu: 'Main Menu', battleSetup: 'Battle Setup', battleStage: 'Battle Stage', continue: 'Continue', random: 'Random', randomStage: 'Random Stage',
       pressEnter: 'Press ENTER / Tap a menu option', pressStart: 'Press Start', updatedBattleFlow: 'Updated Battle Flow', battleFlowCopy: 'Main Menu → Battle Mode Setup → Character Select → Battle Stage → Ready Screen → Countdown → Fight.',
       miniGames: 'Mini Games', sportsCopy: 'Placeholder hub for character-based sports mini games. Basketball and Tennis are first; more can be added later as the project grows.', basketball: 'Basketball', tennis: 'Tennis', basketballCopy: 'Coming soon: pick Calamity War characters and play quick court battles.', tennisCopy: 'Coming soon: character tennis rallies with specials and power shots.', sportsChoose: 'Select a mini game. These are placeholder doors for now.',
@@ -701,7 +703,7 @@
       roundWord: 'Round', fight: 'Fight!', ko: 'K.O.', youWin: 'You Win!', youLose: 'You Lose!', draw: 'Draw', time: 'Time!'
     },
     spanish: {
-      storyMode: 'Modo Historia', loadGame: 'Cargar Partida', tournament: 'Torneo', battleMode: 'Modo Batalla', trainingMode: 'Entrenamiento', calamitySports: 'Deportes Calamity', gallery: 'Galería', settings: 'Ajustes',
+      storyMode: 'Modo Historia', worldMap: 'Mapa Mundial', worldMapKicker: 'Ruta de Historia', worldMapCopy: 'Elige una región para previsualizar ubicaciones de Calamity War. Este es el centro provisional del mundo y luego conectará misiones, rutas y zonas desbloqueadas.', worldMapReadout: 'Elige una región. La región elegida se recordará como la vista previa del escenario actual.', loadGame: 'Cargar Partida', tournament: 'Torneo', battleMode: 'Modo Batalla', trainingMode: 'Entrenamiento', calamitySports: 'Deportes Calamity', gallery: 'Galería', settings: 'Ajustes',
       characters: 'Personajes', stages: 'Escenarios', cutScenes: 'Cinemáticas', extras: 'Extras', back: 'Atrás', mainMenu: 'Menú Principal', battleSetup: 'Configuración de Batalla', battleStage: 'Escenario de Batalla', continue: 'Continuar', random: 'Aleatorio', randomStage: 'Escenario Aleatorio',
       pressEnter: 'Presiona ENTER / Toca una opción', pressStart: 'Presiona Start', updatedBattleFlow: 'Flujo de Batalla Actualizado', battleFlowCopy: 'Menú Principal → Configuración → Selección de Personaje → Escenario → Pantalla Ready → Cuenta Regresiva → Pelea.',
       miniGames: 'Minijuegos', sportsCopy: 'Centro provisional para minijuegos con personajes. Baloncesto y Tenis son los primeros; se pueden agregar más después.', basketball: 'Baloncesto', tennis: 'Tenis', basketballCopy: 'Próximamente: elige personajes de Calamity War y juega batallas rápidas en cancha.', tennisCopy: 'Próximamente: rallies de tenis con especiales y golpes poderosos.', sportsChoose: 'Elige un minijuego. Por ahora son puertas provisionales.',
@@ -721,7 +723,7 @@
       roundWord: 'Ronda', fight: '¡Pelea!', ko: 'K.O.', youWin: '¡Ganaste!', youLose: '¡Perdiste!', draw: 'Empate', time: '¡Tiempo!'
     },
     japanese: {
-      storyMode: 'ストーリーモード', loadGame: 'ロードゲーム', tournament: 'トーナメント', battleMode: 'バトルモード', trainingMode: 'トレーニングモード', calamitySports: 'カラミティスポーツ', gallery: 'ギャラリー', settings: '設定',
+      storyMode: 'ストーリーモード', worldMap: 'ワールドマップ', worldMapKicker: 'ストーリールート', worldMapCopy: 'カラミティ・ウォーの地域をプレビューできます。このワールドハブは、後でミッション、ルート、解放エリアにつながります。', worldMapReadout: '地域を選択してください。選択した地域は現在のステージプレビューとして記憶されます。', loadGame: 'ロードゲーム', tournament: 'トーナメント', battleMode: 'バトルモード', trainingMode: 'トレーニングモード', calamitySports: 'カラミティスポーツ', gallery: 'ギャラリー', settings: '設定',
       characters: 'キャラクター', stages: 'ステージ', cutScenes: 'カットシーン', extras: 'エクストラ', back: '戻る', mainMenu: 'メインメニュー', battleSetup: 'バトル設定', battleStage: 'バトルステージ', continue: '続ける', random: 'ランダム', randomStage: 'ランダムステージ',
       pressEnter: 'ENTER / メニューをタップ', pressStart: 'スタートを押す', updatedBattleFlow: '更新済みバトルフロー', battleFlowCopy: 'メインメニュー → バトル設定 → キャラクター選択 → ステージ選択 → READY画面 → カウントダウン → ファイト。',
       miniGames: 'ミニゲーム', sportsCopy: 'キャラクターを使ったミニゲーム用の仮ハブ。まずはバスケットボールとテニス。後で追加できます。', basketball: 'バスケットボール', tennis: 'テニス', basketballCopy: '近日追加：キャラクターを選んでクイックなコートバトル。', tennisCopy: '近日追加：必殺技とパワーショットつきテニス。', sportsChoose: 'ミニゲームを選んでください。今は仮の入口です。',
@@ -833,7 +835,7 @@
     document.documentElement.lang = LANG_TAGS[lang] || 'en';
 
     const actionLabels = {
-      story: t('storyMode'), 'load-game': t('loadGame'), tournament: t('tournament'), pvp: t('battleMode'), training: t('trainingMode'), 'calamity-sports': t('calamitySports'), gallery: t('gallery'), options: t('settings'),
+      story: t('storyMode'), 'world-map': t('worldMap'), 'load-game': t('loadGame'), tournament: t('tournament'), pvp: t('battleMode'), training: t('trainingMode'), 'calamity-sports': t('calamitySports'), gallery: t('gallery'), options: t('settings'),
       'gallery-characters': t('characters'), 'gallery-stages': t('stages'), 'gallery-cutscenes': t('cutScenes'), 'gallery-extras': t('extras')
     };
     decorateMainMenuButtons();
@@ -856,6 +858,11 @@
     setText('.press-start', t('pressEnter'));
     setText('.lore-box h2', t('updatedBattleFlow'));
     setText('.lore-box p', t('battleFlowCopy'));
+
+    setText('#worldMapKicker', t('worldMapKicker'));
+    setText('#worldMapTitle', t('worldMap'));
+    setText('#worldMapCopy', t('worldMapCopy'));
+    setText('#worldMapReadout', t('worldMapReadout'));
 
     setText('#calamitySportsScreen .kicker', t('miniGames'));
     setText('#calamitySportsScreen h1', t('calamitySports'));
@@ -1498,9 +1505,13 @@
 
   function makeRandomCard(label, onClick) {
     const card = document.createElement('button');
-    card.className = 'card random-card';
-    card.style.setProperty('--c', '#ffffff');
-    card.innerHTML = `<strong>🎲<br>${label}</strong><span class="p1">AI PICK</span>`;
+    card.type = 'button';
+    card.className = 'card random-card random-art-card';
+    card.style.setProperty('--c', '#d6ae68');
+    card.style.setProperty('--fighter-color', '#d6ae68');
+    card.style.setProperty('--portrait-image', safeCssUrl(assets.randomSelectCard || './assets/ui/character_select/random_card.jpg'));
+    card.setAttribute('aria-label', label);
+    card.innerHTML = `<span class="portrait-slot random-portrait-slot" aria-hidden="true"></span><strong>${label}</strong><span class="p1 random-badge">AI PICK</span>`;
     card.addEventListener('click', onClick);
     return card;
   }
@@ -1622,6 +1633,33 @@
 
   function renderGallery() {
     document.getElementById('stageGallery').innerHTML = stageOptions.map(stage => `<div class="stage-card" style="background-image:url('${assets[stage.id]}')"><span>${stage.name}</span></div>`).join('');
+  }
+
+  function renderWorldMap() {
+    const grid = document.getElementById('worldMapRegions');
+    if (!grid) return;
+    const featuredIds = ['dojo', 'forest', 'terraPlaza', 'academy', 'southernRidge', 'experimentLab', 'darkEsplanade', 'village'];
+    const featured = featuredIds.map(id => stageOptions.find(stage => stage.id === id)).filter(Boolean);
+    grid.innerHTML = featured.map(stage => `
+      <button type="button" class="world-region-card ${stage.id === state.battle.stage ? 'active' : ''}" data-world-stage="${stage.id}">
+        <img src="${assets[stage.id]}" alt="${stage.name}" loading="lazy">
+        <span>${stage.tag}</span>
+        <strong>${stage.name}</strong>
+        <em>${stage.desc}</em>
+      </button>
+    `).join('');
+    grid.querySelectorAll('[data-world-stage]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stageId = btn.dataset.worldStage;
+        const stage = stageOptions.find(s => s.id === stageId);
+        if (!stage) return;
+        setStageByIndex(getStageIndex(stageId));
+        grid.querySelectorAll('.world-region-card').forEach(card => card.classList.toggle('active', card === btn));
+        const readout = document.getElementById('worldMapReadout');
+        if (readout) readout.textContent = `${t('selected')}: ${stage.name} — ${stage.desc}`;
+        playMenuTone('move');
+      });
+    });
   }
 
   function clearReadyCountdown() {
@@ -1907,7 +1945,7 @@
     const disabled = state.battle.mode === 'training' && side === 'p2';
     const sideName = side === 'p1' ? t('player1') : t('player2');
     if (disabled) {
-      return `<button type="button" class="side-select-main disabled" disabled>Training Dummy Shadow</button>`;
+      return `<button type="button" class="side-select-main disabled" disabled>${trainingDummyDisplayName()}</button>`;
     }
     const slotButtons = team.map((id, i) => {
       const c = characters[id] || characters.rai;
@@ -1929,8 +1967,9 @@
 
   function fillPreviewArt(el, id) {
     if (!el) return;
-    const c = characters[id] || characters.rai;
-    el.dataset.characterId = id;
+    const visualId = isTrainingDummyId(id) ? trainingDummyVariantKey() : id;
+    const c = isTrainingDummyId(id) ? { ...(characters.dummy || characters.rai), name: trainingDummyDisplayName(), color: state.settings.trainingDummyType === 'ninja' ? '#7e43ff' : '#777777' } : (characters[id] || characters.rai);
+    el.dataset.characterId = visualId;
     el.style.setProperty('--fighter-color', c.color);
     el.style.backgroundImage = '';
     el.style.backgroundSize = '';
@@ -1939,10 +1978,12 @@
     const img = document.createElement('img');
     img.className = 'idle-sprite-preview';
     img.alt = `${c.name} idle sprite`;
-    img.src = spritePreviewSrc(id, 'idle');
+    img.src = spritePreviewSrc(visualId, 'idle');
     img.addEventListener('error', () => {
       img.remove();
-      el.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.70)), url('${selectCardSrc(id)}')`;
+      el.style.backgroundImage = isTrainingDummyId(id)
+        ? 'radial-gradient(circle at 50% 30%, rgba(255,255,255,.12), transparent 34%), linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.76))'
+        : `linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.70)), url('${selectCardSrc(id)}')`;
       el.style.backgroundSize = 'cover';
       el.style.backgroundPosition = 'center 20%';
     }, { once: true });
@@ -1992,7 +2033,7 @@
     panel.classList.toggle('disabled-side', training);
     panel.style.setProperty('--fighter-color', c.color);
     title.textContent = training
-      ? 'TRAINING DUMMY SHADOW'
+      ? trainingDummyDisplayName()
       : (state.battle.activeSide === 'p2' ? `PICK ${t('player2').toUpperCase()} • ${c.name}` : `${t('player2').toUpperCase()} • ${c.name}`);
     fillPreviewArt(art, lead);
     strip.innerHTML = team.map((id, i) => renderCharacterMiniCard(id, i + 1, 'p2')).join('');
@@ -2011,7 +2052,14 @@
       bar.id = 'battleActionBar';
       bar.className = 'battle-action-bar';
     }
+    let trainingPanel = document.getElementById('trainingDummyConfigPanel');
+    if (!trainingPanel) {
+      trainingPanel = document.createElement('div');
+      trainingPanel.id = 'trainingDummyConfigPanel';
+      trainingPanel.className = 'training-dummy-config-panel hidden';
+    }
     if (!bar.contains(randoms)) bar.appendChild(randoms);
+    if (!bar.contains(trainingPanel)) bar.appendChild(trainingPanel);
     if (!bar.contains(continueBtn)) bar.appendChild(continueBtn);
     if (grid.nextElementSibling !== bar) grid.insertAdjacentElement('afterend', bar);
   }
@@ -2080,6 +2128,72 @@
   }
 
 
+  function renderTrainingDummyConfigPanel(training = state.battle.mode === 'training') {
+    const panel = document.getElementById('trainingDummyConfigPanel');
+    if (!panel) return;
+    panel.classList.toggle('hidden', !training);
+    if (!training) {
+      panel.innerHTML = '';
+      return;
+    }
+    const type = state.settings.trainingDummyType === 'ninja' ? 'ninja' : 'shadow';
+    const behavior = ['idle','block','attack'].includes(state.settings.trainingDummyBehavior) ? state.settings.trainingDummyBehavior : 'idle';
+    const diff = ['easy','normal','hard','extreme'].includes(state.settings.trainingDummyDifficulty) ? state.settings.trainingDummyDifficulty : 'normal';
+    const button = (kind, value, label, active) => `<button type="button" data-training-${kind}="${value}" class="${active ? 'active' : ''}">${label}</button>`;
+    panel.innerHTML = `
+      <div class="training-dummy-config-header">
+        <strong>Training Dummy</strong>
+        <span>${trainingDummyDisplayName()} · ${trainingDummyBehaviorLabel(behavior)}${behavior === 'attack' ? ` · CPU ${difficultyLabel(diff)}` : ''}</span>
+      </div>
+      <div class="training-dummy-config-row">
+        <span>Dummy</span>
+        <div class="training-dummy-choice-buttons">
+          ${button('type','shadow','Shadow', type === 'shadow')}
+          ${button('type','ninja','Ninja', type === 'ninja')}
+        </div>
+      </div>
+      <div class="training-dummy-config-row">
+        <span>Action</span>
+        <div class="training-dummy-choice-buttons">
+          ${button('behavior','idle','Idle', behavior === 'idle')}
+          ${button('behavior','block','Block', behavior === 'block')}
+          ${button('behavior','attack','Attack', behavior === 'attack')}
+        </div>
+      </div>
+      <div id="trainingCpuConfigRow" class="training-dummy-config-row ${behavior === 'attack' ? '' : 'disabled'}">
+        <span>CPU Mode</span>
+        <div class="training-dummy-choice-buttons">
+          ${button('difficulty','easy','Easy', diff === 'easy')}
+          ${button('difficulty','normal','Normal', diff === 'normal')}
+          ${button('difficulty','hard','Hard', diff === 'hard')}
+          ${button('difficulty','extreme','Extreme', diff === 'extreme')}
+        </div>
+      </div>
+    `;
+    panel.querySelectorAll('[data-training-type]').forEach(btn => {
+      btn.onclick = () => {
+        state.settings.trainingDummyType = btn.dataset.trainingType === 'ninja' ? 'ninja' : 'shadow';
+        renderBattleCharacters();
+      };
+    });
+    panel.querySelectorAll('[data-training-behavior]').forEach(btn => {
+      btn.onclick = () => {
+        const value = btn.dataset.trainingBehavior;
+        state.settings.trainingDummyBehavior = ['idle','block','attack'].includes(value) ? value : 'idle';
+        renderBattleCharacters();
+      };
+    });
+    panel.querySelectorAll('[data-training-difficulty]').forEach(btn => {
+      btn.disabled = behavior !== 'attack';
+      btn.onclick = () => {
+        if (state.settings.trainingDummyBehavior !== 'attack') return;
+        const value = btn.dataset.trainingDifficulty;
+        state.settings.trainingDummyDifficulty = ['easy','normal','hard','extreme'].includes(value) ? value : 'normal';
+        renderBattleCharacters();
+      };
+    });
+  }
+
   function renderBattleCharacters() {
     const mode = state.battle.mode;
     const training = mode === 'training';
@@ -2099,6 +2213,7 @@
     }
 
     ensureBattleActionBar();
+    renderTrainingDummyConfigPanel(training);
 
     document.getElementById('battleRandomNote').textContent = '';
     document.getElementById('battleP1Name').textContent = teamNames(p1Team);
@@ -2113,7 +2228,7 @@
     const p2Controls = document.getElementById('battleP2SlotControls');
     if (p1Controls) p1Controls.innerHTML = renderSideSlotControls('p1', battleSideSlotLabel('p1'));
     if (p2Controls) p2Controls.innerHTML = training
-      ? `<button type="button" class="side-select-main disabled" disabled>Training Dummy Shadow</button>`
+      ? `<button type="button" class="side-select-main disabled" disabled>${trainingDummyDisplayName()}</button>`
       : renderSideSlotControls('p2', battleSideSlotLabel('p2'));
 
     document.querySelectorAll('[data-side-focus]').forEach(el => {
@@ -2185,8 +2300,9 @@
 
     const preview = document.getElementById('stagePreviewPanel');
     if (preview) {
-      preview.style.backgroundImage = `linear-gradient(90deg, rgba(0,0,0,.78), rgba(0,0,0,.20)), url('${assets[selectedStage.id]}')`;
-      preview.innerHTML = `<span>${selectedStage.tag}</span><strong>${selectedStage.name}</strong><em>${selectedStage.desc}</em>`;
+      const src = assets[selectedStage.id];
+      preview.style.backgroundImage = `linear-gradient(90deg, rgba(0,0,0,.32), rgba(0,0,0,.10)), url('${src}')`;
+      preview.innerHTML = `<img class="stage-preview-img" src="${src}" alt="${selectedStage.name} stage preview" loading="eager"><div class="stage-preview-copy"><span>${selectedStage.tag}</span><strong>${selectedStage.name}</strong><em>${selectedStage.desc}</em></div>`;
     }
 
     const wheel = document.getElementById('stageWheel');
@@ -2214,8 +2330,9 @@
         card.style.setProperty('--rot', `${ringRot}deg`);
         card.style.setProperty('--opacity', (absOffset === 0 ? 0.88 : Math.max(0, 1 - absOffset * 0.19)).toFixed(2));
         card.style.setProperty('--z', String(absOffset === 0 ? 18 : 16 - absOffset));
-        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.72)), url('${assets[stage.id]}')`;
-        card.innerHTML = `<span>${stage.tag}</span><strong>${stage.name}</strong>`;
+        const stageSrc = assets[stage.id];
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.42)), url('${stageSrc}')`;
+        card.innerHTML = `<img class="stage-wheel-img" src="${stageSrc}" alt="${stage.name} thumbnail" loading="eager"><span>${stage.tag}</span><strong>${stage.name}</strong>`;
         card.addEventListener('click', () => selectStage(stage.id));
         wheel.appendChild(card);
       });
@@ -2228,8 +2345,9 @@
         const dot = document.createElement('button');
         dot.type = 'button';
         dot.className = 'stage-thumb-dot' + (i === selectedIndex ? ' active' : '');
-        dot.style.backgroundImage = `linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.68)), url('${assets[stage.id]}')`;
-        dot.innerHTML = `<span>${stage.name}</span>`;
+        const dotSrc = assets[stage.id];
+        dot.style.backgroundImage = `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.42)), url('${dotSrc}')`;
+        dot.innerHTML = `<img class="stage-thumb-img" src="${dotSrc}" alt="${stage.name}" loading="lazy"><span>${stage.name}</span>`;
         dot.addEventListener('click', () => selectStage(stage.id));
         grid.appendChild(dot);
       });
@@ -2451,6 +2569,7 @@
       const action = btn.dataset.action;
       playMenuTone('confirm');
       if (action === 'story') { refreshDifficultyUI(); showScreen('storySetup'); }
+      if (action === 'world-map') { renderWorldMap(); showScreen('worldMap'); }
       if (action === 'load-game') { renderSaveSlots(); showScreen('loadGame'); }
       if (action === 'story-start') openStory(0);
       if (action === 'story-missions') { renderMissions(); showScreen('mission'); }

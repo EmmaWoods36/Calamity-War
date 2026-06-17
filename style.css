@@ -3065,3 +3065,709 @@ button{font:inherit;cursor:pointer;color:var(--text)}
     scale(calc(var(--scale) * 1.08))
     rotateZ(0deg) !important;
 }
+
+/* ==========================================================
+   v0.51 MAIN MENU HOVER COLOR FIX
+   User request: every menu selector should stay black/gold when nothing is
+   being hovered. Red + elongated should happen ONLY while hovering.
+   This overrides the v0.50 .selected / :focus red state.
+   ========================================================== */
+.main-menu .main-buttons button.selected,
+.main-menu .main-buttons button:focus{
+  width:390px !important;
+  max-width:none !important;
+  transform:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.main-menu .main-buttons button.selected .selector-left,
+.main-menu .main-buttons button:focus .selector-left{
+  background-image:url('./assets/ui/main_menu/selector_left.png') !important;
+}
+.main-menu .main-buttons button.selected .selector-center,
+.main-menu .main-buttons button:focus .selector-center{
+  background-image:url('./assets/ui/main_menu/selector_center.png') !important;
+}
+.main-menu .main-buttons button.selected .selector-right,
+.main-menu .main-buttons button:focus .selector-right{
+  background-image:url('./assets/ui/main_menu/selector_right.png') !important;
+}
+.main-menu .main-buttons button.selected .menu-selector-frame,
+.main-menu .main-buttons button:focus .menu-selector-frame{
+  filter:drop-shadow(0 10px 15px rgba(0,0,0,.58)) !important;
+}
+.main-menu .main-buttons button.selected .menu-label,
+.main-menu .main-buttons button:focus .menu-label{
+  color:#f6ead5 !important;
+  text-shadow:0 2px 7px rgba(0,0,0,.95),0 0 8px rgba(214,177,95,.16) !important;
+  transform:none !important;
+}
+.main-menu .main-buttons button:hover,
+.main-menu .main-buttons button.selected:hover,
+.main-menu .main-buttons button:focus:hover{
+  width:464px !important;
+  max-width:none !important;
+  transform:translateX(8px) !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.main-menu .main-buttons button:hover .selector-left,
+.main-menu .main-buttons button.selected:hover .selector-left,
+.main-menu .main-buttons button:focus:hover .selector-left{
+  background-image:url('./assets/ui/main_menu/selector_left_red.png') !important;
+}
+.main-menu .main-buttons button:hover .selector-center,
+.main-menu .main-buttons button.selected:hover .selector-center,
+.main-menu .main-buttons button:focus:hover .selector-center{
+  background-image:url('./assets/ui/main_menu/selector_center_red.png') !important;
+}
+.main-menu .main-buttons button:hover .selector-right,
+.main-menu .main-buttons button.selected:hover .selector-right,
+.main-menu .main-buttons button:focus:hover .selector-right{
+  background-image:url('./assets/ui/main_menu/selector_right_red.png') !important;
+}
+.main-menu .main-buttons button:hover .menu-selector-frame,
+.main-menu .main-buttons button.selected:hover .menu-selector-frame,
+.main-menu .main-buttons button:focus:hover .menu-selector-frame{
+  filter:drop-shadow(0 0 18px rgba(255,42,25,.58)) drop-shadow(0 12px 18px rgba(0,0,0,.62)) !important;
+}
+.main-menu .main-buttons button:hover .menu-label,
+.main-menu .main-buttons button.selected:hover .menu-label,
+.main-menu .main-buttons button:focus:hover .menu-label{
+  color:#fff4df !important;
+  text-shadow:0 2px 8px rgba(0,0,0,1),0 0 13px rgba(255,61,30,.72),0 0 4px rgba(255,210,140,.55) !important;
+  transform:translateX(4px) !important;
+}
+@media(max-width:900px){
+  .main-menu .main-buttons button.selected,
+  .main-menu .main-buttons button:focus{width:62vw !important;}
+  .main-menu .main-buttons button:hover,
+  .main-menu .main-buttons button.selected:hover,
+  .main-menu .main-buttons button:focus:hover{width:72vw !important;}
+}
+
+/* ==========================================================
+   v0.52 RANDOM CHARACTER CARD ART
+   Uses Amber's uploaded RANDOM framed card as the actual Random tile.
+   The card preserves its full 2:3 framed proportions and is never cropped,
+   stretched, or replaced by the old dice/placeholder UI.
+   ========================================================== */
+#characterScreen .random-art-card,
+#battleCharacterScreen .random-art-card{
+  aspect-ratio:2 / 3 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  display:block !important;
+  background-color:transparent !important;
+  background-image:var(--portrait-image) !important;
+  background-size:contain !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+#characterScreen .random-art-card::before,
+#characterScreen .random-art-card::after,
+#battleCharacterScreen .random-art-card::before,
+#battleCharacterScreen .random-art-card::after{
+  display:none !important;
+  content:none !important;
+}
+#characterScreen .random-art-card .portrait-slot,
+#battleCharacterScreen .random-art-card .portrait-slot{
+  display:none !important;
+}
+#characterScreen .random-art-card strong,
+#battleCharacterScreen .random-art-card strong,
+#characterScreen .random-art-card .random-badge,
+#battleCharacterScreen .random-art-card .random-badge{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+  clip:rect(0 0 0 0) !important;
+  white-space:nowrap !important;
+}
+#characterScreen .random-art-card:hover,
+#battleCharacterScreen .random-art-card:hover{
+  transform:translateY(-2px) scale(1.025) !important;
+  filter:drop-shadow(0 0 14px rgba(255,209,118,.42)) drop-shadow(0 0 22px rgba(153,74,255,.25)) !important;
+}
+#characterScreen .random-art-card.selected,
+#battleCharacterScreen .random-art-card.selected{
+  outline:2px solid rgba(255,224,150,.78) !important;
+  outline-offset:2px !important;
+  filter:drop-shadow(0 0 16px rgba(255,60,35,.38)) !important;
+}
+
+/* ==========================================================
+   v0.53 CHARACTER GRID / STAGE VISIBILITY / TRAINING DUMMY UI
+   Amber requested:
+   - character select cards/boxes about half-height
+   - hard rule: no card overlap
+   - stage visuals actually visible on Select Battle Stage
+   - training mode dummy options before battle: Shadow/Ninja, Idle/Block/Attack,
+     CPU difficulty only when Attack is selected
+   ========================================================== */
+
+/* Character Select center grid: transparent panel, tiny portrait slots, no overlap ever. */
+#battleCharacterScreen .battle-roster-panel{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  overflow:visible !important;
+}
+
+#battleCharacterScreen #battleRosterGrid{
+  display:grid !important;
+  grid-template-columns:repeat(5, minmax(40px, 54px)) !important;
+  grid-auto-rows:clamp(50px, 5.8vh, 64px) !important;
+  grid-auto-flow:row !important;
+  justify-content:center !important;
+  justify-items:center !important;
+  align-items:start !important;
+  align-content:start !important;
+  gap:clamp(.22rem, .72vh, .42rem) clamp(.42rem, .72vw, .72rem) !important;
+  max-height:calc(100vh - 215px) !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:.2rem .35rem .55rem !important;
+  margin:0 auto !important;
+  contain:layout paint !important;
+  isolation:isolate !important;
+}
+
+#battleCharacterScreen #battleRosterGrid > .card,
+#battleCharacterScreen #battleRosterGrid > .roster-card,
+#battleCharacterScreen #battleRosterGrid > .random-art-card{
+  position:relative !important;
+  inset:auto !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  float:none !important;
+  clear:none !important;
+  display:block !important;
+  width:auto !important;
+  height:clamp(50px, 5.8vh, 64px) !important;
+  max-height:clamp(50px, 5.8vh, 64px) !important;
+  aspect-ratio:2 / 3 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:44px !important;
+  justify-self:center !important;
+  align-self:start !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:none !important;
+  overflow:visible !important;
+  z-index:1 !important;
+  background-size:contain !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  background-color:transparent !important;
+}
+
+#battleCharacterScreen #battleRosterGrid > .card:hover,
+#battleCharacterScreen #battleRosterGrid > .roster-card:hover,
+#battleCharacterScreen #battleRosterGrid > .random-art-card:hover{
+  transform:translateY(-1px) scale(1.04) !important;
+  z-index:6 !important;
+}
+
+#battleCharacterScreen #battleRosterGrid > .card.selected,
+#battleCharacterScreen #battleRosterGrid > .roster-card.selected,
+#battleCharacterScreen #battleRosterGrid > .random-art-card.selected{
+  z-index:5 !important;
+}
+
+#battleCharacterScreen .roster-card::before,
+#battleCharacterScreen .roster-card::after,
+#battleCharacterScreen .card::before,
+#battleCharacterScreen .card::after{
+  display:none !important;
+  content:none !important;
+}
+
+#battleCharacterScreen .roster-card .slot-badge,
+#battleCharacterScreen .roster-card .active-slot,
+#battleCharacterScreen .roster-card .p1,
+#battleCharacterScreen .roster-card .p2{
+  transform:scale(.52) !important;
+  transform-origin:top right !important;
+  top:-3px !important;
+  right:-4px !important;
+  z-index:8 !important;
+  pointer-events:none !important;
+}
+
+#battleCharacterScreen #battleActionBar{
+  flex:0 0 auto !important;
+  margin-top:.35rem !important;
+}
+
+#battleCharacterScreen .battle-randoms{
+  grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+  gap:.38rem !important;
+  margin:.35rem 0 !important;
+}
+
+#battleCharacterScreen .battle-randoms button,
+#battleCharacterScreen .primary-wide{
+  padding:.48rem .58rem !important;
+  font-size:.72rem !important;
+  letter-spacing:.10em !important;
+}
+
+@media(max-width:1180px){
+  #battleCharacterScreen #battleRosterGrid{
+    grid-template-columns:repeat(6, minmax(34px, 46px)) !important;
+    grid-auto-rows:clamp(46px, 5.2vh, 58px) !important;
+  }
+  #battleCharacterScreen #battleRosterGrid > .card,
+  #battleCharacterScreen #battleRosterGrid > .roster-card,
+  #battleCharacterScreen #battleRosterGrid > .random-art-card{
+    height:clamp(46px, 5.2vh, 58px) !important;
+    max-height:clamp(46px, 5.2vh, 58px) !important;
+    max-width:39px !important;
+  }
+}
+
+/* Stage Select: use real image elements inside the preview/cards so assets cannot disappear
+   behind dark gradients or browser background-image quirks. */
+#stagePreviewPanel.stage-preview-panel,
+.stage-preview-panel{
+  width:min(940px,72vw) !important;
+  height:clamp(285px,42vh,455px) !important;
+  background-color:#050508 !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  filter:none !important;
+}
+
+#stagePreviewPanel.stage-preview-panel::before,
+.stage-preview-panel::before{
+  background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.18) 52%, rgba(0,0,0,.58)) !important;
+  z-index:1 !important;
+}
+
+.stage-preview-img{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  z-index:0 !important;
+  opacity:1 !important;
+  filter:saturate(1.18) brightness(1.22) contrast(1.05) !important;
+  pointer-events:none !important;
+}
+
+.stage-preview-copy{
+  position:relative !important;
+  z-index:2 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  max-width:88% !important;
+}
+
+.stage-preview-copy span,
+.stage-preview-copy strong,
+.stage-preview-copy em{
+  position:relative !important;
+  z-index:2 !important;
+  background:rgba(0,0,0,.68) !important;
+  padding:.34rem .58rem !important;
+}
+
+.stage-preview-copy span{
+  color:#efd083 !important;
+  border-left:3px solid #e5bd62 !important;
+  text-transform:uppercase !important;
+  letter-spacing:.16em !important;
+  font-size:.72rem !important;
+}
+
+.stage-preview-copy strong{
+  color:#fff !important;
+  margin-top:.38rem !important;
+  font-size:clamp(1.8rem,3.2vw,3.7rem) !important;
+  line-height:1.02 !important;
+  text-transform:uppercase !important;
+  letter-spacing:.06em !important;
+  text-shadow:0 0 24px #000,0 0 14px rgba(255,220,145,.30) !important;
+}
+
+.stage-preview-copy em{
+  color:#f3eadb !important;
+  margin-top:.38rem !important;
+  font-style:normal !important;
+  line-height:1.34 !important;
+}
+
+#stageSelectScreen .stage-wheel-shell,
+.stage-select-screen .stage-wheel-shell{
+  height:clamp(260px,34vh,380px) !important;
+  margin:-.5rem auto .25rem !important;
+}
+
+#stageSelectScreen .stage-wheel-card,
+.stage-select-screen .stage-wheel-card{
+  overflow:hidden !important;
+  background-color:#050508 !important;
+  filter:saturate(1.04) brightness(1.02) !important;
+}
+
+.stage-wheel-img,
+.stage-thumb-img{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  opacity:1 !important;
+  filter:saturate(1.16) brightness(1.18) !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+
+#stageSelectScreen .stage-wheel-card::before,
+.stage-select-screen .stage-wheel-card::before{
+  background:linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.13) 48%, rgba(0,0,0,.58)) !important;
+  z-index:1 !important;
+}
+
+#stageSelectScreen .stage-wheel-card span,
+#stageSelectScreen .stage-wheel-card strong,
+.stage-select-screen .stage-wheel-card span,
+.stage-select-screen .stage-wheel-card strong{
+  z-index:2 !important;
+  position:relative !important;
+  background:rgba(0,0,0,.68) !important;
+}
+
+#stageSelectScreen .hidden-wheel-card,
+.stage-select-screen .hidden-wheel-card{
+  pointer-events:none !important;
+}
+
+/* Training Mode setup panel shown before the fight, not only in pause. */
+.training-dummy-config-panel{
+  width:100% !important;
+  border:1px solid rgba(218,184,104,.42) !important;
+  background:linear-gradient(135deg,rgba(8,7,10,.84),rgba(18,10,16,.72)) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.42), inset 0 0 22px rgba(255,255,255,.035) !important;
+  padding:.55rem .65rem !important;
+  margin:.38rem 0 .45rem !important;
+  text-transform:uppercase !important;
+}
+.training-dummy-config-panel.hidden{
+  display:none !important;
+}
+.training-dummy-config-header{
+  display:flex !important;
+  justify-content:space-between !important;
+  gap:.75rem !important;
+  align-items:center !important;
+  margin-bottom:.45rem !important;
+}
+.training-dummy-config-header strong{
+  color:#fff2c8 !important;
+  letter-spacing:.14em !important;
+  font-size:.78rem !important;
+}
+.training-dummy-config-header span{
+  color:#d8c697 !important;
+  font-size:.66rem !important;
+  letter-spacing:.08em !important;
+  text-align:right !important;
+}
+.training-dummy-config-row{
+  display:grid !important;
+  grid-template-columns:82px 1fr !important;
+  gap:.45rem !important;
+  align-items:center !important;
+  margin:.32rem 0 !important;
+}
+.training-dummy-config-row > span{
+  color:#c8a45d !important;
+  font-size:.66rem !important;
+  letter-spacing:.13em !important;
+}
+.training-dummy-choice-buttons{
+  display:grid !important;
+  grid-template-columns:repeat(auto-fit,minmax(72px,1fr)) !important;
+  gap:.32rem !important;
+}
+.training-dummy-choice-buttons button{
+  border:1px solid rgba(218,184,104,.35) !important;
+  background:rgba(0,0,0,.48) !important;
+  color:#f4edde !important;
+  padding:.38rem .42rem !important;
+  font-size:.66rem !important;
+  letter-spacing:.10em !important;
+  text-transform:uppercase !important;
+  box-shadow:none !important;
+}
+.training-dummy-choice-buttons button:hover:not(:disabled),
+.training-dummy-choice-buttons button.active{
+  border-color:#e24435 !important;
+  background:linear-gradient(90deg,rgba(146,10,18,.88),rgba(35,14,17,.78)) !important;
+  box-shadow:0 0 16px rgba(210,33,47,.22) !important;
+}
+.training-dummy-config-row.disabled{
+  opacity:.45 !important;
+}
+.training-dummy-config-row.disabled button{
+  cursor:not-allowed !important;
+}
+
+#battleCharacterScreen[data-battle-mode="training"] #battleP2Preview .side-copy::after{
+  content:"Dummy options are in the center panel.";
+  display:block;
+  margin-top:.28rem;
+  color:#d8c697;
+  font-size:.76rem;
+}
+
+/* V0.54: Updated smooth main menu art + World Map menu button.
+   Keep all menu selectors black/gold while idle/keyboard-selected; only mouse hover turns red and elongates. */
+.main-menu .bg-main{
+  background-image:url('./assets/main_menu_shell.png') !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  filter:saturate(1.03) contrast(1.03) brightness(.98) !important;
+}
+.main-menu .main-buttons{
+  top:21.8vh !important;
+  left:4.2vw !important;
+  width:min(38vw,460px) !important;
+  gap:.42rem !important;
+}
+.main-menu .main-buttons button{
+  height:44px !important;
+  width:100% !important;
+}
+.main-menu .main-buttons button.selected,
+.main-menu .main-buttons button:focus{
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:none !important;
+  width:100% !important;
+}
+.main-menu .main-buttons button.selected .selector-left,
+.main-menu .main-buttons button:focus .selector-left{background-image:url('./assets/ui/main_menu/selector_left.png') !important;}
+.main-menu .main-buttons button.selected .selector-center,
+.main-menu .main-buttons button:focus .selector-center{background-image:url('./assets/ui/main_menu/selector_center.png') !important;}
+.main-menu .main-buttons button.selected .selector-right,
+.main-menu .main-buttons button:focus .selector-right{background-image:url('./assets/ui/main_menu/selector_right.png') !important;}
+.main-menu .main-buttons button:hover{
+  width:calc(100% + 62px) !important;
+  transform:translateX(8px) !important;
+}
+.main-menu .main-buttons button:hover .selector-left{background-image:url('./assets/ui/main_menu/selector_left_red.png') !important;}
+.main-menu .main-buttons button:hover .selector-center{background-image:url('./assets/ui/main_menu/selector_center_red.png') !important;}
+.main-menu .main-buttons button:hover .selector-right{background-image:url('./assets/ui/main_menu/selector_right_red.png') !important;}
+.main-menu .main-buttons button:hover .menu-selector-frame{
+  filter:drop-shadow(0 0 18px rgba(225,45,34,.42)) !important;
+}
+
+.world-map-screen .bg-main{
+  background-image:url('./assets/main_menu_shell.png') !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  filter:saturate(.92) brightness(.68) contrast(1.08) !important;
+}
+.world-map-wrap{
+  position:absolute;
+  inset:9vh 6vw 6vh 6vw;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+  color:#fff7e8;
+  text-transform:uppercase;
+}
+.world-map-wrap .kicker{
+  color:#e4bd69;
+  letter-spacing:.26em;
+  font-size:.78rem;
+  font-weight:800;
+}
+.world-map-wrap h1{
+  margin:0;
+  font-family:Georgia,serif;
+  font-size:clamp(2.5rem,5vw,5.6rem);
+  letter-spacing:.08em;
+  line-height:.95;
+  text-shadow:0 0 30px #000,0 0 20px rgba(192,35,41,.38);
+}
+.world-map-copy{
+  max-width:760px;
+  margin:.15rem 0 0;
+  color:#e8dcc8;
+  line-height:1.45;
+  letter-spacing:.06em;
+  font-size:.92rem;
+  text-transform:none;
+}
+.world-map-layout{
+  display:grid;
+  grid-template-columns:minmax(280px,38vw) minmax(360px,1fr);
+  gap:1.2rem;
+  align-items:stretch;
+  min-height:0;
+  flex:1;
+}
+.world-map-orb{
+  position:relative;
+  min-height:420px;
+  border:1px solid rgba(216,177,100,.44);
+  background:radial-gradient(circle at 50% 48%,rgba(131,28,39,.32),rgba(4,5,10,.84) 58%,rgba(0,0,0,.92));
+  box-shadow:0 18px 50px rgba(0,0,0,.55),inset 0 0 44px rgba(255,220,130,.05);
+  overflow:hidden;
+}
+.world-map-ring{
+  position:absolute;
+  left:50%;top:50%;
+  width:min(31vw,390px);height:min(31vw,390px);
+  transform:translate(-50%,-50%);
+  border:2px solid rgba(222,178,86,.58);
+  border-radius:50%;
+  box-shadow:0 0 28px rgba(210,33,47,.18),inset 0 0 44px rgba(80,120,255,.11);
+}
+.world-map-ring::before,
+.world-map-ring::after{
+  content:"";
+  position:absolute;
+  inset:13%;
+  border:1px solid rgba(94,154,255,.32);
+  border-radius:50%;
+}
+.world-map-ring::after{
+  inset:31%;
+  border-color:rgba(232,185,94,.42);
+}
+.world-map-core{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:96px;height:96px;
+  display:grid;place-items:center;
+  border:1px solid rgba(225,183,96,.78);
+  border-radius:50%;
+  background:rgba(0,0,0,.62);
+  color:#ffefbf;
+  font-family:Georgia,serif;
+  font-size:2rem;
+  letter-spacing:.12em;
+  box-shadow:0 0 26px rgba(226,55,45,.26);
+}
+.world-map-pin{
+  position:absolute;
+  width:18px;height:18px;
+  transform:rotate(45deg);
+  border:2px solid rgba(255,226,156,.9);
+  box-shadow:0 0 18px currentColor;
+}
+.world-map-pin.pin-red{left:31%;top:31%;color:#ff4439;background:#8e1118;}
+.world-map-pin.pin-blue{right:26%;top:39%;color:#5e9cff;background:#122c88;}
+.world-map-pin.pin-gold{left:48%;bottom:24%;color:#ffd166;background:#8a5b11;}
+.world-map-regions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.65rem;
+  overflow:auto;
+  padding-right:.2rem;
+}
+.world-region-card{
+  position:relative;
+  min-height:132px;
+  border:1px solid rgba(216,177,100,.46);
+  background:#050506;
+  overflow:hidden;
+  text-align:left;
+  padding:.75rem;
+  color:#fff4df;
+  box-shadow:0 10px 30px rgba(0,0,0,.42),inset 0 0 22px rgba(255,255,255,.03);
+}
+.world-region-card img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:.48;
+  filter:saturate(1.12) brightness(.86);
+  transition:.18s ease;
+}
+.world-region-card::after{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(0,0,0,.34));
+}
+.world-region-card span,
+.world-region-card strong,
+.world-region-card em{
+  position:relative;
+  z-index:1;
+  display:block;
+}
+.world-region-card span{
+  color:#e4bd69;
+  font-size:.66rem;
+  letter-spacing:.18em;
+}
+.world-region-card strong{
+  margin-top:.22rem;
+  font-size:1.05rem;
+  letter-spacing:.08em;
+}
+.world-region-card em{
+  margin-top:.32rem;
+  color:#e8dcc8;
+  font-style:normal;
+  font-size:.74rem;
+  line-height:1.35;
+  text-transform:none;
+}
+.world-region-card:hover,
+.world-region-card.active{
+  border-color:#e74739;
+  box-shadow:0 0 24px rgba(210,33,47,.32),0 10px 30px rgba(0,0,0,.42);
+  transform:translateY(-2px);
+}
+.world-region-card:hover img,
+.world-region-card.active img{
+  opacity:.72;
+  filter:saturate(1.3) brightness(1.02);
+}
+.world-map-readout{
+  border:1px solid rgba(216,177,100,.42);
+  background:rgba(0,0,0,.62);
+  padding:.72rem .9rem;
+  color:#f4e5bc;
+  letter-spacing:.09em;
+  font-size:.82rem;
+  box-shadow:inset 0 0 18px rgba(255,255,255,.035);
+}
+
+@media(max-width:900px){
+  .main-menu .main-buttons{top:19vh !important;left:7vw !important;width:76vw !important;gap:.34rem !important;}
+  .main-menu .main-buttons button{height:40px !important;}
+  .main-menu .main-buttons button:hover{width:82vw !important;}
+  .world-map-wrap{inset:7vh 5vw 5vh 5vw;overflow:auto;}
+  .world-map-layout{grid-template-columns:1fr;}
+  .world-map-orb{min-height:260px;}
+  .world-map-regions{grid-template-columns:1fr;overflow:visible;}
+}

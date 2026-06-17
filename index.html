@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Calamity War — Demo V0.50</title>
+  <title>Calamity War — Demo V0.54</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="patches/splash_screen/emma_woods_splash.css" />
 </head>
@@ -13,12 +13,13 @@
       <div class="bg bg-main"></div>
       <div class="shade"></div>
       <header class="game-title">
-        <div class="kicker">DEMO BUILD V0.50</div>
+        <div class="kicker">DEMO BUILD V0.54</div>
         <h1>CALAMITY WAR</h1>
         <p>Legacy Demands War</p>
       </header>
       <nav class="main-buttons" aria-label="Main Menu">
         <button data-action="story" class="selected"><span class="menu-selector-frame" aria-hidden="true"><span class="selector-left"></span><span class="selector-center"></span><span class="selector-right"></span></span><span class="menu-label">Story Mode</span></button>
+        <button data-action="world-map"><span class="menu-selector-frame" aria-hidden="true"><span class="selector-left"></span><span class="selector-center"></span><span class="selector-right"></span></span><span class="menu-label">World Map</span></button>
         <button data-action="load-game"><span class="menu-selector-frame" aria-hidden="true"><span class="selector-left"></span><span class="selector-center"></span><span class="selector-right"></span></span><span class="menu-label">Load Game</span></button>
         <button data-action="tournament"><span class="menu-selector-frame" aria-hidden="true"><span class="selector-left"></span><span class="selector-center"></span><span class="selector-right"></span></span><span class="menu-label">Tournament</span></button>
         <button data-action="pvp"><span class="menu-selector-frame" aria-hidden="true"><span class="selector-left"></span><span class="selector-center"></span><span class="selector-right"></span></span><span class="menu-label">Battle Mode</span></button>
@@ -37,6 +38,30 @@
         <span class="press-start-flair">✦</span>
         <small>ENTER THE CALAMITY</small>
       </div>
+    </div>
+
+
+    <div id="worldMapScreen" class="screen world-map-screen">
+      <div class="bg bg-main"></div>
+      <div class="shade stronger"></div>
+      <button class="back-btn" data-action="back">← Main Menu</button>
+      <button class="settings-shortcut" data-action="options">⚙ Settings</button>
+      <section class="world-map-wrap">
+        <div class="kicker" id="worldMapKicker">STORY ROUTE</div>
+        <h1 id="worldMapTitle">World Map</h1>
+        <p id="worldMapCopy" class="world-map-copy">Choose a region to preview Calamity War locations. This is the story world hub placeholder and will later connect to missions, routes, and unlocked areas.</p>
+        <div class="world-map-layout">
+          <div class="world-map-orb" aria-hidden="true">
+            <div class="world-map-ring"></div>
+            <div class="world-map-core">CW</div>
+            <div class="world-map-pin pin-red"></div>
+            <div class="world-map-pin pin-blue"></div>
+            <div class="world-map-pin pin-gold"></div>
+          </div>
+          <div id="worldMapRegions" class="world-map-regions"></div>
+        </div>
+        <div id="worldMapReadout" class="world-map-readout">Select a region. The chosen region will be remembered as the current stage preview.</div>
+      </section>
     </div>
 
 
