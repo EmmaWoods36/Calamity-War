@@ -1,0 +1,81 @@
+CALAMITY WAR v0.55 SPRITE/MENU/PLAYABILITY STABILIZATION
+==========================================================
+
+Upload/replace:
+- index.html
+- style.css
+- game.js
+- assets/sprites/ (all character sprite folders)
+- PATCH_NOTES_v0_55_STABILIZATION.txt
+- scripts/clean_sprites_v2.py (sprite cleanup tool)
+
+══════════════════════════════════════════════════════════
+SPRITE CLEANUP (272 sprites processed across 36 characters)
+══════════════════════════════════════════════════════════
+
+- Removed stray floating artifacts (detached hair clumps, text remnants) from
+  all battle sprites using connected-component analysis. Components smaller than
+  1500px AND less than 4% of the main character's area were removed.
+- Normalized all non-standard canvas sizes to 900x900. Many KO sprites were
+  299x481, 477x253, etc. — now uniformly 900x900 with feet positioned near
+  the bottom for consistent ground alignment.
+- The runtime sanitizeSpriteBackground function (which removes white/gray
+  backgrounds via flood-fill at load time) is preserved and unchanged.
+- Characters cleaned: adrian, akila, akira, awar, awar_aries, baburu, daisuke,
+  dante, dante_aries, diastre, diego, esther, goro, machai, mahje, malachai,
+  mammon, mani, michelle, miwa, nico, nikki, nox_aries, pierre, rai, raijin,
+  rikku, roger, rose, seccla_aries, semuda, shanti, shinichi, tenganisha,
+  training_dummy_shadow, yuta.
+
+══════════════════════════════════════════════════════════
+GAMEPLAY FEEL IMPROVEMENTS
+══════════════════════════════════════════════════════════
+
+- Added HITSTOP: Clean hits now freeze both fighters for 3-10 frames depending
+  on attack type (light=3, heavy=6, special=10). Blocked hits get 2 frames.
+  This gives every connection a visceral "impact" feel.
+- Added CAMERA SHAKE: The fight scene shakes on every hit, with intensity
+  scaling by attack type. KO hits trigger a large 20-frame shake.
+- Added screen flash overlay during hitstop for visual emphasis.
+- Moved all attack properties into a centralized ATTACK_DATA table:
+    light:   startup=4, active=6, recovery=4, dmg=8, range=54
+    heavy:   startup=8, active=8, recovery=7, dmg=15, range=72
+    special: startup=12, active=12, recovery=7, dmg=22, range=105
+  Each attack also has: knockback, launch, meterGain, hitstun, blockstun, chipDmg.
+- Rewrote CPU AI with a 5-state machine: approach, attack, block, retreat, spacing.
+  The AI now transitions states based on game situation (enemy attacking, low HP,
+  distance, meter availability) instead of purely random decisions.
+  - Block state: CPU actively guards when enemy attacks
+  - Retreat state: CPU backs away when at low HP
+  - Spacing state: CPU maintains mid-range and punishes whiffs
+  - Attack state: CPU commits to offensive pressure
+  - Approach state: CPU closes distance to engage
+
+══════════════════════════════════════════════════════════
+MENU SELECTION POLISH
+══════════════════════════════════════════════════════════
+
+- Added full keyboard navigation to Character Select screen:
+  Arrow Keys / WASD to move through roster grid, Enter to select.
+- Added full keyboard navigation to Battle Character Select screen:
+  Arrow Keys to move through roster, Enter to confirm, Tab to switch sides.
+- Added keyboard focus-visible outlines (gold) on all cards and menu buttons.
+- Added control hints to the main menu lore box.
+- Updated version label to V0.55.
+
+══════════════════════════════════════════════════════════
+KNOWN REMAINING ART WORK
+══════════════════════════════════════════════════════════
+
+These require new art generation/regeneration and cannot be fixed with code:
+
+- Adrian's KO sprite has a different outfit/proportions than his other poses
+  (white coat vs. purple shirt, different body proportions).
+- 8 missing poses for Adrian and Akila (crouch, hurt, walk_forward, walk_back)
+  — these fall back to idle/guard at runtime.
+- Many characters are missing walk/crouch/hurt/victory poses — runtime
+  fallbacks handle this gracefully.
+- Threshold/dither noise on white fabric areas (Adrian's coat, etc.) —
+  would require re-generation of source art.
+- Daisuke has only 2 poses (idle, light). Roger has only 2 (idle, ko).
+- Danpen folder is empty (aliased to danpen_shikake at runtime).

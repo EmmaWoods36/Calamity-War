@@ -3893,3 +3893,6 @@ button{font:inherit;cursor:pointer;color:var(--text)}
     transform:translateX(3px) !important;
   }
 }
+
+/* v0.55: Keyboard focus indicators */
+.card:focus-visible,.roster-card:focus-visible{outline:2px solid #f8e1a4;outline-offset:2px}.main-buttons button:focus-visible{outline:2px solid #f8e1a4;outline-offset:2px}

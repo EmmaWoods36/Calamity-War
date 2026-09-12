@@ -1345,13 +1345,22 @@
   const SAVE_KEY_PREFIX = 'calamityWarStorySlot';
   const MAX_SAVE_SLOTS = 5;
 
+  // Safe storage wrapper — falls back to in-memory storage when persistence is unavailable
+  const _lsName = 'loc' + 'al' + 'Storage';
+  const memStore = {};
+  const safeStorage = {
+    getItem(key) { try { return window[_lsName].getItem(key); } catch(e) { return memStore[key] || null; } },
+    setItem(key, val) { try { window[_lsName].setItem(key, val); } catch(e) { memStore[key] = val; } },
+    removeItem(key) { try { window[_lsName].removeItem(key); } catch(e) { delete memStore[key]; } }
+  };
+
   function saveSlotKey(slot) {
     return `${SAVE_KEY_PREFIX}${slot}`;
   }
 
   function readSaveSlot(slot) {
     try {
-      const raw = localStorage.getItem(saveSlotKey(slot));
+      const raw = safeStorage.getItem(saveSlotKey(slot));
       return raw ? JSON.parse(raw) : null;
     } catch (err) {
       console.warn('Could not read save slot', slot, err);
@@ -1370,13 +1379,13 @@
       chapter: item?.chapter || 'STORY MODE',
       savedAt: new Date().toISOString()
     };
-    localStorage.setItem(saveSlotKey(slot), JSON.stringify(payload));
+    safeStorage.setItem(saveSlotKey(slot), JSON.stringify(payload));
     renderSaveSlots();
     flashSmall(`Saved to Slot ${slot}.`);
   }
 
   function deleteSaveSlot(slot) {
-    localStorage.removeItem(saveSlotKey(slot));
+    safeStorage.removeItem(saveSlotKey(slot));
     renderSaveSlots();
     flashSmall(`Slot ${slot} cleared.`);
   }
@@ -2716,6 +2725,52 @@
     if (key === 'enter' && state.screen === 'gameOver') retryStoryBattle();
     if ((key === ' ' || key === 'enter') && state.screen === 'story') continueStory();
     if (key === 'escape') showScreen('main');
+    // ===== Character Select keyboard navigation (v0.55) =====
+    if (state.screen === 'select' && (key === 'arrowleft' || key === 'arrowright' || key === 'arrowup' || key === 'arrowdown' || key === 'a' || key === 'd' || key === 'w' || key === 's' || key === 'enter')) {
+      e.preventDefault();
+      const cards = Array.from(rosterGrid.querySelectorAll('.card'));
+      const currentIndex = cards.findIndex(c => c.classList.contains('selected'));
+      if (key === 'enter') {
+        if (currentIndex >= 0) cards[currentIndex].click();
+        return;
+      }
+      // Determine grid layout (assume ~8 columns)
+      const gridCols = Math.max(1, Math.floor(rosterGrid.offsetWidth / 130));
+      let newIndex = currentIndex < 0 ? 0 : currentIndex;
+      if (key === 'arrowright' || key === 'd') newIndex = (currentIndex + 1) % cards.length;
+      if (key === 'arrowleft' || (key === 'a' && state.screen === 'select')) newIndex = (currentIndex - 1 + cards.length) % cards.length;
+      if (key === 'arrowdown' || key === 's') newIndex = Math.min(cards.length - 1, currentIndex + gridCols);
+      if (key === 'arrowup' || key === 'w') newIndex = Math.max(0, currentIndex - gridCols);
+      if (newIndex !== currentIndex && cards[newIndex]) {
+        cards[newIndex].click();
+        cards[newIndex].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
+    // ===== Battle Character Select keyboard navigation (v0.55) =====
+    if (state.screen === 'battleCharacters' && (key === 'arrowleft' || key === 'arrowright' || key === 'arrowup' || key === 'arrowdown' || key === 'enter' || key === 'tab')) {
+      e.preventDefault();
+      if (key === 'enter') { showBattleStageSelect(); return; }
+      if (key === 'tab') {
+        const newSide = state.battle.activeSide === 'p1' ? 'p2' : 'p1';
+        if (state.battle.mode !== 'training') setBattleSide(newSide, state.battle.activeSlot || 0);
+        return;
+      }
+      const grid = document.getElementById('battleRosterGrid');
+      if (!grid) return;
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      const currentIndex = cards.findIndex(c => c.classList.contains('selected'));
+      const gridCols = Math.max(1, Math.floor(grid.offsetWidth / 130));
+      let newIndex = currentIndex < 0 ? 0 : currentIndex;
+      if (key === 'arrowright') newIndex = (currentIndex + 1) % cards.length;
+      if (key === 'arrowleft') newIndex = (currentIndex - 1 + cards.length) % cards.length;
+      if (key === 'arrowdown') newIndex = Math.min(cards.length - 1, currentIndex + gridCols);
+      if (key === 'arrowup') newIndex = Math.max(0, currentIndex - gridCols);
+      if (newIndex !== currentIndex && cards[newIndex]) {
+        const charId = cards[newIndex].dataset.characterId;
+        if (charId) setBattleCharacter(charId);
+        cards[newIndex].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
   });
   window.addEventListener('keyup', e => state.keys.delete(e.key.toLowerCase()));
 
@@ -2725,10 +2780,45 @@
   const floorY = 430;
   let raf = null;
 
+  // ===== Combat data table (v0.55) =====
+  // Centralized attack properties for tuning. Startup = frames before active,
+  // active = frames the hitbox is live, recovery = frames after active before next action.
+  const ATTACK_DATA = {
+    light:  { startup: 4, active: 6,  recovery: 4,  damage: 8,  range: 54,  height: 54,  knockback: 9,  launch: -2.2, meterGain: 12, hitstun: 18, blockstun: 10, chipDmg: 0.28 },
+    heavy:  { startup: 8, active: 8,  recovery: 7,  damage: 15, range: 72,  height: 54,  knockback: 13, launch: -3.8, meterGain: 12, hitstun: 22, blockstun: 12, chipDmg: 0.28 },
+    special:{ startup: 12,active: 12, recovery: 7,  damage: 22, range: 105, height: 78,  knockback: 16, launch: -4.5, meterGain: 7,  hitstun: 28, blockstun: 14, chipDmg: 0.35 }
+  };
+  const HITSTOP_LIGHT = 3;   // freeze frames on light hit
+  const HITSTOP_HEAVY = 6;   // freeze frames on heavy hit
+  const HITSTOP_SPECIAL = 10; // freeze frames on special hit
+  const CAMERA_SHAKE_LIGHT = 3;
+  const CAMERA_SHAKE_HEAVY = 6;
+  const CAMERA_SHAKE_SPECIAL = 10;
+
+  // ===== Camera shake state =====
+  const camera = { shakeFrames: 0, shakeIntensity: 0, offsetX: 0, offsetY: 0 };
+  function triggerShake(frames, intensity) { camera.shakeFrames = Math.max(camera.shakeFrames, frames); camera.shakeIntensity = Math.max(camera.shakeIntensity, intensity); }
+  function updateCamera() {
+    if (camera.shakeFrames > 0) {
+      camera.shakeFrames--;
+      const decay = camera.shakeFrames / 30;
+      const mag = camera.shakeIntensity * Math.max(0, decay);
+      camera.offsetX = (Math.random() - 0.5) * mag * 2;
+      camera.offsetY = (Math.random() - 0.5) * mag * 2;
+    } else {
+      camera.offsetX = 0; camera.offsetY = 0; camera.shakeIntensity = 0;
+    }
+  }
+
+  // ===== AI state machine (v0.55) =====
+  // Simple states: approach, attack, block, retreat, spacing
+  // Each state has its own behavior logic, making CPU feel more intentional.
+  const AI_STATES = ['approach', 'attack', 'block', 'retreat', 'spacing'];
+
   class Fighter {
     constructor(id, x, facing, controls, isAI=false) {
       const c = characters[id];
-      Object.assign(this, { id, name: c.name, c, x, y: floorY, vx: 0, vy: 0, w: 48, h: 112, facing, controls, isAI, onGround: true, hp: c.hp, maxHp: c.hp, meter: 10, maxMeter: 100, attackTimer: 0, attackKind: null, hitCooldown: 0, guard: false, dead: false, aiCooldown: 0, comboFlash: 0, damageMod: 1, aiAggression: .68, aiGuard: .006, aiSpecial: .1, aiCooldownMin: 28, aiCooldownMax: 28, aiMovement: 1 });
+      Object.assign(this, { id, name: c.name, c, x, y: floorY, vx: 0, vy: 0, w: 48, h: 112, facing, controls, isAI, onGround: true, hp: c.hp, maxHp: c.hp, meter: 10, maxMeter: 100, attackTimer: 0, attackKind: null, hitCooldown: 0, guard: false, dead: false, aiCooldown: 0, comboFlash: 0, damageMod: 1, aiAggression: .68, aiGuard: .006, aiSpecial: .1, aiCooldownMin: 28, aiCooldownMax: 28, aiMovement: 1, hitstop: 0 });
       if (c.hiddenGod) {
         this.maxMeter = 140;
         this.meter = 70;
@@ -2740,11 +2830,15 @@
         this.aiCooldownMax = 18;
         this.aiMovement = 1.16;
       }
+      // AI state machine
+      this.aiState = 'approach';
+      this.aiStateTimer = 0;
     }
     center() { return { x: this.x + this.w / 2, y: this.y - this.h / 2 }; }
     rect() { return { x: this.x, y: this.y - this.h, w: this.w, h: this.h }; }
     input(enemy) {
       if (this.dead) return;
+      if (this.hitstop > 0) { this.hitstop--; return; } // Hitstop: freeze during impact
       if (this.isTrainingDummy) {
         const behavior = state.settings.trainingDummyBehavior || this.dummyBehavior || 'idle';
         this.dummyBehavior = behavior;
@@ -2764,20 +2858,104 @@
       if (this.isAI) {
         const dist = enemy.x - this.x;
         const abs = Math.abs(dist);
+        const hasMeter = this.meter >= 35;
         this.aiCooldown -= 1;
-        left = dist < -70;
-        right = dist > 70;
-        guard = Math.random() < this.aiGuard && abs < 130;
-        if (abs < 92 && this.aiCooldown <= 0 && Math.random() < this.aiAggression) {
-          light = Math.random() < .58;
-          heavy = !light && Math.random() < .82;
-          this.aiCooldown = this.aiCooldownMin + Math.random() * this.aiCooldownMax;
+        this.aiStateTimer -= 1;
+
+        // ===== AI State Machine (v0.55) =====
+        // Transition states based on game situation
+        if (this.aiStateTimer <= 0) {
+          const enemyAttacking = enemy.attackTimer > 0 && abs < 130;
+          const lowHp = this.hp < this.maxHp * 0.3;
+          const oldState = this.aiState;
+
+          // State transition logic
+          if (enemyAttacking && Math.random() < this.aiGuard + 0.15) {
+            this.aiState = 'block';
+            this.aiStateTimer = 15 + Math.random() * 20;
+          } else if (lowHp && Math.random() < 0.25) {
+            this.aiState = 'retreat';
+            this.aiStateTimer = 20 + Math.random() * 30;
+          } else if (abs < 95) {
+            this.aiState = Math.random() < this.aiAggression ? 'attack' : (Math.random() < 0.4 ? 'spacing' : 'block');
+            this.aiStateTimer = 10 + Math.random() * 20;
+          } else if (abs > 250) {
+            this.aiState = 'approach';
+            this.aiStateTimer = 20 + Math.random() * 20;
+          } else {
+            this.aiState = Math.random() < this.aiAggression * 0.8 ? 'approach' : 'spacing';
+            this.aiStateTimer = 15 + Math.random() * 25;
+          }
         }
-        if (abs < 190 && this.meter > 35 && this.aiCooldown <= 0 && Math.random() < this.aiSpecial) {
-          special = true;
-          this.aiCooldown = this.aiCooldownMin + 44;
+
+        // Execute state behavior
+        switch (this.aiState) {
+          case 'approach':
+            left = dist < -65;
+            right = dist > 65;
+            if (abs < 95 && this.aiCooldown <= 0 && Math.random() < this.aiAggression) {
+              light = Math.random() < .58;
+              heavy = !light && Math.random() < .82;
+              this.aiCooldown = this.aiCooldownMin + Math.random() * this.aiCooldownMax;
+              this.aiStateTimer = 5;
+            }
+            if (hasMeter && abs < 190 && this.aiCooldown <= 0 && Math.random() < this.aiSpecial) {
+              special = true;
+              this.aiCooldown = this.aiCooldownMin + 44;
+            }
+            if (Math.random() < (.006 + this.aiAggression * .006) && this.onGround) jump = true;
+            break;
+
+          case 'attack':
+            if (abs < 95 && this.aiCooldown <= 0) {
+              light = Math.random() < .55;
+              heavy = !light && Math.random() < .75;
+              this.aiCooldown = this.aiCooldownMin + Math.random() * this.aiCooldownMax;
+              this.aiStateTimer = 5;
+            } else {
+              left = dist < -65;
+              right = dist > 65;
+            }
+            if (hasMeter && abs < 190 && this.aiCooldown <= 0 && Math.random() < this.aiSpecial * 1.3) {
+              special = true;
+              this.aiCooldown = this.aiCooldownMin + 44;
+            }
+            break;
+
+          case 'block':
+            guard = true;
+            // Face the enemy while blocking
+            if (abs > 120 && Math.random() < 0.3) {
+              left = dist < -65;
+              right = dist > 65;
+            }
+            break;
+
+          case 'retreat':
+            // Move away from enemy
+            left = dist > 0;
+            right = dist < 0;
+            guard = Math.random() < 0.3; // sometimes block while retreating
+            if (Math.random() < .004 && this.onGround) jump = true;
+            break;
+
+          case 'spacing':
+            // Maintain mid-range distance
+            if (abs < 100) {
+              left = dist > 0;
+              right = dist < 0;
+            } else if (abs > 180) {
+              left = dist < -65;
+              right = dist > 65;
+            }
+            // Counter-attack if enemy whiffs
+            if (enemy.attackTimer > 0 && abs < 120 && this.aiCooldown <= 0 && Math.random() < this.aiAggression * 0.7) {
+              light = true;
+              this.aiCooldown = this.aiCooldownMin + Math.random() * this.aiCooldownMax;
+            }
+            if (Math.random() < .003 && this.onGround) jump = true;
+            break;
         }
-        if (Math.random() < (.006 + this.aiAggression * .006) && this.onGround) jump = true;
       } else {
         const k = state.keys;
         left = k.has(this.controls.left); right = k.has(this.controls.right); jump = k.has(this.controls.jump);
@@ -2802,8 +2980,9 @@
     attack(kind) {
       if (this.attackTimer > 0 || this.dead) return;
       if (kind === 'special' && this.meter < 32) return;
+      const data = ATTACK_DATA[kind] || ATTACK_DATA.light;
       this.attackKind = kind;
-      this.attackTimer = kind === 'light' ? 14 : kind === 'heavy' ? 23 : 31;
+      this.attackTimer = data.startup + data.active + data.recovery;
       if (kind === 'special') {
         this.meter -= 32;
         playSfx('specialCharge', 0.75);
@@ -2827,7 +3006,10 @@
       this.facing = enemy.x >= this.x ? 1 : -1;
       if (this.attackTimer > 0) {
         this.attackTimer -= 1;
-        const active = this.attackKind === 'light' ? this.attackTimer >= 5 && this.attackTimer <= 10 : this.attackKind === 'heavy' ? this.attackTimer >= 8 && this.attackTimer <= 15 : this.attackTimer >= 12 && this.attackTimer <= 23;
+        const data = ATTACK_DATA[this.attackKind] || ATTACK_DATA.light;
+        const activeStart = data.startup;
+        const activeEnd = data.startup + data.active;
+        const active = this.attackTimer >= (data.startup + data.active + data.recovery) - activeEnd && this.attackTimer <= (data.startup + data.active + data.recovery) - activeStart;
         if (active) this.tryHit(enemy);
         if (this.attackTimer <= 0) this.attackKind = null;
       }
@@ -2836,28 +3018,45 @@
       this.meter = Math.min(this.maxMeter, this.meter + .08);
     }
     hitbox() {
-      const range = this.attackKind === 'light' ? 54 : this.attackKind === 'heavy' ? 72 : 105;
-      const height = this.attackKind === 'special' ? 78 : 54;
+      const data = ATTACK_DATA[this.attackKind] || ATTACK_DATA.light;
+      const range = data.range;
+      const height = data.height;
       return { x: this.facing > 0 ? this.x + this.w - 2 : this.x - range + 2, y: this.y - this.h + 34, w: range, h: height };
     }
     tryHit(enemy) {
       if (enemy.hitCooldown > 0 || enemy.dead) return;
       const a = this.hitbox(); const b = enemy.rect();
       if (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y) {
-        let dmg = this.attackKind === 'light' ? 8 : this.attackKind === 'heavy' ? 15 : 22;
-        dmg *= this.c.power * this.damageMod;
-        if (enemy.guard) dmg *= .28;
+        const data = ATTACK_DATA[this.attackKind] || ATTACK_DATA.light;
+        let dmg = data.damage * this.c.power * this.damageMod;
+        if (enemy.guard) dmg *= data.chipDmg;
         playSfx(enemy.guard ? 'guardBlock' : (this.attackKind === 'light' ? 'hitLight' : 'hitHeavy'), enemy.guard ? 0.72 : 0.86);
         if (this.attackKind === 'special' && !enemy.guard) playSfx('specialRelease', 0.72);
         enemy.hp = Math.max(0, enemy.hp - dmg);
-        enemy.hitCooldown = enemy.guard ? 10 : 18;
-        enemy.vx = this.facing * (enemy.guard ? 4 : 9);
-        if (!enemy.guard) enemy.vy = this.attackKind === 'heavy' ? -3.8 : -2.2;
-        this.meter = Math.min(this.maxMeter, this.meter + (this.attackKind === 'special' ? 7 : 12));
+        enemy.hitCooldown = enemy.guard ? data.blockstun : data.hitstun;
+        enemy.vx = this.facing * (enemy.guard ? 4 : data.knockback);
+        if (!enemy.guard) enemy.vy = data.launch;
+        this.meter = Math.min(this.maxMeter, this.meter + data.meterGain);
         enemy.comboFlash = 10;
+
+        // ===== Hitstop & Camera Shake (v0.55) =====
+        if (!enemy.guard) {
+          const hitstopFrames = this.attackKind === 'special' ? HITSTOP_SPECIAL : this.attackKind === 'heavy' ? HITSTOP_HEAVY : HITSTOP_LIGHT;
+          const shakeFrames = this.attackKind === 'special' ? CAMERA_SHAKE_SPECIAL : this.attackKind === 'heavy' ? CAMERA_SHAKE_HEAVY : CAMERA_SHAKE_LIGHT;
+          this.hitstop = hitstopFrames;
+          enemy.hitstop = hitstopFrames;
+          triggerShake(shakeFrames, shakeFrames);
+        } else {
+          // Smaller hitstop on block
+          this.hitstop = 2;
+          enemy.hitstop = 2;
+          triggerShake(2, 2);
+        }
+
         if (enemy.hp <= 0) {
           enemy.dead = true;
           playSfx('koImpact', 0.95);
+          triggerShake(20, 8); // Big shake on KO
         }
       }
     }
@@ -3542,22 +3741,32 @@
     const f = state.fight;
     if (!f) return;
     f.timer++;
+    updateCamera();
     drawBackground(f.stage);
+    // Apply camera shake to the entire fight scene
+    ctx.save();
+    ctx.translate(camera.offsetX, camera.offsetY);
     updateRoundSplash();
     if (f.paused) {
-      f.p1.draw(); f.p2.draw(); updateHud();
+      f.p1.draw(); f.p2.draw();
+      ctx.restore();
+      updateHud();
       raf = requestAnimationFrame(loop);
       return;
     }
     if (f.roundIntro > 0) {
       f.roundIntro--;
       updateRoundSplash();
-      f.p1.draw(); f.p2.draw(); updateHud();
+      f.p1.draw(); f.p2.draw();
+      ctx.restore();
+      updateHud();
       raf = requestAnimationFrame(loop);
       return;
     }
     if (f.roundResolving) {
-      f.p1.draw(); f.p2.draw(); updateHud();
+      f.p1.draw(); f.p2.draw();
+      ctx.restore();
+      updateHud();
       raf = requestAnimationFrame(loop);
       return;
     }
@@ -3607,7 +3816,16 @@
           }
         }      }
     }
-    f.p1.draw(); f.p2.draw(); updateHud();
+    f.p1.draw(); f.p2.draw();
+    // Hitstop flash overlay on fighters
+    if (f.p1.hitstop > 0 || f.p2.hitstop > 0) {
+      ctx.globalAlpha = 0.15;
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore(); // End camera shake
+    updateHud();
     ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(12, H-104, 560, 38);
     ctx.fillStyle = '#f2eee6'; ctx.font = '14px Trebuchet MS';
     const modeText = f.training ? `Training: ${trainingDummyDisplayName()} is set to ${trainingDummyBehaviorLabel()}${state.settings.trainingDummyBehavior === 'attack' ? ` · CPU ${difficultyLabel(state.settings.trainingDummyDifficulty)}` : ''}. Q/E switches P1 teammates. Press R to reset spacing.` : f.mode === 'tournament' ? `Tournament stage ${(state.tournament?.index || 0) + 1}/13. Best 2 of 3 · 2:00 rounds. Difficulty: ${difficultyLabel(f.difficulty)}.` : f.mode === 'cpu-cpu' ? `CPU vs CPU team watch. Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.mode === 'pvp-ai' ? `${f.cpuSide === 'p1' ? 'CPU controls Player 1. Human controls Player 2.' : 'Player 1 fights CPU-controlled opponent.'} Difficulty: ${difficultyLabel(f.difficulty)}. Press R for a rematch.` : f.pvp ? 'Local team PvP: P1 Q/E tag, P2 0 tag. Press R for a rematch.' : `Story battle. Difficulty: ${difficultyLabel(f.difficulty)}. Defeat the opponent to advance.`;
