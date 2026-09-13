@@ -2356,7 +2356,7 @@
         card.style.setProperty('--opacity', opacity.toFixed(2));
         card.style.setProperty('--z', String(absOffset === 0 ? 20 : 18 - absOffset));
         const stageSrc = assets[stage.id];
-        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.42)), url('${stageSrc}')`;
+        card.style.backgroundImage = `linear-gradient(rgba(5,5,8,.85), rgba(5,5,8,.92)), url('${stageSrc}')`;
         card.innerHTML = `<img class="stage-wheel-img" src="${stageSrc}" alt="${stage.name} thumbnail" loading="eager"><span>${stage.tag}</span><strong>${stage.name}</strong>`;
         card.addEventListener('click', () => selectStage(stage.id));
         wheel.appendChild(card);

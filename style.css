@@ -4085,8 +4085,9 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   line-height: 1.15 !important;
 }
 
-/* Hide card images (background is the stage image) */
-.stage-select-wrap.overlay-ui-shell .stage-wheel-img {
+/* Hide card images and tag text (background is the stage image, tag creates ghost text) */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-img,
+.stage-select-wrap.overlay-ui-shell .stage-wheel-card span {
   display: none !important;
 }
 
@@ -4139,4 +4140,65 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   .stage-select-wrap.overlay-ui-shell .stage-nav { width: 42px !important; height: 64px !important; font-size: 2.2rem !important; }
   .stage-select-wrap.overlay-ui-shell .stage-nav.prev { left: .5rem !important; }
   .stage-select-wrap.overlay-ui-shell .stage-nav.next { right: .5rem !important; }
+}
+
+/* === v0.61 Phase 1: Main menu polish === */
+
+/* Remove old pseudo-element diamonds/arrows that conflict with image-based selector frames */
+.main-menu .main-buttons button::before,
+.main-menu .main-buttons button::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remove old border/background from buttons - selector images handle the look */
+.main-menu .main-buttons button {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Selected button glow animation */
+.main-menu .main-buttons button.selected .menu-selector-frame,
+.main-menu .main-buttons button:hover .menu-selector-frame,
+.main-menu .main-buttons button:focus .menu-selector-frame {
+  animation: menuSelectGlow 1.8s ease-in-out infinite !important;
+}
+
+@keyframes menuSelectGlow {
+  0%, 100% { filter: drop-shadow(0 0 14px rgba(255,42,25,.45)) drop-shadow(0 12px 18px rgba(0,0,0,.62)); }
+  50% { filter: drop-shadow(0 0 22px rgba(255,42,25,.75)) drop-shadow(0 12px 18px rgba(0,0,0,.62)); }
+}
+
+/* Polish "Enter the Calamity" presentation */
+.main-menu .press-start {
+  z-index: 8 !important;
+  bottom: 5vh !important;
+  text-align: center !important;
+}
+.main-menu .press-start-label {
+  font-size: clamp(1rem, 1.8vw, 1.4rem) !important;
+  letter-spacing: .3em !important;
+  text-shadow: 0 0 12px rgba(210,33,47,.7), 0 2px 8px #000 !important;
+  animation: enterCalamityPulse 2s ease-in-out infinite !important;
+}
+.main-menu .press-start small {
+  display: block !important;
+  margin-top: .4rem !important;
+  font-size: .68rem !important;
+  letter-spacing: .35em !important;
+  color: rgba(218,184,104,.7) !important;
+  text-shadow: 0 1px 4px #000 !important;
+}
+
+@keyframes enterCalamityPulse {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+/* Update kicker version text */
+.main-menu .kicker {
+  letter-spacing: .24em !important;
+  font-size: .72rem !important;
+  text-shadow: 0 1px 6px #000 !important;
 }
