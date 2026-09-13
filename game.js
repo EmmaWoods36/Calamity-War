@@ -547,6 +547,7 @@
   let currentMusic = null;
   let currentMusicKey = null;
   let audioUnlocked = false;
+  let useProceduralMusic = true; // Use Web Audio synthesis when available
 
   function audioVolume(multiplier = 1) {
     return Math.max(0, Math.min(1, (state.settings?.volume ?? 0.7) * multiplier));
@@ -569,6 +570,11 @@
   }
 
   function stopMusic() {
+    // Stop procedural music engine
+    if (window.CalamityMusicEngine) {
+      window.CalamityMusicEngine.stop();
+    }
+    // Stop WAV fallback
     if (currentMusic) {
       try {
         currentMusic.pause();
@@ -584,12 +590,24 @@
       stopMusic();
       return;
     }
+    // Don't restart if already playing this theme
+    if (currentMusicKey === key) return;
+
+    // Try procedural music engine first
+    if (useProceduralMusic && window.CalamityMusicEngine && window.CalamityMusicEngine.hasTheme(key)) {
+      stopMusic();
+      window.CalamityMusicEngine.setVolume(audioVolume(0.5));
+      window.CalamityMusicEngine.setMuted(false);
+      if (window.CalamityMusicEngine.start(key)) {
+        currentMusicKey = key;
+        audioUnlocked = true;
+        return;
+      }
+    }
+
+    // Fallback to WAV files
     const src = audioSources.music[key];
     if (!src) return;
-    if (currentMusicKey === key && currentMusic) {
-      currentMusic.volume = audioVolume(key === 'battle' ? 0.42 : 0.34);
-      return;
-    }
     stopMusic();
     try {
       const a = new Audio(src);
@@ -603,13 +621,24 @@
   }
 
   function refreshAudioVolumes() {
+    if (window.CalamityMusicEngine) {
+      window.CalamityMusicEngine.setVolume(audioVolume(0.5));
+    }
     if (currentMusic) currentMusic.volume = audioVolume(currentMusicKey === 'battle' ? 0.42 : 0.34);
   }
 
   function musicForScreen(name) {
-    if (name === 'fight') return state.fightMode === 'training' ? 'training' : 'battle';
+    if (name === 'fight') {
+      // Per-stage music: use the stage ID as the music key
+      if (state.fightMode === 'training') return 'training';
+      const stageId = state.battle?.stage || 'forest';
+      // Map stage IDs to music theme keys
+      if (window.CalamityMusicEngine && window.CalamityMusicEngine.hasTheme(stageId)) return stageId;
+      return 'forest'; // fallback
+    }
     if (name === 'battleCharacters' || name === 'stageSelect' || name === 'ready') return 'stageSelect';
-    if (name === 'main' || name === 'loadGame' || name === 'gallery' || name === 'stageGallery' || name === 'options' || name === 'storySetup' || name === 'calamitySports') return 'title';
+    // All menu screens get the title/adventure theme
+    if (name === 'main' || name === 'loadGame' || name === 'gallery' || name === 'stageGallery' || name === 'options' || name === 'storySetup' || name === 'calamitySports' || name === 'worldMap' || name === 'mission' || name === 'story') return 'title';
     return null;
   }
 
@@ -2356,7 +2385,7 @@
         card.style.setProperty('--opacity', opacity.toFixed(2));
         card.style.setProperty('--z', String(absOffset === 0 ? 20 : 18 - absOffset));
         const stageSrc = assets[stage.id];
-        card.style.backgroundImage = `linear-gradient(rgba(5,5,8,.85), rgba(5,5,8,.92)), url('${stageSrc}')`;
+        card.style.backgroundImage = `linear-gradient(rgba(5,5,8,.35), rgba(5,5,8,.65)), url('${stageSrc}')`;
         card.innerHTML = `<img class="stage-wheel-img" src="${stageSrc}" alt="${stage.name} thumbnail" loading="eager"><span>${stage.tag}</span><strong>${stage.name}</strong>`;
         card.addEventListener('click', () => selectStage(stage.id));
         wheel.appendChild(card);
@@ -3334,7 +3363,27 @@
         const pose = this._lastDrawPose || fighterVisualPose(this);
         const dynamicBounds = sprite._visibleBounds || computeSpriteVisibleBounds(sprite);
         if (dynamicBounds) sprite._visibleBounds = dynamicBounds;
-        const bounds = spriteBounds[this.id]?.[pose] || spriteBounds[this.id]?.idle || dynamicBounds || { sx: 0, sy: 0, sw: imgW, sh: imgH };
+        const bounds = spriteBounds[this.id]?.[pose] || dynamicBounds || { sx: 0, sy: 0, sw: imgW, sh: imgH };
+
+        // Compute a consistent aspect ratio from the idle pose so the character
+        // doesn't appear to change size when switching attacks.
+        // Priority: hardcoded idle bounds > idle sprite visible bounds > current bounds
+        let idleAspect;
+        if (spriteBounds[this.id]?.idle) {
+          idleAspect = spriteBounds[this.id].idle.sw / Math.max(1, spriteBounds[this.id].idle.sh);
+        } else {
+          // Cache the idle sprite's visible bounds for consistent sizing
+          const idleSprite = spriteImages[this.id]?.idle;
+          if (idleSprite) {
+            if (!idleSprite._idleAspect) {
+              const ib = computeSpriteVisibleBounds(idleSprite.processed || idleSprite);
+              if (ib) idleSprite._idleAspect = ib.sw / Math.max(1, ib.sh);
+            }
+            idleAspect = idleSprite._idleAspect || (bounds.sw / Math.max(1, bounds.sh));
+          } else {
+            idleAspect = bounds.sw / Math.max(1, bounds.sh);
+          }
+        }
 
         // Draw the visible character bounds instead of the full transparent canvas.
         // This keeps Nico/Rai/Shanti from changing size when the pose image has extra padding.
@@ -3365,7 +3414,9 @@
         const targetH = (CHARACTER_VISUALS[this.id] || CHARACTER_VISUALS[this.canonId] || { h: 178 }).h;
         const poseScale = pose === 'ko' ? 0.58 : (pose === 'heavy' || pose === 'special' ? 1.05 : 1);
         const drawH = targetH * poseScale;
-        const drawW = drawH * (bounds.sw / Math.max(1, bounds.sh));
+        // Use the idle aspect ratio for consistent width across all poses
+        // so the character doesn't appear to change size when attacking.
+        const drawW = drawH * idleAspect;
         const centerX = this.x + this.w / 2;
         const topY = pose === 'ko' ? floorY - drawH * 0.72 : floorY - drawH;
         ctx.translate(centerX, 0);
@@ -3650,7 +3701,9 @@
       modeHint.style.display = modeHint.textContent ? 'inline' : 'none';
     }
     showScreen('fight');
-    startMusic(isTraining ? 'training' : 'battle');
+    // Per-stage music: musicForScreen('fight') returns the stage ID for procedural music
+    const fightMusicKey = musicForScreen('fight');
+    startMusic(fightMusicKey);
     if (isTraining) flashMessage('TRAINING MODE\nInfinite health and meter.', 1300);
     updateRoundSplash();
     loop();
