@@ -130,7 +130,7 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 .roster-card .active-slot{bottom:.25rem;right:.25rem;left:auto}
 .battle-setup-screen[data-battle-format="1v1"] .team-slots-wrap{grid-template-columns:1fr 1fr}
 .battle-setup-screen[data-battle-format="1v1"] .battle-side-panel .overlay-fullbody-slot{min-height:260px}
-.battle-setup-screen[data-battle-format="1v1"] .battle-roster-grid{grid-auto-rows:minmax(82px,94px)}
+.battle-setup-screen[data-battle-format="1v1"] .battle-roster-grid{grid-auto-rows:minmax(120px,140px)}
 .battle-setup-screen[data-battle-format="2v2"] .team-slot-group .team-slot:nth-of-type(n+3){display:none}
 .battle-setup-screen[data-battle-format="3v3"] .team-slot-group .team-slot{min-height:56px}
 @media(max-width:1180px){.battle-select-layout{grid-template-columns:1fr}.battle-side-panel{display:flex!important}.battle-side-panel .overlay-fullbody-slot{min-height:160px}.battle-side-panel .overlay-team-strip{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -1402,7 +1402,7 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 .battle-setup-screen .battle-roster-panel{padding:.65rem .8rem .8rem;display:flex;flex-direction:column;overflow:hidden}
 .battle-setup-screen .battle-roster-panel h1{font-size:clamp(1.6rem,2.4vw,2.8rem);margin:.05rem 0 .1rem;color:#e6d0a0;text-shadow:0 0 22px rgba(0,0,0,.5)}
 .battle-setup-screen .battle-roster-panel .sub{margin:.05rem 0 .4rem;color:#d1bf9a;letter-spacing:.17em}
-.battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(6,minmax(78px,1fr));grid-auto-rows:minmax(82px,94px);gap:.42rem;align-content:start;overflow-y:auto;flex:1 1 auto;min-height:0;padding-right:.3rem}
+.battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(5,minmax(88px,1fr));grid-auto-rows:minmax(135px,160px);gap:.48rem;align-content:start;overflow-y:auto;flex:1 1 auto;min-height:0;padding-right:.3rem}
 .battle-setup-screen .roster-card{padding:0;min-height:84px;border:1px solid rgba(184,144,82,.78);background-image:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.15) 40%,rgba(0,0,0,.55) 92%),var(--portrait-image);background-size:cover;background-position:center 18%;border-radius:2px;box-shadow:0 8px 20px rgba(0,0,0,.32);display:flex;align-items:flex-end;justify-content:stretch;overflow:hidden;transition:border-color .15s ease,box-shadow .15s ease,transform .1s ease}
 .battle-setup-screen .roster-card:hover{border-color:rgba(248,225,164,.92);box-shadow:0 0 16px rgba(248,203,131,.45),0 8px 20px rgba(0,0,0,.32);transform:translateY(-2px);cursor:pointer}
 .battle-setup-screen .roster-card .portrait-slot,.battle-setup-screen .team-mini-card .portrait-slot{display:none!important}
@@ -1448,7 +1448,7 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 
 @media(max-width:1180px){
   .battle-setup-screen .battle-select-layout{grid-template-columns:1fr;inset:6vh 4vw 4vh;overflow:auto}
-  .battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(5,minmax(70px,1fr));grid-auto-rows:minmax(76px,88px)}
+  .battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(4,minmax(82px,1fr));grid-auto-rows:minmax(120px,140px)}
   .battle-setup-screen .battle-action-bar .battle-randoms{grid-template-columns:1fr}
 }
 @media(max-width:900px){
@@ -1731,17 +1731,17 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   gap:.35rem;
 }
 .battle-setup-screen .side-slot-pick{
-  display:flex;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  column-gap:.35rem;
   align-items:center;
-  justify-content:space-between;
-  padding:.25rem .35rem;
-  min-height:30px;
-  font-size:.62rem;
-  overflow:hidden;
-  gap:.3rem;
+  padding:.3rem .5rem;
+  min-height:32px;
+  font-size:.66rem;
+  box-sizing:border-box;
 }
-.battle-setup-screen .side-slot-pick span{color:#cbbda6;font-size:.54rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;}
-.battle-setup-screen .side-slot-pick strong{font-size:.6rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;}
+.battle-setup-screen .side-slot-pick span{color:#cbbda6;font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.battle-setup-screen .side-slot-pick strong{font-size:.64rem;color:#fff;min-width:0;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .battle-setup-screen .battle-action-bar{
   position:relative!important;
   margin-top:.78rem!important;
@@ -2142,8 +2142,8 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   display:none !important;
 }
 .battle-setup-screen .battle-roster-grid{
-  grid-template-columns:repeat(6,minmax(82px,1fr)) !important;
-  grid-auto-rows:auto !important;
+  grid-template-columns:repeat(5,minmax(88px,1fr)) !important;
+  grid-auto-rows:minmax(135px,160px) !important;
   gap:.42rem !important;
   max-height:calc(100vh - 200px) !important;
   overflow-y:auto !important;
@@ -2168,23 +2168,19 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   position:relative !important;
   width:100% !important;
   height:auto !important;
-  padding:.22rem .12rem .26rem !important;
+  padding:.3rem .2rem .34rem !important;
   margin:0 !important;
   overflow:hidden !important;
-  display:-webkit-box !important;
-  -webkit-line-clamp:2 !important;
-  -webkit-box-orient:vertical !important;
   text-overflow:ellipsis !important;
-  white-space:normal !important;
-  word-break:break-word !important;
+  white-space:nowrap !important;
   border:none !important;
   opacity:1 !important;
   pointer-events:auto !important;
+  display:block !important;
   background:linear-gradient(180deg,rgba(16,12,14,.18),rgba(6,6,8,.94)) !important;
-  font-size:.56rem !important;
-  letter-spacing:0 !important;
-  line-height:1.08 !important;
-  max-height:2.3em !important;
+  font-size:.64rem !important;
+  letter-spacing:.02em !important;
+  line-height:1.1 !important;
   text-align:center !important;
   color:#f4ecdf !important;
   text-shadow:0 2px 8px rgba(0,0,0,.9) !important;
@@ -2381,8 +2377,8 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 /* The select-card art files are 1024x1536 portrait frames.
    The clickable boxes now match that actual portrait ratio instead of squeezing them into wide tiles. */
 #battleCharacterScreen #battleRosterGrid{
-  grid-template-columns:repeat(6,minmax(76px,1fr)) !important;
-  grid-auto-rows:auto !important;
+  grid-template-columns:repeat(5,minmax(88px,1fr)) !important;
+  grid-auto-rows:minmax(135px,160px) !important;
   gap:.42rem !important;
   align-content:start !important;
   max-height:calc(100vh - 200px) !important;
@@ -3031,10 +3027,10 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 }
 #battleCharacterScreen #battleRosterGrid{
   display:grid !important;
-  grid-template-columns:repeat(6,minmax(72px,1fr)) !important;
+  grid-template-columns:repeat(5,minmax(88px,1fr)) !important;
   justify-content:center !important;
   align-content:start !important;
-  gap:.42rem !important;
+  gap:.48rem !important;
   max-height:calc(100vh - 200px) !important;
   overflow-y:auto !important;
   overflow-x:hidden !important;
@@ -3254,14 +3250,14 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 
 #battleCharacterScreen #battleRosterGrid{
   display:grid !important;
-  grid-template-columns:repeat(6, minmax(72px, 1fr)) !important;
-  grid-auto-rows:auto !important;
+  grid-template-columns:repeat(5, minmax(88px, 1fr)) !important;
+  grid-auto-rows:minmax(135px,160px) !important;
   grid-auto-flow:row !important;
   justify-content:center !important;
-  justify-items:center !important;
+  justify-items:stretch !important;
   align-items:start !important;
   align-content:start !important;
-  gap:.42rem !important;
+  gap:.48rem !important;
   max-height:calc(100vh - 200px) !important;
   min-height:0 !important;
   overflow-y:auto !important;
@@ -3284,19 +3280,19 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   float:none !important;
   clear:none !important;
   display:block !important;
-  width:auto !important;
-  height:clamp(50px, 5.8vh, 64px) !important;
-  max-height:clamp(50px, 5.8vh, 64px) !important;
+  width:100% !important;
+  height:auto !important;
+  max-height:none !important;
   aspect-ratio:2 / 3 !important;
   min-width:0 !important;
   min-height:0 !important;
-  max-width:44px !important;
-  justify-self:center !important;
+  max-width:none !important;
+  justify-self:stretch !important;
   align-self:start !important;
   margin:0 !important;
   padding:0 !important;
   transform:none !important;
-  overflow:visible !important;
+  overflow:hidden !important;
   z-index:1 !important;
   background-size:contain !important;
   background-position:center center !important;
@@ -3307,8 +3303,10 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 #battleCharacterScreen #battleRosterGrid > .card:hover,
 #battleCharacterScreen #battleRosterGrid > .roster-card:hover,
 #battleCharacterScreen #battleRosterGrid > .random-art-card:hover{
-  transform:translateY(-1px) scale(1.04) !important;
+  transform:translateY(-2px) !important;
   z-index:6 !important;
+  border-color:rgba(248,225,164,.92) !important;
+  box-shadow:0 0 16px rgba(248,203,131,.45),0 8px 18px rgba(0,0,0,.42) !important;
 }
 
 #battleCharacterScreen #battleRosterGrid > .card.selected,
@@ -3358,7 +3356,7 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 @media(max-width:1180px){
   #battleCharacterScreen #battleRosterGrid{
     grid-template-columns:repeat(6, minmax(34px, 46px)) !important;
-    grid-auto-rows:clamp(46px, 5.2vh, 58px) !important;
+    grid-auto-rows:minmax(90px,110px) !important;
   }
   #battleCharacterScreen #battleRosterGrid > .card,
   #battleCharacterScreen #battleRosterGrid > .roster-card,
@@ -4272,15 +4270,64 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 }
 #battleCharacterScreen .roster-card strong {
   overflow: hidden !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
   text-overflow: ellipsis !important;
-  white-space: normal !important;
-  word-break: break-word !important;
-  font-size: .56rem !important;
-  letter-spacing: 0 !important;
-  line-height: 1.08 !important;
-  max-height: 2.3em !important;
-  padding: .22rem .12rem .26rem !important;
+  white-space: nowrap !important;
+  font-size: .64rem !important;
+  letter-spacing: .02em !important;
+  line-height: 1.1 !important;
+  padding: .3rem .2rem .34rem !important;
+  display: block !important;
+  color: #f4ecdf !important;
+  text-align: center !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.9) !important;
+}
+
+/* v0.61: Ensure side panel container doesn't clip slot text */
+#battleCharacterScreen .battle-side-panel {
+  box-sizing: border-box !important;
+  padding-right: .6rem !important;
+}
+
+/* v0.61: Ensure roster cards fill full column width */
+#battleCharacterScreen .roster-card,
+#battleCharacterScreen .card {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* v0.61: Prevent P2 slot text horizontal clipping */
+#battleCharacterScreen .side-slot-controls,
+#battleCharacterScreen .side-slot-list,
+#battleCharacterScreen .side-slot-pick {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+#battleCharacterScreen .battle-side-panel {
+  overflow-x: visible !important;
+}
+
+/* v0.61: Position card name label at bottom of card */
+#battleCharacterScreen #battleRosterGrid > .card > strong,
+#battleCharacterScreen #battleRosterGrid > .roster-card > strong,
+#battleCharacterScreen #battleRosterGrid > .random-art-card > strong {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  width: 100% !important;
+  z-index: 5 !important;
+  display: block !important;
+  text-align: center !important;
+  color: #f4ecdf !important;
+  font-size: .64rem !important;
+  letter-spacing: .02em !important;
+  line-height: 1.1 !important;
+  padding: .3rem .2rem .34rem !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  background: linear-gradient(180deg, rgba(16,12,14,.18), rgba(6,6,8,.94)) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.9) !important;
+  pointer-events: auto !important;
 }
