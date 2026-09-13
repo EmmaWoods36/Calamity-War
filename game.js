@@ -157,9 +157,9 @@
       "nico": {
           "idle": {
               "sx": 80,
-              "sy": 318,
+              "sy": 180,
               "sw": 740,
-              "sh": 502
+              "sh": 700
           },
           "light": {
               "sx": 91,
@@ -257,7 +257,10 @@
   };
 
 
-  function sanitizeSpriteBackground(img) {
+  // Characters whose dark clothing gets eaten by the second-pass background flood-fill.
+  const SANITIZE_SKIP_SECOND_PASS = new Set(['nico']);
+
+  function sanitizeSpriteBackground(img, charId) {
     try {
       const w = img.naturalWidth || img.width;
       const h = img.naturalHeight || img.height;
@@ -305,7 +308,8 @@
         push(x + 1, y, brightNeutral); push(x - 1, y, brightNeutral); push(x, y + 1, brightNeutral); push(x, y - 1, brightNeutral);
       }
 
-      // Second pass: some sprites have a transparent border and then an internal white/gray rectangle.
+      // Second pass: skip for characters with dark clothing that gets incorrectly removed.
+      if (!charId || !SANITIZE_SKIP_SECOND_PASS.has(charId)) {
       // Find the remaining opaque bounding rectangle and flood-fill bright/neutral backdrop colors from that rectangle's perimeter.
       let minX = w, minY = h, maxX = -1, maxY = -1;
       for (let y = 0; y < h; y++) {
@@ -359,6 +363,7 @@
           push2(x + 1, y); push2(x - 1, y); push2(x, y + 1); push2(x, y - 1);
         }
       }
+      } // end SANITIZE_SKIP_SECOND_PASS guard
 
       cctx.putImageData(imageData, 0, 0);
       canvas.loaded = true;
@@ -436,7 +441,7 @@
       const img = new Image();
       img.onload = () => {
         img.loaded = true;
-        img.processed = sanitizeSpriteBackground(img);
+        img.processed = sanitizeSpriteBackground(img, charId);
       };
       img.onerror = () => { console.warn('Missing sprite asset:', src); };
       img.src = src;
@@ -2317,28 +2322,39 @@
     const wheel = document.getElementById('stageWheel');
     if (wheel) {
       wheel.innerHTML = '';
+      // v0.60: Circular portal crown carousel.
+      // Stages arranged in an arc around the center. Selected stage is centered and largest.
+      // Adjacent stages arc upward like a crown. Far stages fade and hide.
       stageOptions.forEach((stage, i) => {
         let offset = i - selectedIndex;
         const half = stageOptions.length / 2;
         if (offset > half) offset -= stageOptions.length;
         if (offset < -half) offset += stageOptions.length;
+        const absOffset = Math.min(Math.abs(offset), 4);
+        if (Math.abs(offset) > 4) return; // hide far cards entirely
+        const direction = offset < 0 ? -1 : offset > 0 ? 1 : 0;
+
+        // Circular arc positioning: each stage sits on a circle around center
+        // Crown arc: center card at bottom, adjacent cards arc upward
+        const angle = absOffset * 0.42; // radians per step
+        const radiusX = 360; // horizontal spread
+        const radiusY = 100; // vertical arc height (crown curve)
+        const ringX = direction * Math.sin(angle) * radiusX;
+        const ringY = Math.cos(angle) * radiusY - radiusY; // arc upward from center
+        const ringRot = direction * (absOffset === 0 ? 0 : 8 + absOffset * 7);
+        const scale = absOffset === 0 ? 1.15 : Math.max(0.5, 1.0 - absOffset * 0.15);
+        const opacity = absOffset === 0 ? 1.0 : Math.max(0, 1.0 - absOffset * 0.22);
+
         const card = document.createElement('button');
         card.type = 'button';
-        card.className = 'stage-wheel-card' + (i === selectedIndex ? ' active' : '') + (Math.abs(offset) > 3 ? ' hidden-wheel-card' : '');
-        const absOffset = Math.min(Math.abs(offset), 4);
-        const direction = offset < 0 ? -1 : offset > 0 ? 1 : 0;
-        // v0.48: ring/oval carousel optics. The selected stage is shown big in the preview box,
-        // while the wheel cards orbit around it instead of sitting in a flat row.
-        const ringX = direction * (absOffset === 0 ? 0 : 250 + (absOffset - 1) * 190);
-        const ringY = absOffset === 0 ? 118 : 48 + Math.pow(absOffset, 1.42) * 32;
-        const ringRot = direction * (absOffset === 0 ? 0 : 7 + absOffset * 6);
+        card.className = 'stage-wheel-card' + (i === selectedIndex ? ' active' : '');
         card.style.setProperty('--offset', offset);
         card.style.setProperty('--tx', `${ringX}px`);
         card.style.setProperty('--ty', `${ringY}px`);
-        card.style.setProperty('--scale', (absOffset === 0 ? 0.86 : Math.max(0.54, 0.88 - absOffset * 0.085)).toFixed(2));
+        card.style.setProperty('--scale', scale.toFixed(2));
         card.style.setProperty('--rot', `${ringRot}deg`);
-        card.style.setProperty('--opacity', (absOffset === 0 ? 0.88 : Math.max(0, 1 - absOffset * 0.19)).toFixed(2));
-        card.style.setProperty('--z', String(absOffset === 0 ? 18 : 16 - absOffset));
+        card.style.setProperty('--opacity', opacity.toFixed(2));
+        card.style.setProperty('--z', String(absOffset === 0 ? 20 : 18 - absOffset));
         const stageSrc = assets[stage.id];
         card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.42)), url('${stageSrc}')`;
         card.innerHTML = `<img class="stage-wheel-img" src="${stageSrc}" alt="${stage.name} thumbnail" loading="eager"><span>${stage.tag}</span><strong>${stage.name}</strong>`;

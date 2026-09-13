@@ -3959,3 +3959,184 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   left: auto;
   right: .45rem;
 }
+
+/* === v0.60 Stage crown portal carousel === */
+
+/* Hide the old top preview panel - the centered card IS the preview now */
+.stage-select-wrap.overlay-ui-shell #stagePreviewPanel {
+  display: none !important;
+}
+
+/* Crown carousel container */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-shell {
+  height: 440px !important;
+  position: relative !important;
+  margin: 0 auto !important;
+  max-width: 1200px !important;
+  overflow: hidden !important;
+  background: radial-gradient(ellipse at 50% 60%, rgba(125,64,255,.10), rgba(0,0,0,.15) 40%, rgba(0,0,0,.5) 100%) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(185,115,255,.12) !important;
+}
+
+/* Make the wheel fill the shell so card centering works */
+.stage-select-wrap.overlay-ui-shell .stage-wheel {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  perspective: none !important;
+}
+
+/* Portal glow behind selected card */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-shell::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 260px !important;
+  height: 360px !important;
+  background: radial-gradient(ellipse, rgba(125,64,255,.25), rgba(61,162,255,.12) 40%, transparent 70%) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  animation: portalPulse 3s ease-in-out infinite !important;
+}
+
+@keyframes portalPulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* Stage wheel cards: circular crown positioning using --tx AND --ty */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-card {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 200px !important;
+  height: 300px !important;
+  margin-left: -100px !important;
+  margin-top: -150px !important;
+  transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--scale, 0.8)) !important;
+  opacity: var(--opacity, 0.5) !important;
+  z-index: var(--z, 1) !important;
+  border: 2px solid rgba(218,184,104,.35) !important;
+  border-radius: 8px !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.6), inset 0 0 30px rgba(0,0,0,.4) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  padding: .7rem !important;
+  text-align: center !important;
+  transition: transform .18s cubic-bezier(.4,.0,.2,1), opacity .18s ease, border-color .18s ease, box-shadow .18s ease !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+}
+
+/* Frame border for each portal card */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-card::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 4px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 6px !important;
+  pointer-events: none !important;
+}
+
+/* Selected card: bigger, glowing portal frame */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-card.active {
+  border-color: rgba(179,92,255,.9) !important;
+  box-shadow: 0 0 24px rgba(179,92,255,.6), 0 0 48px rgba(179,92,255,.3), 0 12px 40px rgba(0,0,0,.7), inset 0 0 40px rgba(179,92,255,.08) !important;
+  transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--scale, 1.15)) !important;
+}
+
+/* Card text styling */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-card span {
+  position: relative !important;
+  z-index: 2 !important;
+  color: #d8c080 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .13em !important;
+  font-size: .58rem !important;
+  text-shadow: 0 2px 8px #000 !important;
+  background: rgba(0,0,0,.55) !important;
+  padding: .2rem .35rem !important;
+  border-radius: 2px !important;
+  align-self: center !important;
+}
+
+.stage-select-wrap.overlay-ui-shell .stage-wheel-card strong {
+  position: relative !important;
+  z-index: 2 !important;
+  font-size: .78rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  text-shadow: 0 2px 8px #000 !important;
+  background: rgba(0,0,0,.6) !important;
+  padding: .25rem .4rem !important;
+  border-radius: 2px !important;
+  align-self: center !important;
+  margin-top: .3rem !important;
+  max-width: 180px !important;
+  line-height: 1.15 !important;
+}
+
+/* Hide card images (background is the stage image) */
+.stage-select-wrap.overlay-ui-shell .stage-wheel-img {
+  display: none !important;
+}
+
+/* Navigation buttons */
+.stage-select-wrap.overlay-ui-shell .stage-nav {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 25 !important;
+  width: 52px !important;
+  height: 80px !important;
+  border: 1px solid rgba(218,184,104,.4) !important;
+  background: rgba(0,0,0,.5) !important;
+  font-size: 2.8rem !important;
+  line-height: 1 !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 20px rgba(0,0,0,.4) !important;
+  transition: .15s transform, .15s border-color, .15s background !important;
+}
+
+.stage-select-wrap.overlay-ui-shell .stage-nav:hover {
+  border-color: rgba(179,92,255,.8) !important;
+  background: rgba(40,20,60,.7) !important;
+  transform: translateY(-50%) scale(1.06) !important;
+}
+
+.stage-select-wrap.overlay-ui-shell .stage-nav.prev { left: 1.5rem !important; }
+.stage-select-wrap.overlay-ui-shell .stage-nav.next { right: 1.5rem !important; }
+
+/* Random button glow during spin */
+.stage-select-wrap.overlay-ui-shell .random-stage-btn {
+  position: relative !important;
+}
+.stage-select-wrap.overlay-ui-shell .random-stage-btn.preview-spinning,
+.stage-select-wrap.overlay-ui-shell .random-stage-btn:disabled {
+  border-color: rgba(179,92,255,.8) !important;
+  box-shadow: 0 0 20px rgba(179,92,255,.4) !important;
+}
+
+/* Spin animation for cards during random */
+.stage-wheel.spinning .stage-wheel-card {
+  transition: transform .06s linear, opacity .06s linear !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 850px) {
+  .stage-select-wrap.overlay-ui-shell .stage-wheel-shell { height: 360px !important; }
+  .stage-select-wrap.overlay-ui-shell .stage-wheel-card { width: 160px !important; height: 240px !important; margin-left: -80px !important; margin-top: -120px !important; }
+  .stage-select-wrap.overlay-ui-shell .stage-nav { width: 42px !important; height: 64px !important; font-size: 2.2rem !important; }
+  .stage-select-wrap.overlay-ui-shell .stage-nav.prev { left: .5rem !important; }
+  .stage-select-wrap.overlay-ui-shell .stage-nav.next { right: .5rem !important; }
+}
