@@ -2795,6 +2795,172 @@
   const CAMERA_SHAKE_HEAVY = 6;
   const CAMERA_SHAKE_SPECIAL = 10;
 
+  // ===== Particle system (v0.56) =====
+  const particles = [];
+  const floatingTexts = [];
+  let comboCounter = { p1: 0, p2: 0 };
+  let comboTimer = { p1: 0, p2: 0 };
+  let hitSparkColor = '#fff';
+
+  function spawnHitSparks(x, y, intensity = 1, color = '#fff') {
+    const count = Math.floor(8 + intensity * 6);
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * (4 + intensity * 3);
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1,
+        life: 12 + Math.random() * 10,
+        maxLife: 12 + Math.random() * 10,
+        size: 2 + Math.random() * 3 * intensity,
+        color: Math.random() < 0.3 ? color : (Math.random() < 0.5 ? '#fff' : '#ffd66b'),
+        type: 'spark'
+      });
+    }
+    // Ring shockwave
+    particles.push({
+      x, y, vx: 0, vy: 0,
+      life: 8 + intensity * 4, maxLife: 8 + intensity * 4,
+      size: 6 + intensity * 8, color, type: 'ring'
+    });
+  }
+
+  function spawnBlockSparks(x, y) {
+    for (let i = 0; i < 6; i++) {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.2;
+      const speed = 1.5 + Math.random() * 3;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 8 + Math.random() * 6,
+        maxLife: 8 + Math.random() * 6,
+        size: 1.5 + Math.random() * 2,
+        color: '#73b8ff',
+        type: 'spark'
+      });
+    }
+  }
+
+  function spawnDust(x, y) {
+    for (let i = 0; i < 5; i++) {
+      particles.push({
+        x: x + (Math.random() - 0.5) * 30,
+        y: y - 2,
+        vx: (Math.random() - 0.5) * 3,
+        vy: -1 - Math.random() * 2,
+        life: 10 + Math.random() * 8,
+        maxLife: 10 + Math.random() * 8,
+        size: 3 + Math.random() * 4,
+        color: 'rgba(180,170,150,0.6)',
+        type: 'dust'
+      });
+    }
+  }
+
+  function spawnFloatingText(x, y, text, color = '#fff', size = 16) {
+    floatingTexts.push({ x, y, text, color, size, life: 40, maxLife: 40, vy: -1.5 });
+  }
+
+  function updateParticles() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.type !== 'ring') {
+        p.vy += 0.25; // gravity
+        p.vx *= 0.96;
+      }
+      p.life--;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+      const t = floatingTexts[i];
+      t.y += t.vy;
+      t.vy *= 0.95;
+      t.life--;
+      if (t.life <= 0) floatingTexts.splice(i, 1);
+    }
+    // Combo timer decay
+    if (comboTimer.p1 > 0) { comboTimer.p1--; if (comboTimer.p1 <= 0) comboCounter.p1 = 0; }
+    if (comboTimer.p2 > 0) { comboTimer.p2--; if (comboTimer.p2 <= 0) comboCounter.p2 = 0; }
+  }
+
+  function drawParticles() {
+    for (const p of particles) {
+      const alpha = p.life / p.maxLife;
+      if (p.type === 'ring') {
+        const expand = (1 - alpha) * p.size * 4;
+        ctx.save();
+        ctx.globalAlpha = alpha * 0.6;
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 2 + alpha * 2;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size + expand, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      } else if (p.type === 'dust') {
+        ctx.save();
+        ctx.globalAlpha = alpha * 0.5;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      } else {
+        // spark
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    // Floating texts
+    for (const t of floatingTexts) {
+      const alpha = Math.min(1, t.life / 20);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.font = `bold ${t.size}px Trebuchet MS, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 4;
+      ctx.fillStyle = t.color;
+      ctx.fillText(t.text, t.x, t.y);
+      ctx.restore();
+    }
+    // Combo counter display
+    if (comboCounter.p1 >= 2) {
+      const alpha = Math.min(1, comboTimer.p1 / 30);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.font = 'bold 28px Trebuchet MS, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 6;
+      ctx.fillStyle = '#ffd66b';
+      ctx.fillText(`${comboCounter.p1} HIT COMBO`, 24, 80);
+      ctx.restore();
+    }
+    if (comboCounter.p2 >= 2) {
+      const alpha = Math.min(1, comboTimer.p2 / 30);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.font = 'bold 28px Trebuchet MS, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 6;
+      ctx.fillStyle = '#ff6b6b';
+      ctx.fillText(`${comboCounter.p2} HIT COMBO`, W - 24, 80);
+      ctx.restore();
+    }
+  }
+
   // ===== Camera shake state =====
   const camera = { shakeFrames: 0, shakeIntensity: 0, offsetX: 0, offsetY: 0 };
   function triggerShake(frames, intensity) { camera.shakeFrames = Math.max(camera.shakeFrames, frames); camera.shakeIntensity = Math.max(camera.shakeIntensity, intensity); }
@@ -2818,7 +2984,7 @@
   class Fighter {
     constructor(id, x, facing, controls, isAI=false) {
       const c = characters[id];
-      Object.assign(this, { id, name: c.name, c, x, y: floorY, vx: 0, vy: 0, w: 48, h: 112, facing, controls, isAI, onGround: true, hp: c.hp, maxHp: c.hp, meter: 10, maxMeter: 100, attackTimer: 0, attackKind: null, hitCooldown: 0, guard: false, dead: false, aiCooldown: 0, comboFlash: 0, damageMod: 1, aiAggression: .68, aiGuard: .006, aiSpecial: .1, aiCooldownMin: 28, aiCooldownMax: 28, aiMovement: 1, hitstop: 0 });
+      Object.assign(this, { id, name: c.name, c, x, y: floorY, vx: 0, vy: 0, w: 48, h: 112, facing, controls, isAI, onGround: true, hp: c.hp, maxHp: c.hp, meter: 10, maxMeter: 100, attackTimer: 0, attackKind: null, hitCooldown: 0, guard: false, dead: false, aiCooldown: 0, comboFlash: 0, damageMod: 1, aiAggression: .68, aiGuard: .006, aiSpecial: .1, aiCooldownMin: 28, aiCooldownMax: 28, aiMovement: 1, hitstop: 0, inputBuffer: [], meterFlash: 0, koSlowmo: 0 });
       if (c.hiddenGod) {
         this.maxMeter = 140;
         this.meter = 70;
@@ -2941,19 +3107,27 @@
 
           case 'spacing':
             // Maintain mid-range distance
-            if (abs < 100) {
+            const idealRange = 120 + Math.random() * 40;
+            if (abs < idealRange - 20) {
               left = dist > 0;
               right = dist < 0;
-            } else if (abs > 180) {
+            } else if (abs > idealRange + 40) {
               left = dist < -65;
               right = dist > 65;
             }
-            // Counter-attack if enemy whiffs
-            if (enemy.attackTimer > 0 && abs < 120 && this.aiCooldown <= 0 && Math.random() < this.aiAggression * 0.7) {
-              light = true;
+            // Counter-attack if enemy whiffs or is in recovery
+            if (enemy.attackTimer > 0 && abs < 130 && this.aiCooldown <= 0 && Math.random() < this.aiAggression * 0.8) {
+              light = Math.random() < 0.6;
+              heavy = !light && Math.random() < 0.7;
               this.aiCooldown = this.aiCooldownMin + Math.random() * this.aiCooldownMax;
             }
-            if (Math.random() < .003 && this.onGround) jump = true;
+            // Occasional jump to close distance or dodge
+            if (Math.random() < .004 && this.onGround) jump = true;
+            // Use special at mid-range if meter is full
+            if (hasMeter && abs > 100 && abs < 200 && this.aiCooldown <= 0 && Math.random() < this.aiSpecial * 0.5) {
+              special = true;
+              this.aiCooldown = this.aiCooldownMin + 44;
+            }
             break;
         }
       } else {
@@ -2968,6 +3142,10 @@
         if (left) this.vx -= moveSpeed;
         if (right) this.vx += moveSpeed;
       }
+      // Walking dust
+      if (this.onGround && Math.abs(this.vx) > 1 && Math.random() < 0.08) {
+        spawnDust(this.x + this.w / 2, floorY);
+      }
       if (jump && this.onGround && !this.guard) {
         this.vy = -12.5;
         this.onGround = false;
@@ -2978,13 +3156,19 @@
       if (special) this.attack('special');
     }
     attack(kind) {
-      if (this.attackTimer > 0 || this.dead) return;
+      if (this.dead) return;
+      // Input buffer: if attacking, store the input for up to 8 frames
+      if (this.attackTimer > 0) {
+        if (this.inputBuffer.length < 2) this.inputBuffer.push({ kind, age: 0 });
+        return;
+      }
       if (kind === 'special' && this.meter < 32) return;
       const data = ATTACK_DATA[kind] || ATTACK_DATA.light;
       this.attackKind = kind;
       this.attackTimer = data.startup + data.active + data.recovery;
       if (kind === 'special') {
         this.meter -= 32;
+        this.meterFlash = 30;
         playSfx('specialCharge', 0.75);
       } else if (!this.isAI) {
         playSfx(kind === 'heavy' ? 'hitHeavy' : 'hitLight', 0.22);
@@ -2999,7 +3183,10 @@
       if (this.y >= floorY) {
         this.y = floorY;
         this.vy = 0;
-        if (!wasOnGround) playSfx('land', 0.5);
+        if (!wasOnGround) {
+          playSfx('land', 0.5);
+          spawnDust(this.x + this.w / 2, floorY);
+        }
         this.onGround = true;
       }
       this.x = Math.max(60, Math.min(W - 110, this.x));
@@ -3011,10 +3198,21 @@
         const activeEnd = data.startup + data.active;
         const active = this.attackTimer >= (data.startup + data.active + data.recovery) - activeEnd && this.attackTimer <= (data.startup + data.active + data.recovery) - activeStart;
         if (active) this.tryHit(enemy);
-        if (this.attackTimer <= 0) this.attackKind = null;
+        if (this.attackTimer <= 0) {
+          this.attackKind = null;
+          // Consume input buffer
+          if (this.inputBuffer.length > 0) {
+            const buffered = this.inputBuffer.shift();
+            this.attack(buffered.kind);
+          }
+        }
       }
+      // Age input buffer entries
+      this.inputBuffer = this.inputBuffer.filter(b => { b.age++; return b.age < 8; });
       if (this.hitCooldown > 0) this.hitCooldown -= 1;
       if (this.comboFlash > 0) this.comboFlash -= 1;
+      if (this.meterFlash > 0) this.meterFlash -= 1;
+      if (this.koSlowmo > 0) this.koSlowmo -= 1;
       this.meter = Math.min(this.maxMeter, this.meter + .08);
     }
     hitbox() {
@@ -3029,18 +3227,45 @@
       if (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y) {
         const data = ATTACK_DATA[this.attackKind] || ATTACK_DATA.light;
         let dmg = data.damage * this.c.power * this.damageMod;
-        if (enemy.guard) dmg *= data.chipDmg;
-        playSfx(enemy.guard ? 'guardBlock' : (this.attackKind === 'light' ? 'hitLight' : 'hitHeavy'), enemy.guard ? 0.72 : 0.86);
-        if (this.attackKind === 'special' && !enemy.guard) playSfx('specialRelease', 0.72);
+        const isBlock = enemy.guard;
+        if (isBlock) dmg *= data.chipDmg;
+        playSfx(isBlock ? 'guardBlock' : (this.attackKind === 'light' ? 'hitLight' : 'hitHeavy'), isBlock ? 0.72 : 0.86);
+        if (this.attackKind === 'special' && !isBlock) playSfx('specialRelease', 0.72);
         enemy.hp = Math.max(0, enemy.hp - dmg);
-        enemy.hitCooldown = enemy.guard ? data.blockstun : data.hitstun;
-        enemy.vx = this.facing * (enemy.guard ? 4 : data.knockback);
-        if (!enemy.guard) enemy.vy = data.launch;
+        enemy.hitCooldown = isBlock ? data.blockstun : data.hitstun;
+        enemy.vx = this.facing * (isBlock ? 4 : data.knockback);
+        if (!isBlock) enemy.vy = data.launch;
         this.meter = Math.min(this.maxMeter, this.meter + data.meterGain);
         enemy.comboFlash = 10;
 
+        // ===== Hit sparks, combo tracking, damage numbers (v0.56) =====
+        const hitX = enemy.x + enemy.w / 2;
+        const hitY = enemy.y - enemy.h / 2;
+        if (isBlock) {
+          spawnBlockSparks(hitX, hitY);
+        } else {
+          const intensity = this.attackKind === 'special' ? 2.5 : this.attackKind === 'heavy' ? 1.8 : 1;
+          spawnHitSparks(hitX, hitY, intensity, this.c.color);
+          // Track combos - determine which side landed the hit
+          const isP1Attacker = state.fight.p1 === this;
+          if (isP1Attacker) {
+            comboCounter.p1++;
+            comboTimer.p1 = 60;
+            if (comboCounter.p1 >= 3) {
+              spawnFloatingText(hitX, hitY - 40, `${comboCounter.p1} HITS!`, '#ffd66b', 18);
+            }
+          } else {
+            comboCounter.p2++;
+            comboTimer.p2 = 60;
+            if (comboCounter.p2 >= 3) {
+              spawnFloatingText(hitX, hitY - 40, `${comboCounter.p2} HITS!`, '#ff6b6b', 18);
+            }
+          }
+          spawnFloatingText(hitX, hitY - 20, Math.round(dmg).toString(), isBlock ? '#73b8ff' : '#ff5544', 14);
+        }
+
         // ===== Hitstop & Camera Shake (v0.55) =====
-        if (!enemy.guard) {
+        if (!isBlock) {
           const hitstopFrames = this.attackKind === 'special' ? HITSTOP_SPECIAL : this.attackKind === 'heavy' ? HITSTOP_HEAVY : HITSTOP_LIGHT;
           const shakeFrames = this.attackKind === 'special' ? CAMERA_SHAKE_SPECIAL : this.attackKind === 'heavy' ? CAMERA_SHAKE_HEAVY : CAMERA_SHAKE_LIGHT;
           this.hitstop = hitstopFrames;
@@ -3055,8 +3280,15 @@
 
         if (enemy.hp <= 0) {
           enemy.dead = true;
+          enemy.koSlowmo = 30; // Trigger slow-mo on KO
           playSfx('koImpact', 0.95);
           triggerShake(20, 8); // Big shake on KO
+          // Big hit spark burst on KO
+          spawnHitSparks(hitX, hitY, 3.5, enemy.c.color);
+          spawnFloatingText(hitX, hitY - 60, 'K.O.!', '#ff2222', 24);
+          // Reset combo counter on KO
+          if (state.fight.p1 === enemy) comboCounter.p1 = 0;
+          else comboCounter.p2 = 0;
         }
       }
     }
@@ -3068,6 +3300,16 @@
       if (sprite && spriteW && spriteH) {
         ctx.save();
         if (this.comboFlash > 0) { ctx.shadowColor = '#fff'; ctx.shadowBlur = 24; }
+        // Meter-ready glow (v0.56)
+        if (this.meter >= 32 && !this.dead) {
+          const pulse = 0.4 + Math.sin(Date.now() / 200) * 0.2;
+          ctx.shadowColor = '#3da2ff';
+          ctx.shadowBlur = 12 * pulse;
+        }
+        if (this.meterFlash > 0) {
+          ctx.shadowColor = '#3da2ff';
+          ctx.shadowBlur = 20 * (this.meterFlash / 30);
+        }
         ctx.fillStyle = 'rgba(0,0,0,.45)';
         ctx.beginPath(); ctx.ellipse(this.x + this.w/2, floorY+8, 52, 12, 0, 0, Math.PI*2); ctx.fill();
 
@@ -3350,6 +3592,11 @@
       chapter: item.chapter || (isPvPLocal || isPvPAI || isCpuCpu ? 'PVP MODE' : isTraining ? 'TRAINING MODE' : 'STORY FIGHT'),
       timer: 0, roundTimeLimit: getConfiguredRoundFrames(isTraining), roundTimeRemaining: getConfiguredRoundFrames(isTraining), over: false, round: 1, p1Rounds: 0, p2Rounds: 0, roundResolving: false, roundIntro: isTraining ? 0 : 150, paused: false, bestOfThree: (isPvPLocal || isPvPAI || isCpuCpu || isTournament), pvp: isPvPLocal, mode: fightMode, training: isTraining, difficulty: activeDifficulty, cpuSide: pvpCpuSide
     };
+    // Reset combat visuals
+    particles.length = 0;
+    floatingTexts.length = 0;
+    comboCounter = { p1: 0, p2: 0 };
+    comboTimer = { p1: 0, p2: 0 };
     const fightScreenEl = document.getElementById('fightScreen');
     if (fightScreenEl) {
       fightScreenEl.classList.toggle('training-mode', isTraining);
@@ -3628,6 +3875,11 @@
     f.roundResolving = false;
     f.roundIntro = 150;
     f.roundTimeRemaining = f.roundTimeLimit;
+    // Reset combat visuals
+    particles.length = 0;
+    floatingTexts.length = 0;
+    comboCounter = { p1: 0, p2: 0 };
+    comboTimer = { p1: 0, p2: 0 };
     updateFightNames();
     updateRoundSplash();
   }
@@ -3747,8 +3999,10 @@
     ctx.save();
     ctx.translate(camera.offsetX, camera.offsetY);
     updateRoundSplash();
+    updateParticles();
     if (f.paused) {
       f.p1.draw(); f.p2.draw();
+      drawParticles();
       ctx.restore();
       updateHud();
       raf = requestAnimationFrame(loop);
@@ -3758,6 +4012,7 @@
       f.roundIntro--;
       updateRoundSplash();
       f.p1.draw(); f.p2.draw();
+      drawParticles();
       ctx.restore();
       updateHud();
       raf = requestAnimationFrame(loop);
@@ -3765,6 +4020,7 @@
     }
     if (f.roundResolving) {
       f.p1.draw(); f.p2.draw();
+      drawParticles();
       ctx.restore();
       updateHud();
       raf = requestAnimationFrame(loop);
@@ -3792,7 +4048,18 @@
       }
     }
     if (!f.over) {
-      f.p1.update(f.p2); f.p2.update(f.p1);
+      // KO slow-mo: skip update every other frame during KO slow-mo
+      const inSlowmo = f.p1.koSlowmo > 0 || f.p2.koSlowmo > 0;
+      if (!inSlowmo || f.timer % 2 === 0) {
+        f.p1.update(f.p2); f.p2.update(f.p1);
+      } else {
+        // Still apply physics during slow-mo but at reduced rate
+        f.p1.x += f.p1.vx * 0.3; f.p2.x += f.p2.vx * 0.3;
+        f.p1.y += f.p1.vy * 0.3; f.p2.y += f.p2.vy * 0.3;
+        f.p1.vy += 0.2; f.p2.vy += 0.2;
+        if (f.p1.y >= floorY) { f.p1.y = floorY; f.p1.vy = 0; f.p1.onGround = true; }
+        if (f.p2.y >= floorY) { f.p2.y = floorY; f.p2.vy = 0; f.p2.onGround = true; }
+      }
       if (f.training) {
         f.team1.forEach(ch => { ch.dead = false; ch.hp = ch.maxHp; ch.meter = ch.maxMeter; });
         f.team2.forEach(ch => { ch.dead = false; ch.hp = ch.maxHp; ch.meter = 0; });
@@ -3817,10 +4084,18 @@
         }      }
     }
     f.p1.draw(); f.p2.draw();
+    drawParticles();
     // Hitstop flash overlay on fighters
     if (f.p1.hitstop > 0 || f.p2.hitstop > 0) {
       ctx.globalAlpha = 0.15;
       ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+    // KO slow-mo vignette
+    if (f.p1.koSlowmo > 0 || f.p2.koSlowmo > 0) {
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = 1;
     }
