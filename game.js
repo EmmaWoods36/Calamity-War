@@ -28,7 +28,7 @@
     selectTeamTemplate: './assets/character_select_team_template.png',
     stageSelectTemplate: './assets/stage_select_template.png',
     readyVsTemplate: './assets/ready_vs_template.png',
-    randomSelectCard: './assets/ui/character_select/random_card.jpg',
+    randomSelectCard: './assets/select_cards/random_card.jpg',
     gameOverDefeat: './assets/game_over_story_defeat.png',
     dojo: './assets/bg_dojo_ruins.jpg',
     forest: './assets/bg_forest.jpg',
@@ -90,7 +90,7 @@
     return id === 'dummy' || id === 'training_dummy_shadow' || id === 'training_dummy_ninja';
   }
 
-  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'danpen_shikake', 'danpen_tokei', 'dummy', 'training_dummy_shadow', 'training_dummy_ninja', 'awar', 'handler', 'danpen'];
+  const SPRITE_CHARACTER_IDS = ['rai', 'nico', 'shanti', 'adrian', 'malachai', 'rikku', 'mani', 'diego', 'akila', 'akira', 'shinichi', 'yuta', 'daisuke', 'miwa', 'michelle', 'nikki', 'awar_aries', 'rose', 'pierre', 'goro', 'mammon', 'dante_aries', 'nox_aries', 'seccla_aries', 'diastre', 'roger', 'tenganisha', 'baburu', 'machai', 'mahje', 'raijin', 'esther', 'semuda', 'dummy', 'training_dummy_shadow', 'awar', 'handler'];
 
   function standardSpriteSet(id) {
     const fileId = SPRITE_FILE_ALIASES[id] || id;
@@ -1518,7 +1518,7 @@
     card.className = 'card random-card random-art-card';
     card.style.setProperty('--c', '#d6ae68');
     card.style.setProperty('--fighter-color', '#d6ae68');
-    card.style.setProperty('--portrait-image', safeCssUrl(assets.randomSelectCard || './assets/ui/character_select/random_card.jpg'));
+    card.style.setProperty('--portrait-image', safeCssUrl(assets.randomSelectCard || './assets/select_cards/random_card.jpg'));
     card.setAttribute('aria-label', label);
     card.innerHTML = `<span class="portrait-slot random-portrait-slot" aria-hidden="true"></span><strong>${label}</strong><span class="p1 random-badge">AI PICK</span>`;
     card.addEventListener('click', onClick);
@@ -3980,10 +3980,8 @@
     const ri = document.getElementById('roundInfo');
     if (ri) {
       const clock = state.fight.training || !Number.isFinite(state.fight.roundTimeRemaining) ? '∞' : formatFightClock(state.fight.roundTimeRemaining || 0);
-      const stage = stageOptions.find(st => st.id === state.fight.stage);
-      const stageName = (stage?.name || state.fight.title || state.fight.stage || 'BATTLE STAGE').toUpperCase();
-      const score = state.fight.bestOfThree ? `R${state.fight.round} · P1 ${state.fight.p1Rounds}-${state.fight.p2Rounds} P2` : (state.fight.training ? 'TRAINING MODE' : 'SINGLE ROUND');
-      ri.innerHTML = `<span class="timer-flair">◆</span><strong>${clock}</strong><small>${stageName}</small><em>${score}</em>`;
+      const score = state.fight.bestOfThree ? `R${state.fight.round} · P1 ${state.fight.p1Rounds}-${state.fight.p2Rounds} P2` : (state.fight.training ? 'TRAINING' : 'STORY');
+      ri.innerHTML = `<span class="timer-flair">◆</span><strong>${clock}</strong><small>${score}</small>`;
     }
     document.querySelectorAll('.fighter-box.left .round-wins i').forEach((dot,i)=>dot.classList.toggle('won', i < (state.fight.p1Rounds || 0)));
     document.querySelectorAll('.fighter-box.right .round-wins i').forEach((dot,i)=>dot.classList.toggle('won', i < (state.fight.p2Rounds || 0)));
