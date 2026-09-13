@@ -71,7 +71,6 @@
   // Character ids can be canonical in the game while reusing older asset folders.
   // Awar == Awar Aries and Dante == Dante Aries, but the browser sprite folders are still awar/ and dante/.
   const SPRITE_FILE_ALIASES = {
-    awar_aries: 'awar',
     dante_aries: 'dante',
     dummy: 'training_dummy_shadow',
     handler: 'tenganisha',
