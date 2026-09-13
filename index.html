@@ -198,7 +198,7 @@
     <div id="battleCharacterScreen" class="screen character-screen battle-setup-screen">
       <div class="bg bg-character-template"></div>
       <div class="shade stronger template-shade"></div>
-      <button class="back-btn" data-action="battle-back">← Battle Setup</button>
+      <button class="back-btn" data-action="battle-back" id="battleCharBackBtn">← Battle Setup</button>
       <button class="settings-shortcut" data-action="options">⚙ Settings</button>
       <section class="select-layout battle-select-layout overlay-ui-shell" data-overlay-screen="character-select">
         <aside id="battleP1Preview" class="selected-panel battle-side-panel p1-side" data-overlay-zone="p1-preview" data-side-focus="p1">
@@ -504,6 +504,7 @@
           <p id="matchOverSubtitle">Choose what to do next.</p>
           <div class="match-over-actions">
             <button id="matchRematch" class="selected" type="button">Rematch</button>
+            <button id="matchContinueStory" type="button" style="display:none">Continue Story</button>
             <button id="matchCharacterSelect" type="button">Character Select</button>
             <button id="matchMainMenu" type="button">Main Menu</button>
           </div>

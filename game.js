@@ -1006,6 +1006,7 @@
     setText('#matchOverOverlay .kicker', t('matchOver'));
     setText('#matchOverSubtitle', t('chooseNext'));
     setText('#matchRematch', t('rematch'));
+    setText('#matchContinueStory', t('continueStory') || 'Continue Story');
     setText('#matchCharacterSelect', t('characterSelect'));
     setText('#matchMainMenu', t('mainMenu'));
 
@@ -1480,7 +1481,10 @@
       </button>
     `).join('');
     grid.querySelectorAll('[data-mission-index]').forEach(btn => {
-      btn.addEventListener('click', () => openStory(Number(btn.dataset.missionIndex)));
+      btn.addEventListener('click', () => {
+        state.storyPendingIndex = Number(btn.dataset.missionIndex);
+        beginStoryCharacterSelect();
+      });
     });
   }
 
@@ -1887,11 +1891,61 @@
     }, 'tournament');
   }
 
+  function beginStoryCharacterSelect() {
+    // Show the battle character select UI for story mode.
+    // P1 picks their fighter; P2 is locked to the story-defined enemy.
+    state.battle.mode = 'story';
+    state.battle.type = 'single';
+    state.battle.format = '1v1';
+    state.battle.activeSide = 'p1';
+    state.battle.activeSlot = 0;
+    state.battle.cpuSide = 'p2';
+
+    // Default P1 to rai (story protagonist) or previously selected
+    const p1Default = state.storyPlayer || state.selected || 'rai';
+    setBattleTeam('p1', [p1Default]);
+    setBattleTeam('p2', ['nico']); // placeholder, will be overridden per-fight
+
+    renderBattleCharacters();
+
+    // Customize header for story mode
+    const title = document.getElementById('battleRosterTitle');
+    if (title) title.textContent = 'STORY MODE — SELECT YOUR FIGHTER';
+    const target = document.getElementById('battleActiveTarget');
+    if (target) target.textContent = 'Choose your character for Story Mode';
+    const p2Label = document.querySelector('.ready-team-p2 h2');
+    // Hide P2 side controls in story mode — enemy is story-defined
+    const p2Panel = document.getElementById('battleP2Preview');
+    if (p2Panel) p2Panel.style.opacity = '0.3';
+    const p2Controls = document.getElementById('battleP2SlotControls');
+    if (p2Controls) p2Controls.innerHTML = '<div style="text-align:center;padding:1rem;color:#8a7a6a;font-size:.7rem">Story-defined opponent</div>';
+    const randomP2Btn = document.getElementById('randomP2');
+    if (randomP2Btn) randomP2Btn.style.display = 'none';
+    const randomBothBtn = document.getElementById('randomBoth');
+    if (randomBothBtn) randomBothBtn.style.display = 'none';
+
+    showScreen('battleCharacters');
+
+    // Update back button text for story mode
+    const backBtn = document.getElementById('battleCharBackBtn');
+    if (backBtn) backBtn.textContent = '← Story Setup';
+  }
+
   function beginBattleSetup(mode = state.battle.mode) {
     state.battle.mode = mode;
     if (mode === 'pvp-ai' && !state.battle.cpuSide) state.battle.cpuSide = 'p2';
     state.battle.activeSide = 'p1';
     state.battle.activeSlot = 0;
+
+    // Restore UI elements that may have been hidden by story mode
+    const p2Panel = document.getElementById('battleP2Preview');
+    if (p2Panel) p2Panel.style.opacity = '';
+    const randomP2Btn = document.getElementById('randomP2');
+    if (randomP2Btn) randomP2Btn.style.display = '';
+    const randomBothBtn = document.getElementById('randomBoth');
+    if (randomBothBtn) randomBothBtn.style.display = '';
+    const backBtn = document.getElementById('battleCharBackBtn');
+    if (backBtn) backBtn.textContent = '← Battle Setup';
 
     if (!state.battle.format) state.battle.format = state.battle.type === 'single' ? '1v1' : '2v2';
     applyBattleFormat(state.battle.format, false);
@@ -2409,6 +2463,14 @@
   }
 
   function showBattleStageSelect() {
+    if (state.battle.mode === 'story') {
+      // Story mode: skip stage select, store selected P1 character, start story
+      state.storyPlayer = getBattleTeam('p1')[0] || state.selected || 'rai';
+      const startIndex = state.storyPendingIndex != null ? state.storyPendingIndex : 0;
+      state.storyPendingIndex = null;
+      openStory(startIndex);
+      return;
+    }
     if (state.battle.mode === 'training') setBattleTeam('p2', ['dummy']);
     renderStageSelect();
     showScreen('stageSelect');
@@ -2625,7 +2687,7 @@
       if (action === 'story') { refreshDifficultyUI(); showScreen('storySetup'); }
       if (action === 'world-map') { renderWorldMap(); showScreen('worldMap'); }
       if (action === 'load-game') { renderSaveSlots(); showScreen('loadGame'); }
-      if (action === 'story-start') openStory(0);
+      if (action === 'story-start') beginStoryCharacterSelect();
       if (action === 'story-missions') { renderMissions(); showScreen('mission'); }
       if (action === 'pvp') { refreshDifficultyUI(); renderBattleModeSetup(); showScreen('pvp'); }
       if (action === 'tournament') startTournamentMode();
@@ -2636,7 +2698,11 @@
       if (action === 'pvp-ai') beginBattleSetup('pvp-ai');
       if (action === 'pvp-cpu-cpu') beginBattleSetup('cpu-cpu');
       if (action === 'training') { state.battle.type = 'team'; state.battle.format = 'custom'; setTeamSize('p1', 1, false); setBattleTeam('p2', ['dummy']); beginBattleSetup('training'); }
-      if (action === 'battle-back') { if (state.battle.mode === 'training') showScreen('main'); else { renderBattleModeSetup(); showScreen('pvp'); } }
+      if (action === 'battle-back') {
+        if (state.battle.mode === 'story') { refreshDifficultyUI(); showScreen('storySetup'); }
+        else if (state.battle.mode === 'training') showScreen('main');
+        else { renderBattleModeSetup(); showScreen('pvp'); }
+      }
       if (action === 'battle-characters') { renderBattleCharacters(); showScreen('battleCharacters'); }
       if (action === 'battle-open-select') beginBattleSetup(state.battle.mode);
       if (action === 'select') { renderRoster(); updateSelectedPanel(state.selected); showScreen('select'); }
@@ -3635,7 +3701,9 @@
     state.lastFightMode = fightMode;
     if (isStory) state.lastStoryIndex = state.storyIndex;
 
-    const p1Ids = clampTeam(item.team1 || [((isPvPLocal || isPvPAI || isTraining || isCpuCpu) ? (item.player || state.selected) : item.player)], item.player || 'rai');
+    // Story mode: use the player-selected character from the character select screen
+    const storyPlayer = isStory && state.storyPlayer ? state.storyPlayer : null;
+    const p1Ids = clampTeam(item.team1 || [((isPvPLocal || isPvPAI || isTraining || isCpuCpu) ? (item.player || state.selected) : (storyPlayer || item.player))], storyPlayer || item.player || 'rai');
     const p2Ids = isTraining ? ['dummy'] : clampTeam(item.team2 || [((isPvPLocal || isPvPAI || isCpuCpu) ? (item.enemy || state.battle.p2 || 'nico') : item.enemy)], item.enemy || 'nico');
     const activeDifficulty = isTraining ? (state.settings.trainingDummyDifficulty || 'normal') : (isStory ? state.storyDifficulty : (isPvPAI || isCpuCpu || isTournament ? state.cpuDifficulty : 'normal'));
     const diff = difficultySettings[activeDifficulty] || difficultySettings.normal;
@@ -3745,6 +3813,21 @@
     if (!overlay) return;
     if (title) title.textContent = winnerText || 'MATCH OVER';
     if (subtitle) subtitle.textContent = winnerText === 'DRAW' ? t('drawNext') : t('chooseNext');
+    // Show Continue Story button only in story mode
+    const continueBtn = document.getElementById('matchContinueStory');
+    const charSelectBtn = document.getElementById('matchCharacterSelect');
+    if (continueBtn && charSelectBtn) {
+      const isStory = state.lastFightMode === 'story';
+      continueBtn.style.display = isStory ? '' : 'none';
+      charSelectBtn.style.display = isStory ? 'none' : '';
+      if (isStory) {
+        continueBtn.classList.add('selected');
+        document.getElementById('matchRematch')?.classList.remove('selected');
+      } else {
+        continueBtn.classList.remove('selected');
+        document.getElementById('matchRematch')?.classList.add('selected');
+      }
+    }
     applyLanguage();
     overlay.classList.remove('hidden');
   }
@@ -3756,11 +3839,16 @@
 
   function returnToBattleCharacterSelect() {
     hideMatchOverPopup();
-    if (state.lastFightMode && state.lastFightMode !== 'story') state.battle.mode = state.lastFightMode;
-    state.battle.activeSide = 'p1';
-    state.battle.activeSlot = 0;
-    renderBattleCharacters();
-    showScreen('battleCharacters');
+    if (state.lastFightMode === 'story') {
+      // Return to story character select
+      beginStoryCharacterSelect();
+    } else {
+      if (state.lastFightMode && state.lastFightMode !== 'story') state.battle.mode = state.lastFightMode;
+      state.battle.activeSide = 'p1';
+      state.battle.activeSlot = 0;
+      renderBattleCharacters();
+      showScreen('battleCharacters');
+    }
   }
 
   function returnToMainMenuFromMatch() {
@@ -4242,6 +4330,7 @@
   }
 
   document.getElementById('matchRematch')?.addEventListener('click', rematchCurrentBattle);
+  document.getElementById('matchContinueStory')?.addEventListener('click', () => { hideMatchOverPopup(); continueStory(); });
   document.getElementById('matchCharacterSelect')?.addEventListener('click', returnToBattleCharacterSelect);
   document.getElementById('matchMainMenu')?.addEventListener('click', returnToMainMenuFromMatch);
 
