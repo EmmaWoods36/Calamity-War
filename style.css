@@ -3897,3 +3897,65 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 
 /* v0.55: Keyboard focus indicators */
 .card:focus-visible,.roster-card:focus-visible{outline:2px solid #f8e1a4;outline-offset:2px}.main-buttons button:focus-visible{outline:2px solid #f8e1a4;outline-offset:2px}
+
+/* === v0.59 CSS overlap fixes === */
+
+/* Character select: mask baked template title with opaque panel */
+#battleCharacterScreen .battle-roster-panel {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  background: #050507 !important;
+  padding-top: 1rem !important;
+}
+
+#battleCharacterScreen .battle-roster-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, #050507 0%, #050507 140px, rgba(5,5,7,.96) 100%);
+  pointer-events: none;
+}
+
+#battleCharacterScreen #battleRosterGrid,
+#battleCharacterScreen #battleActionBar {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* KANI label: move inside meter bar to eliminate portrait collision */
+.fight-screen .meter-wrap {
+  display: block !important;
+  position: relative !important;
+  margin-top: .8rem !important;
+}
+
+.fight-screen .meter-label {
+  display: none !important;
+}
+
+.fight-screen .kani-meter {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.fight-screen .kani-meter::before {
+  content: "KANI";
+  position: absolute;
+  left: .45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  font-size: .54rem;
+  line-height: 1;
+  letter-spacing: .12em;
+  color: #efd6ff;
+  text-shadow: 0 0 6px #000;
+  pointer-events: none;
+}
+
+.fight-screen .ornate-fighter-box.right .kani-meter::before {
+  left: auto;
+  right: .45rem;
+}
