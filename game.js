@@ -1221,7 +1221,7 @@
     return `url("${String(src).replace(/"/g, '%22')}")`;
   }
 
-  const CHARACTER_ALIASES = { awar: 'awar_aries', dante: 'dante_aries' };
+  const CHARACTER_ALIASES = { awar: 'awar_aries', dante: 'dante_aries', handler: 'tenganisha', danpen: 'danpen_shikake' };
   function canonId(id) {
     return CHARACTER_ALIASES[id] || id;
   }
@@ -3322,8 +3322,31 @@
 
         // Draw the visible character bounds instead of the full transparent canvas.
         // This keeps Nico/Rai/Shanti from changing size when the pose image has extra padding.
-        const targetHByCharacter = { rai: 184, nico: 184, shanti: 184, awar_aries: 188, dante_aries: 210, goro: 208, mammon: 208, dummy: 184, training_dummy_shadow: 184, training_dummy_ninja: 184 };
-        const targetH = targetHByCharacter[this.id] || 178;
+        // Per-character visual scale metadata (v0.58)
+        // Tiers: small (children/young), standard (teens), tall (adults), heavy (bosses/large)
+        const CHARACTER_VISUALS = {
+          // Small/Young fighters
+          rai: { h: 184 }, nico: { h: 184 }, shanti: { h: 184 },
+          rikku: { h: 178 }, yuta: { h: 178 }, daisuke: { h: 180 },
+          michelle: { h: 178 }, nikki: { h: 178 }, pierre: { h: 178 },
+          // Standard/Teen fighters
+          akira: { h: 182 }, shinichi: { h: 182 }, mani: { h: 182 },
+          diego: { h: 182 }, akila: { h: 180 },
+          // Tall/Adult fighters
+          adrian: { h: 192 }, miwa: { h: 190 }, rose: { h: 188 },
+          machai: { h: 192 }, mahje: { h: 190 }, esther: { h: 188 },
+          semuda: { h: 188 }, tenganisha: { h: 190 },
+          raijin: { h: 192 }, roger: { h: 196 },
+          // Heavy/Boss fighters
+          malachai: { h: 200 }, goro: { h: 208 }, mammon: { h: 208 },
+          dante_aries: { h: 210 }, awar_aries: { h: 188 },
+          nox_aries: { h: 196 }, seccla_aries: { h: 194 },
+          diastre: { h: 204 }, baburu: { h: 198 },
+          danpen: { h: 190 }, danpen_shikake: { h: 190 }, danpen_tokei: { h: 190 },
+          // Training dummies
+          dummy: { h: 184 }, training_dummy_shadow: { h: 184 }, training_dummy_ninja: { h: 184 }
+        };
+        const targetH = (CHARACTER_VISUALS[this.id] || CHARACTER_VISUALS[this.canonId] || { h: 178 }).h;
         const poseScale = pose === 'ko' ? 0.58 : (pose === 'heavy' || pose === 'special' ? 1.05 : 1);
         const drawH = targetH * poseScale;
         const drawW = drawH * (bounds.sw / Math.max(1, bounds.sh));

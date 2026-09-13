@@ -1369,7 +1369,7 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 .main-menu{overflow:hidden}
 .main-menu .bg-main{background-image:url('./assets/main_menu_shell.png');background-size:cover;background-position:center center;filter:saturate(1.02) contrast(1.02)}
 .main-menu .shade{background:linear-gradient(90deg,rgba(0,0,0,.42),rgba(0,0,0,.08) 42%,rgba(0,0,0,.28))}
-.main-menu::before{content:"";position:absolute;right:1.15vw;bottom:1.15vh;width:19.2vw;height:16.5vh;min-width:220px;min-height:120px;background:linear-gradient(135deg,rgba(4,4,6,.94),rgba(12,8,10,.92));border:1px solid rgba(20,20,24,.65);box-shadow:0 0 45px rgba(0,0,0,.55), inset 0 0 24px rgba(0,0,0,.45);z-index:3}
+.main-menu::before{display:none}
 .main-menu::after{content:"";position:absolute;left:50%;bottom:2.2vh;transform:translateX(-50%);width:29vw;height:10.2vh;min-width:290px;background:radial-gradient(ellipse at center,rgba(4,4,5,.94) 0%,rgba(7,7,10,.9) 45%,rgba(7,7,10,.0) 88%);z-index:3;pointer-events:none}
 .main-menu .game-title{display:none!important}
 .main-menu .main-buttons{position:absolute;left:3.9vw;top:24.2vh;width:min(35vw,420px);display:flex;flex-direction:column;gap:.62rem;z-index:6}
@@ -1834,8 +1834,8 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 .fight-screen .hud-main-row{grid-template-columns:72px 1fr!important;gap:.48rem!important;align-items:start!important;}
 .fight-screen .ornate-fighter-box.right .hud-main-row{grid-template-columns:1fr 72px!important;}
 .fight-screen .lead-portrait{
-  width:66px!important;
-  height:66px!important;
+  width:60px!important;
+  height:60px!important;
   margin-top:7px!important;
   border:2px solid rgba(214,171,83,.8)!important;
   border-radius:8px!important;
@@ -1881,8 +1881,8 @@ button{font:inherit;cursor:pointer;color:var(--text)}
     linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 32%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.32)),
     repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) calc((100% / var(--health-layers,3)) - 3px),rgba(0,0,0,.68) calc((100% / var(--health-layers,3)) - 3px),rgba(0,0,0,.68) calc(100% / var(--health-layers,3)))!important;
 }
-.fight-screen .meter-wrap{grid-template-columns:60px 1fr!important;margin-top:.04rem!important;}
-.fight-screen .ornate-fighter-box.right .meter-wrap{grid-template-columns:1fr 60px!important;}
+.fight-screen .meter-wrap{grid-template-columns:68px 1fr!important;margin-top:.5rem!important;position:relative;z-index:2!important;}
+.fight-screen .ornate-fighter-box.right .meter-wrap{grid-template-columns:1fr 68px!important;}
 .fight-screen .meter-label{font-size:.72rem!important;letter-spacing:.16em!important;color:#dba7ff!important;}
 .fight-screen .kani-meter{height:13px!important;border:1px solid rgba(179,92,255,.68)!important;background:rgba(9,5,15,.88)!important;}
 .fight-screen .kani-meter span{background:linear-gradient(90deg,#391168,#8e2ef0,#e3b5ff)!important;box-shadow:0 0 14px rgba(187,92,255,.72)!important;}
@@ -2276,13 +2276,14 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 
 /* No giant blank header zone above the cards. Go straight to the character icons. */
 #battleCharacterScreen .battle-roster-panel{
-  padding-top:.45rem !important;
+  padding-top:5.5rem !important;
   padding-left:.75rem !important;
   padding-right:.75rem !important;
   padding-bottom:.7rem !important;
   display:flex !important;
   flex-direction:column !important;
   min-height:0 !important;
+  background:linear-gradient(180deg,rgba(2,2,5,1),rgba(2,2,5,.95) 60px,rgba(0,0,0,.5) 120px,rgba(0,0,0,.22) 200px) !important;
 }
 
 /* The roster is the scrollable part, not the whole page. */
