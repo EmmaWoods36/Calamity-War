@@ -1734,12 +1734,14 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:.35rem .5rem;
-  min-height:34px;
-  font-size:.72rem;
+  padding:.25rem .35rem;
+  min-height:30px;
+  font-size:.62rem;
+  overflow:hidden;
+  gap:.3rem;
 }
-.battle-setup-screen .side-slot-pick span{color:#cbbda6;font-size:.62rem;}
-.battle-setup-screen .side-slot-pick strong{font-size:.72rem;color:#fff;}
+.battle-setup-screen .side-slot-pick span{color:#cbbda6;font-size:.54rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;}
+.battle-setup-screen .side-slot-pick strong{font-size:.6rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;}
 .battle-setup-screen .battle-action-bar{
   position:relative!important;
   margin-top:.78rem!important;
@@ -2166,19 +2168,23 @@ button{font:inherit;cursor:pointer;color:var(--text)}
   position:relative !important;
   width:100% !important;
   height:auto !important;
-  padding:.32rem .28rem .36rem !important;
+  padding:.22rem .12rem .26rem !important;
   margin:0 !important;
-  overflow:visible !important;
-  clip:auto !important;
+  overflow:hidden !important;
+  display:-webkit-box !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
+  text-overflow:ellipsis !important;
   white-space:normal !important;
+  word-break:break-word !important;
   border:none !important;
   opacity:1 !important;
   pointer-events:auto !important;
-  display:block !important;
   background:linear-gradient(180deg,rgba(16,12,14,.18),rgba(6,6,8,.94)) !important;
-  font-size:.7rem !important;
-  letter-spacing:.04em !important;
-  line-height:1.05 !important;
+  font-size:.56rem !important;
+  letter-spacing:0 !important;
+  line-height:1.08 !important;
+  max-height:2.3em !important;
   text-align:center !important;
   color:#f4ecdf !important;
   text-shadow:0 2px 8px rgba(0,0,0,.9) !important;
@@ -2258,9 +2264,11 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 
 /* Smaller laptops: keep card frames visible without crushing. */
 @media(max-width:1180px){
-  .battle-setup-screen .battle-select-layout{grid-template-columns:1fr !important;inset:5vh 4vw 4vh !important;overflow:auto !important}
-  .battle-setup-screen .battle-roster-panel{padding-top:1rem !important}
-  .battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(3,minmax(132px,1fr)) !important;max-height:none !important}
+  .battle-setup-screen .battle-select-layout{grid-template-columns:1fr !important;inset:4vh 3vw 3vh !important;overflow:auto !important}
+  .battle-setup-screen .battle-roster-panel{padding-top:.6rem !important}
+  .battle-setup-screen .battle-roster-grid{grid-template-columns:repeat(5,minmax(80px,1fr)) !important;max-height:none !important}
+  .battle-setup-screen .battle-side-panel .overlay-fullbody-slot{min-height:140px !important}
+  .battle-setup-screen .battle-side-panel{max-height:200px !important;overflow-y:auto !important}
 }
 
 
@@ -4256,4 +4264,23 @@ button{font:inherit;cursor:pointer;color:var(--text)}
 #battleCharacterScreen .battle-side-panel .overlay-fullbody-slot {
   min-height: 200px !important;
   flex-shrink: 1 !important;
+}
+
+/* v0.61: Card name display - 2-line clamp for readability */
+#battleCharacterScreen .roster-card {
+  overflow: hidden !important;
+}
+#battleCharacterScreen .roster-card strong {
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  font-size: .56rem !important;
+  letter-spacing: 0 !important;
+  line-height: 1.08 !important;
+  max-height: 2.3em !important;
+  padding: .22rem .12rem .26rem !important;
 }
