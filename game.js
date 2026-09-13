@@ -4338,5 +4338,32 @@
   document.getElementById('pauseMoveList')?.addEventListener('click', () => renderPauseContent('moves'));
   document.getElementById('pauseMainMenu')?.addEventListener('click', () => { setPaused(false); showScreen('main'); });
 
+  // === Splash → Music Bridge ===
+  // Splash auto-dismisses without a user gesture, so AudioContext stays suspended.
+  // Listen for splash completion and immediately prepare music.
+  // The first user interaction (click/keydown anywhere) will start music instantly.
+  let musicArmed = false;
+  function armMusicForSplash() {
+    if (musicArmed) return;
+    musicArmed = true;
+    // Try starting music immediately (some browsers allow if there was a recent gesture)
+    updateMusicForScreen('main');
+    // Add one-time listeners for the first interaction to unlock audio
+    const unlock = () => {
+      updateMusicForScreen(state.screen);
+      document.removeEventListener('click', unlock, true);
+      document.removeEventListener('keydown', unlock, true);
+      document.removeEventListener('touchstart', unlock, true);
+    };
+    document.addEventListener('click', unlock, true);
+    document.addEventListener('keydown', unlock, true);
+    document.addEventListener('touchstart', unlock, true);
+  }
+  document.addEventListener('emmaWoodsSplashComplete', armMusicForSplash);
+  // Fallback: if splash event already fired, arm on first interaction
+  if (!document.getElementById('emma-woods-splash')) {
+    armMusicForSplash();
+  }
+
   renderRoster(); updateSelectedPanel(state.selected); renderGallery(); renderMissions(); refreshDifficultyUI(false); applyLanguage();
 })();
