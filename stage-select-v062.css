@@ -1386,3 +1386,474 @@
     box-shadow: 0 0 20px rgba(179, 92, 255, 1), 0 0 8px rgba(220, 200, 255, .8) !important;
   }
 }
+
+/* ============================================================
+   v0.62 POLISH PASS 3 — Final 10/10 Mobile Fixes
+   ============================================================ */
+
+/* === STONE DAIS: Much more prominent, raised behind cards === */
+#stageSelectScreen .stage-stone-dais {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 150% !important;
+  height: 400px !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(ellipse 65% 100% at 50% 100%, rgba(100, 50, 30, 1), transparent 60%),
+    radial-gradient(ellipse 55% 80% at 50% 100%, rgba(200, 80, 40, .95), transparent 70%),
+    radial-gradient(ellipse 45% 60% at 50% 100%, rgba(255, 120, 50, .8), transparent 75%),
+    radial-gradient(ellipse 35% 40% at 50% 100%, rgba(255, 180, 80, .6), transparent 80%),
+    radial-gradient(ellipse 25% 25% at 50% 100%, rgba(255, 210, 120, .4), transparent 85%) !important;
+  border-radius: 50% 50% 0 0 !important;
+  opacity: 1 !important;
+}
+
+#stageSelectScreen .stage-stone-dais::before {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 90% !important;
+  height: 6px !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 180, 80, 1), rgba(255, 120, 50, .9), rgba(255, 180, 80, 1), transparent) !important;
+  box-shadow: 0 0 60px rgba(255, 140, 60, .9), 0 0 25px rgba(200, 160, 255, .4) !important;
+  border-radius: 50% !important;
+}
+
+#stageSelectScreen .stage-stone-dais::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 75% !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, transparent, rgba(160, 90, 190, .5), transparent) !important;
+  box-shadow: 0 0 20px rgba(160, 90, 190, .4) !important;
+  border-radius: 50% !important;
+}
+
+/* === FLANKING CARDS: More visible === */
+#stageSelectScreen .stage-wheel-card.visible:not(.active) {
+  opacity: var(--card-opacity, .7) !important;
+  filter: saturate(.85) brightness(.85) !important;
+  border: 2px solid rgba(140, 100, 180, .5) !important;
+  box-shadow:
+    0 0 0 1px rgba(200, 160, 255, .15),
+    0 12px 35px rgba(0, 0, 0, .8),
+    inset 0 0 0 1px rgba(200, 180, 255, .1),
+    inset 0 0 0 4px rgba(0, 0, 0, .3),
+    inset 0 0 20px rgba(0, 0, 0, .4) !important;
+}
+
+/* === GOTHIC EMBLEM: More visible === */
+#stageSelectScreen .stage-gothic-emblem {
+  opacity: 1 !important;
+  color: rgba(200, 160, 255, 1) !important;
+  filter: drop-shadow(0 0 10px rgba(179, 92, 255, .7)) drop-shadow(0 1px 3px rgba(0, 0, 0, .9)) !important;
+}
+
+/* === HEADER: Metallic gradient text === */
+#stageSelectScreen .stage-select-header h1 {
+  background: linear-gradient(180deg,
+    #f5edff 0%,
+    #d8c8f5 25%,
+    #b8a0d8 50%,
+    #8a6ab0 75%,
+    #6a4a90 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, .9))
+    drop-shadow(0 0 25px rgba(179, 92, 255, .5)) !important;
+}
+
+/* === MOBILE FINAL FIXES === */
+@media (max-width: 900px) {
+  /* Stone dais - raised and very prominent */
+  #stageSelectScreen .stage-stone-dais {
+    height: 420px !important;
+    margin-top: -100px !important;
+    z-index: 3 !important;
+    opacity: 1 !important;
+  }
+  
+  /* Flanking cards more visible on mobile */
+  #stageSelectScreen .stage-wheel-card.visible:not(.active) {
+    opacity: .6 !important;
+    filter: saturate(.8) brightness(.8) !important;
+  }
+  
+  /* Gothic emblem more visible */
+  #stageSelectScreen .stage-gothic-emblem {
+    width: 110px !important;
+    height: 16px !important;
+    opacity: 1 !important;
+  }
+  
+  /* Header with more top padding */
+  #stageSelectScreen .stage-select-header {
+    padding: 4vh .5rem .5vh !important;
+  }
+  
+  /* Wheel shell - fill more vertical space */
+  #stageSelectScreen .stage-wheel-shell {
+    min-height: 380px !important;
+    perspective: 680px !important;
+    perspective-origin: 50% 50% !important;
+  }
+  
+  /* Bottom dais - transparent to show stone through */
+  #stageSelectScreen .stage-dais {
+    background: linear-gradient(0deg, rgba(3, 2, 8, .4), transparent 80%) !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 4 — Stone Dais Visibility Fix
+   The dais renders but is too subtle. Make it BOLD.
+   ============================================================ */
+
+/* Override stone dais with much stronger colors */
+#stageSelectScreen .stage-stone-dais {
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 100%, rgba(120, 60, 35, 1) 0%, rgba(80, 40, 25, .8) 30%, transparent 65%),
+    radial-gradient(ellipse 60% 85% at 50% 100%, rgba(220, 90, 45, 1) 0%, rgba(180, 70, 35, .7) 40%, transparent 75%),
+    radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 130, 55, .9) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 50% 100%, rgba(255, 190, 90, .7) 0%, transparent 75%),
+    radial-gradient(ellipse 30% 30% at 50% 100%, rgba(255, 220, 130, .5) 0%, transparent 80%) !important;
+}
+
+#stageSelectScreen .stage-stone-dais::before {
+  width: 95% !important;
+  height: 8px !important;
+  background: linear-gradient(90deg, transparent 5%, rgba(255, 200, 100, 1) 20%, rgba(255, 140, 60, 1) 50%, rgba(255, 200, 100, 1) 80%, transparent 95%) !important;
+  box-shadow: 0 0 80px rgba(255, 150, 70, 1), 0 0 30px rgba(220, 180, 255, .5) !important;
+}
+
+/* Make sure nothing covers the dais */
+#stageSelectScreen .stage-dais {
+  background: linear-gradient(0deg, rgba(3, 2, 8, .3) 0%, transparent 90%) !important;
+}
+
+#stageSelectScreen .shade.stronger,
+#stageSelectScreen .shade {
+  z-index: 0 !important;
+  opacity: .3 !important;
+}
+
+/* Mobile: dais even more prominent */
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-stone-dais {
+    height: 450px !important;
+    margin-top: -120px !important;
+    z-index: 3 !important;
+    opacity: 1 !important;
+    background:
+      radial-gradient(ellipse 70% 100% at 50% 100%, rgba(120, 60, 35, 1) 0%, rgba(80, 40, 25, .8) 30%, transparent 65%),
+      radial-gradient(ellipse 60% 85% at 50% 100%, rgba(220, 90, 45, 1) 0%, rgba(180, 70, 35, .7) 40%, transparent 75%),
+      radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 130, 55, .9) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 50% 100%, rgba(255, 190, 90, .7) 0%, transparent 75%),
+      radial-gradient(ellipse 30% 30% at 50% 100%, rgba(255, 220, 130, .5) 0%, transparent 80%) !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 5 — Stone Dais Image
+   ============================================================ */
+
+#stageSelectScreen .stage-stone-dais {
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 100%, rgba(120, 60, 35, .8) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 130, 55, .5) 0%, transparent 75%),
+    url('assets/stone-dais.png') no-repeat center bottom / 100% 100% !important;
+}
+
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-stone-dais {
+    background:
+      radial-gradient(ellipse 70% 100% at 50% 100%, rgba(120, 60, 35, .6) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 130, 55, .4) 0%, transparent 70%),
+      url('assets/stone-dais.png') no-repeat center bottom / 130% 100% !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 6 — Final Atmospheric Polish
+   ============================================================ */
+
+/* === DAIS ATMOSPHERIC BLEND === */
+/* Add purple mist overlay on dais for atmospheric depth */
+#stageSelectScreen .stage-stone-dais::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: 
+    radial-gradient(ellipse 50% 40% at 50% 30%, rgba(140, 90, 200, .25), transparent 70%),
+    radial-gradient(ellipse 60% 30% at 50% 60%, rgba(100, 60, 160, .15), transparent 80%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* === RANDOM STAGE PLAQUE: Stone tablet === */
+#stageSelectScreen .random-stage-plaque {
+  background: 
+    linear-gradient(180deg, rgba(45, 38, 60, .95), rgba(25, 20, 40, .95)),
+    url('assets/stone-dais.png') repeat !important;
+  border: 2px solid rgba(160, 120, 200, .6) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 0 0 1px rgba(200, 160, 255, .2),
+    0 0 30px rgba(179, 92, 255, .35),
+    0 4px 15px rgba(0, 0, 0, .8),
+    inset 0 2px 0 rgba(200, 160, 255, .25),
+    inset 0 -2px 0 rgba(0, 0, 0, .6),
+    inset 0 0 25px rgba(0, 0, 0, .5) !important;
+}
+
+#stageSelectScreen .random-stage-plaque .plaque-icon {
+  color: rgba(220, 200, 255, 1) !important;
+  text-shadow: 0 0 15px rgba(179, 92, 255, .8), 0 2px 4px rgba(0, 0, 0, .9) !important;
+}
+
+#stageSelectScreen .random-stage-plaque .plaque-text {
+  color: rgba(200, 180, 230, .9) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .9) !important;
+}
+
+/* === HEADER: More dramatic === */
+#stageSelectScreen .stage-select-header h1 {
+  letter-spacing: .18em !important;
+  font-size: clamp(1.1rem, 4vw, 1.8rem) !important;
+}
+
+/* === KEY PROMPT BUTTONS: More metallic === */
+#stageSelectScreen .key-prompt-btn {
+  background: linear-gradient(180deg, rgba(35, 28, 50, .95), rgba(20, 15, 35, .95)) !important;
+  border: 1.5px solid rgba(140, 100, 180, .5) !important;
+  box-shadow:
+    0 0 0 1px rgba(200, 160, 255, .1),
+    0 2px 8px rgba(0, 0, 0, .6),
+    inset 0 1px 0 rgba(200, 160, 255, .2),
+    inset 0 -1px 0 rgba(0, 0, 0, .5) !important;
+}
+
+#stageSelectScreen .key-prompt-btn kbd {
+  background: linear-gradient(180deg, rgba(60, 50, 80, .9), rgba(35, 28, 50, .9)) !important;
+  border: 1px solid rgba(160, 120, 200, .5) !important;
+  box-shadow: inset 0 1px 0 rgba(200, 160, 255, .2), inset 0 -1px 0 rgba(0, 0, 0, .4) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm {
+  border-color: rgba(220, 80, 80, .7) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 100, 100, .2),
+    0 0 20px rgba(220, 60, 60, .3),
+    0 2px 8px rgba(0, 0, 0, .6),
+    inset 0 1px 0 rgba(255, 150, 150, .2),
+    inset 0 -1px 0 rgba(0, 0, 0, .5) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm kbd {
+  background: linear-gradient(180deg, rgba(100, 40, 40, .9), rgba(60, 25, 25, .9)) !important;
+  border-color: rgba(220, 80, 80, .6) !important;
+  color: rgba(255, 200, 200, 1) !important;
+  text-shadow: 0 0 8px rgba(255, 100, 100, .6) !important;
+}
+
+/* === MOBILE FINAL === */
+@media (max-width: 900px) {
+  /* Dais blend on mobile */
+  #stageSelectScreen .stage-stone-dais {
+    background-blend-mode: screen, screen, normal !important;
+  }
+  
+  /* Header slightly smaller */
+  #stageSelectScreen .stage-select-header h1 {
+    font-size: 1.1rem !important;
+    letter-spacing: .15em !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 7 — Dais Scale Fix
+   Dais was too large, obscuring cards. Reduce and reposition.
+   ============================================================ */
+
+#stageSelectScreen .stage-stone-dais {
+  height: 280px !important;
+  width: 130% !important;
+  margin-top: 0 !important;
+  z-index: 2 !important;
+  opacity: .85 !important;
+}
+
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-stone-dais {
+    height: 300px !important;
+    width: 140% !important;
+    margin-top: -40px !important;
+    z-index: 2 !important;
+    opacity: .8 !important;
+  }
+  
+  /* Ensure center card title/desc visible above dais */
+  #stageSelectScreen .stage-wheel-card.active {
+    z-index: 5 !important;
+  }
+  
+  #stageSelectScreen .stage-wheel-card.active .stage-card-title,
+  #stageSelectScreen .stage-wheel-card.active .stage-card-desc {
+    z-index: 6 !important;
+    position: relative !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 8 — Final Cleanup
+   Fix gold bar artifact, spacing, bottom crowding
+   ============================================================ */
+
+/* Remove any gold/yellow bar at bottom */
+#stageSelectScreen .stage-dais {
+  border: none !important;
+  border-bottom: none !important;
+  border-top: none !important;
+}
+
+/* Remove any stray borders that could create gold bar */
+#stageSelectScreen .stage-pips {
+  border: none !important;
+}
+
+#stageSelectScreen .stage-footer-quote {
+  border: none !important;
+  padding: .2rem .5rem !important;
+}
+
+/* Spacing between bottom elements on mobile */
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-dais {
+    padding: .4rem .3rem .8rem !important;
+    gap: .3rem !important;
+  }
+  
+  #stageSelectScreen .stage-footer-quote {
+    margin-bottom: .2rem !important;
+    font-size: .6rem !important;
+  }
+  
+  #stageSelectScreen .stage-pips {
+    margin: .1rem 0 !important;
+    gap: .5rem !important;
+  }
+  
+  #stageSelectScreen .stage-actions-row {
+    gap: .25rem !important;
+    margin-top: .2rem !important;
+  }
+  
+  /* Remove any gold bar */
+  #stageSelectScreen::after {
+    display: none !important;
+    content: none !important;
+  }
+  
+  /* Ensure no stray borders on body */
+  #stageSelectScreen {
+    border: none !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 9 — Kill the Gold Bar
+   The stage-select-wrap has a gold border from style.css
+   ============================================================ */
+
+#stageSelectScreen .stage-select-wrap,
+#stageSelectScreen .overlay-ui-shell,
+#stageSelectScreen .stage-wheel-wrap {
+  border: none !important;
+  border-color: transparent !important;
+  border-bottom: none !important;
+  border-top: none !important;
+}
+
+/* Also kill any gold borders on children */
+#stageSelectScreen .stage-dais,
+#stageSelectScreen .stage-footer-quote,
+#stageSelectScreen .stage-pips,
+#stageSelectScreen .stage-actions-row,
+#stageSelectScreen .random-stage-plaque {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* Remove any border on the screen itself */
+#stageSelectScreen,
+#stageSelectScreen .stage-select-screen {
+  border: none !important;
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 10 — Nuclear Gold Bar Removal
+   ============================================================ */
+
+/* Kill ALL gold/tan borders and backgrounds on stage select */
+#stageSelectScreen *,
+#stageSelectScreen .stage-dais *,
+#stageSelectScreen .stage-select-wrap *,
+#stageSelectScreen .overlay-ui-shell * {
+  border-color: transparent !important;
+}
+
+/* But restore specific borders we want */
+#stageSelectScreen .stage-wheel-card.active {
+  border: 2px solid rgba(200, 160, 255, .95) !important;
+}
+
+#stageSelectScreen .key-prompt-btn {
+  border: 1.5px solid rgba(140, 100, 180, .5) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm {
+  border-color: rgba(220, 80, 80, .7) !important;
+}
+
+#stageSelectScreen .random-stage-plaque {
+  border: 2px solid rgba(160, 120, 200, .6) !important;
+}
+
+#stageSelectScreen .stage-wheel-card.visible:not(.active) {
+  border: 2px solid rgba(140, 100, 180, .5) !important;
+}
+
+#stageSelectScreen .key-prompt-btn kbd {
+  border: 1px solid rgba(160, 120, 200, .5) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm kbd {
+  border-color: rgba(220, 80, 80, .6) !important;
+}
+
+/* Remove any gold background strips */
+#stageSelectScreen .stage-pips,
+#stageSelectScreen .stage-pips *,
+#stageSelectScreen .stage-footer-quote,
+#stageSelectScreen .stage-actions-row,
+#stageSelectScreen .stage-dais {
+  background: transparent !important;
+}
+
+/* But keep the stone dais background */
+#stageSelectScreen .stage-stone-dais {
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 100%, rgba(120, 60, 35, .8) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 130, 55, .5) 0%, transparent 75%),
+    url('assets/stone-dais.png') no-repeat center bottom / 100% 100% !important;
+}
