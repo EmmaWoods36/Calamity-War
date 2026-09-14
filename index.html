@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Calamity War — v0.61</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="stage-select-v062.css" />
   <link rel="stylesheet" href="patches/splash_screen/emma_woods_splash.css" />
 </head>
 <body>
@@ -240,31 +241,54 @@
     <div id="stageSelectScreen" class="screen stage-select-screen">
       <div class="stage-cosmic-bg"></div>
       <div class="stage-ember-layer"></div>
+      <div class="stage-nebula-layer"></div>
       <div class="shade stronger template-shade"></div>
-      <button class="back-btn" data-action="battle-characters">Back</button>
-      <button class="settings-shortcut" data-action="options">⚙ Settings</button>
+      <button class="settings-shortcut" data-action="options">⚙</button>
       <section class="stage-select-wrap stage-wheel-wrap overlay-ui-shell" data-overlay-screen="stage-select">
         <div class="stage-select-header">
-          <div class="stage-crest">◆</div>
           <h1>SELECT BATTLE STAGE</h1>
-          <div class="stage-crest">◆</div>
+          <div class="stage-gothic-emblem">
+            <svg viewBox="0 0 120 24" fill="none" stroke="currentColor" stroke-width="1.2">
+              <line x1="0" y1="12" x2="40" y2="12" stroke="url(#emberFadeL)"/>
+              <path d="M40 12 L48 4 L56 12 L48 20 Z" fill="rgba(179,92,255,.15)" stroke="rgba(185,115,255,.6)"/>
+              <path d="M56 12 L64 6 L72 12 L64 18 Z" fill="rgba(179,92,255,.25)" stroke="rgba(185,115,255,.8)"/>
+              <path d="M48 4 L48 20 M64 6 L64 18" stroke="rgba(185,115,255,.4)" stroke-width=".8"/>
+              <line x1="80" y1="12" x2="120" y2="12" stroke="url(#emberFadeR)"/>
+              <defs>
+                <linearGradient id="emberFadeL" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="transparent"/>
+                  <stop offset="1" stop-color="rgba(185,115,255,.5)"/>
+                </linearGradient>
+                <linearGradient id="emberFadeR" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="rgba(185,115,255,.5)"/>
+                  <stop offset="1" stop-color="transparent"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
         </div>
 
         <div class="stage-wheel-shell">
-          <button id="prevStage" class="stage-nav prev" type="button" aria-label="Previous stage">‹</button>
           <div id="stageWheel" class="stage-wheel"></div>
-          <button id="nextStage" class="stage-nav next" type="button" aria-label="Next stage">›</button>
+        </div>
+
+        <div class="stage-stone-dais"></div>
+
+        <div class="random-stage-plaque" id="randomStagePlaque">
+          <div class="plaque-icon">?</div>
+          <div class="plaque-text">RANDOM STAGE</div>
         </div>
 
         <div class="stage-dais">
+          <div class="stage-footer-quote">HONOR IS NOT GIVEN. IT IS EARNED IN WAR.</div>
           <div id="stageSelectGrid" class="stage-pips"></div>
           <div class="stage-actions-row wheel-actions">
-            <button id="stageBackInline" class="stage-inline-back-btn" data-action="battle-characters" type="button">Back</button>
-            <button id="randomStage" class="random-stage-btn" type="button">? RANDOM STAGE</button>
-            <button id="startConfiguredBattle" class="start-battle-btn" type="button">CONFIRM</button>
+            <button id="prevStage" class="key-prompt-btn" type="button" aria-label="Previous stage"><kbd>A</kbd> LEFT ROTATE</button>
+            <button id="nextStage" class="key-prompt-btn" type="button" aria-label="Next stage"><kbd>D</kbd> RIGHT ROTATE</button>
+            <button id="randomStage" class="key-prompt-btn" type="button"><kbd>R</kbd> RANDOM</button>
+            <button id="stageBackInline" class="key-prompt-btn" data-action="battle-characters" type="button"><kbd>ESC</kbd> BACK</button>
+            <button id="startConfiguredBattle" class="key-prompt-btn key-confirm" type="button"><kbd>↵</kbd> CONFIRM</button>
           </div>
-          <div id="chosenStageReadout" class="chosen-stage-readout">Selected: Moonlit Forest Path</div>
-          <div class="stage-footer-quote">HONOR IS NOT GIVEN. IT IS EARNED IN WAR.</div>
         </div>
       </section>
     </div>

@@ -723,7 +723,7 @@
       saveCopy: 'Five save slots for Story Mode progress. Save from a story scene, then load from here later.', characterRoster: 'Character Roster', rosterSub: 'Reference screen for the available fighters.',
       battleSetupTitle: 'Battle Setup', battleSetupCopy: 'Choose who is fighting, whether it is a single or team battle, and how many fighters each side brings before going to Character Select.', opponent: 'Opponent', playerVsPlayer: 'Player vs Player', playerVsCpu: 'Player vs CPU', cpuVsCpu: 'CPU vs CPU', battleFormat: 'Battle Format', cpuDifficulty: 'CPU Difficulty',
       p1Fighters: 'Player 1 Fighters', p2Fighters: 'Player 2 Fighters', cpuControl: 'CPU Control', cpuP1: 'CPU controls Player 1', cpuP2: 'CPU controls Player 2', continueCharacterSelect: 'Continue to Character Select', pickPlayer1: 'Pick Player 1', chooseFighters: 'Choose Fighters', randomP1: 'Random P1', randomP2: 'Random P2', randomBoth: 'Random Match Up', dummyLocked: 'Dummy Locked', randomTrainingTeam: 'Random Training Team', continueBattleStage: 'Continue to Battle Stage',
-      battleStageSelect: 'Battle Stage Select', stageSetupCopy: 'Choose the arena after choosing fighters, or hit Random Stage and let the game pick where the fight happens.', stageHelp: 'Rotate the stage wheel, tap a stage thumbnail, or let the AI randomize the arena.', selected: 'Selected', aiShuffling: 'AI shuffling',
+      battleStageSelect: 'SELECT BATTLE STAGE', stageSetupCopy: 'Choose the arena after choosing fighters, or hit Random Stage and let the game pick where the fight happens.', stageHelp: 'Rotate the stage wheel, tap a stage thumbnail, or let the AI randomize the arena.', selected: 'Selected', aiShuffling: 'AI shuffling',
       ready: 'Ready?', readySubcopy: 'Selected stage appears below READY? and the countdown launches the fight automatically.', player1: 'Player 1', player2: 'Player 2', player2Cpu: 'Player 2', trainingDummy: 'Training Dummy',
       galleryCopy: 'Placeholder hub for unlockables and reference screens. We can flesh these out later.', galleryChoose: 'Choose a gallery section.', galleryCharactersCopy: 'Roster profiles, move notes, and character art.', galleryStagesCopy: 'Battle backgrounds and arena previews.', galleryCutscenesCopy: 'Story CGs and cinematic moments.', galleryExtrasCopy: 'Bonus art, concepts, credits, and unlockables.', stageGallery: 'Stage Gallery', stageGalleryCopy: 'Backgrounds generated first so the demo has real fight-stage identity.',
       settingsTitle: 'Settings', showHitboxes: 'Show hitboxes', storyAssistHints: 'Story mode assist hints', muteMenuSounds: 'Mute menu sounds', announcerVoice: 'Announcer voice placeholder', gameVolume: 'Game Volume', roundTimeTitle: 'Battle / Tournament Round Time', roundTimeNote: 'Set the round timer like a digital clock. Minimum is 00:30. 10:00 is the max timed round; going over 10:00 becomes ∞.', minDown: '− Min', minUp: '+ Min', secDown: '− Sec', secUp: '+ Sec', healthBarsTitle: 'Battle Mode Health Bars', healthBarsNote: 'Default is 3 layers. Set P1 or P2/CPU from 1–5 for handicap-style matches.', language: 'Language', languageNote: 'Language changes the hardcoded game UI text for this demo. Story/dialogue localization can keep expanding as scenes are finalized.', handicap: 'Handicap', off: 'Off',
@@ -881,9 +881,11 @@
       });
     });
 
-    setAllText('.settings-shortcut', `⚙ ${t('settings')}`);
+    // Don't overwrite stage select settings button (it's just a gear icon now)
+    // setAllText('.settings-shortcut', `⚙ ${t('settings')}`);
     document.querySelectorAll('.back-btn[data-action="back"]').forEach(btn => btn.textContent = `← ${t('mainMenu')}`);
-    document.querySelectorAll('.back-btn[data-action="battle-characters"], #stageBackInline').forEach(btn => btn.textContent = t('back'));
+    document.querySelectorAll('.back-btn[data-action="battle-characters"]').forEach(btn => btn.textContent = t('back'));
+    // Keep keyboard prompt buttons intact - don't overwrite their kbd elements
     document.querySelectorAll('.back-btn[data-action="stage-back"]').forEach(btn => btn.textContent = `← ${t('battleStage')}`);
     document.querySelectorAll('.back-btn[data-action="story"]').forEach(btn => btn.textContent = `← ${t('storySetup')}`);
     document.querySelectorAll('.back-btn[data-action="gallery"]').forEach(btn => btn.textContent = `← ${t('gallery')}`);
@@ -938,8 +940,9 @@
     setText('#stageSelectScreen h1', t('battleStageSelect'));
     setText('#stageSetupCopy', t('stageSetupCopy'));
     setText('#stageSelectScreen .stage-help', t('stageHelp'));
-    setText('#randomStage', t('random'));
-    setText('#startConfiguredBattle', t('continue'));
+    // Don't overwrite keyboard prompt buttons - they have kbd elements
+    // setText('#randomStage', t('random'));
+    // setText('#startConfiguredBattle', t('continue'));
 
     setText('#readyTitle', t('ready'));
     setText('.ready-subcopy', t('readySubcopy'));
@@ -2401,61 +2404,90 @@
     const wheel = document.getElementById('stageWheel');
     if (wheel) {
       wheel.innerHTML = '';
-      // v0.62: 3D perspective carousel — stages recede into the distance on both sides
-      // Active card is centered, largest, with glowing violet border
-      // Inactive cards are angled, smaller, and fade with distance
+      // v0.62: 3D cylindrical arc carousel
+      // Cards are arranged along a curved arc, angled in 3D perspective
+      // Side cards rotateY inward, creating a cylindrical carousel effect
       stageOptions.forEach((stage, i) => {
         let offset = i - selectedIndex;
         const half = stageOptions.length / 2;
         if (offset > half) offset -= stageOptions.length;
         if (offset < -half) offset += stageOptions.length;
-        const absOffset = Math.min(Math.abs(offset), 4);
-        if (Math.abs(offset) > 4) return;
-        const direction = offset < 0 ? -1 : offset > 0 ? 1 : 0;
+        const absOffset = Math.min(Math.abs(offset), 3);
+        if (Math.abs(offset) > 3) return;
 
-        // Flat carousel: cards spread horizontally, scale down with distance
-        const tx = direction * (absOffset * 200); // horizontal spread per step
-        const scale = absOffset === 0 ? 1.0 : Math.max(0.5, 0.85 - absOffset * 0.1);
-        const opacity = absOffset === 0 ? 1.0 : Math.max(0.35, 0.88 - absOffset * 0.16);
+        const isActive = i === selectedIndex;
+
+        // 3D arc: cards curve along a cylinder
+        // Each step: translateX spreads horizontally, rotateY angles inward, translateZ pushes back
+        const angleStep = 18; // degrees per card position
+        const radius = 480; // virtual cylinder radius - smaller to keep cards in viewport
+        const ry = offset * angleStep; // rotateY angle
+        const tx = Math.sin(offset * angleStep * Math.PI / 180) * radius;
+        const tz = (Math.cos(offset * angleStep * Math.PI / 180) - 1) * radius * -1; // push back
+        const scale = isActive ? 1.0 : Math.max(0.55, 0.88 - absOffset * 0.06);
+        const opacity = isActive ? 1.0 : Math.max(0.5, 0.85 - absOffset * 0.08);
+        const zIndex = isActive ? 20 : Math.max(1, 18 - absOffset * 3);
 
         const card = document.createElement('button');
         card.type = 'button';
-        card.className = 'stage-wheel-card' + (i === selectedIndex ? ' active' : '');
-        card.style.setProperty('--offset', offset);
+        card.className = 'stage-wheel-card visible' + (isActive ? ' active' : '');
+        card.style.setProperty('--card-opacity', opacity.toFixed(2));
         card.style.setProperty('--tx', `${tx}px`);
+        card.style.setProperty('--tz', `${tz}px`);
+        card.style.setProperty('--ry', `${ry}deg`);
         card.style.setProperty('--scale', scale.toFixed(2));
-        card.style.setProperty('--opacity', opacity.toFixed(2));
-        card.style.setProperty('--z', String(absOffset === 0 ? 20 : 18 - absOffset));
+        card.style.zIndex = String(zIndex);
         const stageSrc = assets[stage.id];
         card.style.backgroundImage = `url('${stageSrc}')`;
-        card.innerHTML = `<span>${stage.tag}</span><strong>${stage.name}</strong><div class="stage-card-desc">${stage.desc}</div>`;
+        card.innerHTML = `<span>${stage.tag}</span><strong>${stage.name}</strong><div class="stage-card-desc">${stage.desc}</div>`
+          + (isActive ? '<div class="corner-bracket tl"></div><div class="corner-bracket tr"></div><div class="corner-bracket bl"></div><div class="corner-bracket br"></div>' : '');
         card.addEventListener('click', () => selectStage(stage.id));
         wheel.appendChild(card);
       });
+
+      // Add navigation chevrons integrated into the active card area
+      const prevChevron = document.createElement('button');
+      prevChevron.className = 'stage-nav-chevron prev' + (selectedIndex === 0 ? ' hidden' : '');
+      prevChevron.type = 'button';
+      prevChevron.setAttribute('aria-label', 'Previous stage');
+      prevChevron.innerHTML = '‹';
+      prevChevron.addEventListener('click', () => {
+        const newIdx = (selectedIndex - 1 + stageOptions.length) % stageOptions.length;
+        selectStage(stageOptions[newIdx].id);
+      });
+      wheel.appendChild(prevChevron);
+
+      const nextChevron = document.createElement('button');
+      nextChevron.className = 'stage-nav-chevron next' + (selectedIndex === stageOptions.length - 1 ? ' hidden' : '');
+      nextChevron.type = 'button';
+      nextChevron.setAttribute('aria-label', 'Next stage');
+      nextChevron.innerHTML = '›';
+      nextChevron.addEventListener('click', () => {
+        const newIdx = (selectedIndex + 1) % stageOptions.length;
+        selectStage(stageOptions[newIdx].id);
+      });
+      wheel.appendChild(nextChevron);
     }
 
-    // Render pips (position indicators) into the stageSelectGrid which has class stage-pips
+    // Render 5 stylized pips (progress cluster, not 16 individual dots)
     const pipsContainer = document.getElementById('stageSelectGrid');
     if (pipsContainer) {
       pipsContainer.innerHTML = '';
       pipsContainer.className = 'stage-pips';
-      stageOptions.forEach((stage, i) => {
+      // Show 5 pips centered on current position
+      const totalStages = stageOptions.length;
+      const pipCount = Math.min(5, totalStages);
+      const startIdx = Math.max(0, selectedIndex - Math.floor(pipCount / 2));
+      const endIdx = Math.min(totalStages, startIdx + pipCount);
+      const actualStart = endIdx - pipCount < 0 ? 0 : endIdx - pipCount;
+      for (let i = 0; i < pipCount; i++) {
+        const stageIdx = actualStart + i;
+        if (stageIdx >= totalStages) break;
         const pip = document.createElement('span');
-        pip.className = 'stage-pip' + (i === selectedIndex ? ' active' : '');
-        pip.addEventListener('click', () => selectStage(stage.id));
+        pip.className = 'stage-pip' + (stageIdx === selectedIndex ? ' active' : '');
+        pip.addEventListener('click', () => selectStage(stageOptions[stageIdx].id));
         pipsContainer.appendChild(pip);
-      });
-    }
-
-    // Shorten title on small screens
-    const stageH1 = document.querySelector('.stage-select-header h1');
-    if (stageH1) {
-      stageH1.textContent = window.innerWidth <= 900 ? 'Select Stage' : 'Battle Stage Select';
-    }
-    // Shorten settings button on small screens
-    const settingsBtn = document.querySelector('#stageSelectScreen .settings-shortcut');
-    if (settingsBtn) {
-      settingsBtn.textContent = window.innerWidth <= 900 ? '⚙' : '⚙ Settings';
+      }
     }
   }
 
@@ -2721,6 +2753,7 @@
   wireCharacterRandomButton('randomBoth', 'both');
   document.getElementById('confirmBattleCharacters').addEventListener('click', showBattleStageSelect);
   document.getElementById('randomStage').addEventListener('click', randomizeStageSpin);
+  document.getElementById('randomStagePlaque')?.addEventListener('click', randomizeStageSpin);
   document.getElementById('randomStage').addEventListener('mouseenter', startStageHoverPreview);
   document.getElementById('randomStage').addEventListener('mouseleave', () => stopStageHoverPreview(true));
   document.getElementById('randomStage').addEventListener('focus', startStageHoverPreview);

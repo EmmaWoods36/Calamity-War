@@ -1,0 +1,758 @@
+/* ============================================================
+   STAGE SELECT v0.62 — Clean Overhaul
+   Scoped under #stageSelectScreen to override all legacy rules
+   ============================================================ */
+
+/* === RESET: Kill all legacy stage-select overrides === */
+#stageSelectScreen .stage-select-wrap.overlay-ui-shell {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  z-index: 4 !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
+}
+
+/* Kill legacy h1 hide */
+#stageSelectScreen .stage-select-wrap h1,
+#stageSelectScreen .stage-select-wrap > h1,
+.stage-select-screen .stage-select-wrap h1 {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  min-height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Kill legacy grid hide */
+#stageSelectScreen #stageSelectGrid,
+.stage-select-screen #stageSelectGrid {
+  display: flex !important;
+}
+
+/* Kill legacy wheel-shell absolute positioning */
+#stageSelectScreen .stage-wheel-shell,
+.stage-select-screen .stage-wheel-shell {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  z-index: auto !important;
+}
+
+/* Kill legacy action button absolute positioning */
+#stageSelectScreen .stage-actions-row.wheel-actions,
+.stage-select-screen .stage-actions-row.wheel-actions {
+  position: relative !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: auto !important;
+  z-index: auto !important;
+}
+
+/* Kill legacy card overrides */
+#stageSelectScreen .stage-wheel-card,
+.stage-select-screen .stage-wheel-card {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 260px !important;
+  height: 340px !important;
+  margin-left: -130px !important;
+  margin-top: -170px !important;
+  border-radius: 3px !important;
+  padding: 0 !important;
+}
+
+#stageSelectScreen .stage-wheel-card.active,
+.stage-select-screen .stage-wheel-card.active {
+  width: 280px !important;
+  height: 360px !important;
+  margin-left: -140px !important;
+  margin-top: -180px !important;
+}
+
+/* === COSMIC NEBULA BACKGROUND === */
+#stageSelectScreen .stage-cosmic-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background: url('assets/cosmic-bg-stage-select.png') center / cover no-repeat !important;
+  pointer-events: none !important;
+}
+
+/* Nebula layer - subtle animated glow on top of background image */
+#stageSelectScreen .stage-nebula-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(140, 40, 160, .1), transparent 30%),
+    radial-gradient(circle at 75% 45%, rgba(180, 50, 90, .08), transparent 35%),
+    radial-gradient(circle at 50% 20%, rgba(80, 50, 140, .06), transparent 40%) !important;
+  pointer-events: none !important;
+  animation: nebulaDrift 30s ease-in-out infinite alternate !important;
+}
+
+@keyframes nebulaDrift {
+  0% { transform: translateX(0) scale(1); }
+  100% { transform: translateX(-3%) scale(1.05); }
+}
+
+/* Ember particles */
+#stageSelectScreen .stage-ember-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background-image:
+    radial-gradient(circle at 15% 80%, rgba(255, 140, 60, .6) 0, transparent 1.5px),
+    radial-gradient(circle at 80% 90%, rgba(255, 100, 40, .5) 0, transparent 1px),
+    radial-gradient(circle at 40% 95%, rgba(255, 160, 80, .4) 0, transparent 1.5px),
+    radial-gradient(circle at 65% 85%, rgba(200, 80, 255, .5) 0, transparent 1px),
+    radial-gradient(circle at 25% 70%, rgba(255, 120, 50, .3) 0, transparent 1px),
+    radial-gradient(circle at 90% 75%, rgba(180, 60, 200, .4) 0, transparent 1.5px),
+    radial-gradient(circle at 50% 92%, rgba(255, 180, 100, .3) 0, transparent 1px) !important;
+  background-size: 100% 100% !important;
+  animation: emberFloat 8s ease-in-out infinite alternate !important;
+}
+
+@keyframes emberFloat {
+  0% { opacity: .6; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(-8px); }
+}
+
+/* Starfield */
+#stageSelectScreen .stage-cosmic-bg::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1px 1px at 60% 70%, rgba(200,180,255,.5), transparent),
+    radial-gradient(1px 1px at 80% 20%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 40% 80%, rgba(180,160,255,.5), transparent),
+    radial-gradient(1px 1px at 90% 50%, rgba(255,240,200,.4), transparent),
+    radial-gradient(1px 1px at 10% 60%, rgba(200,200,255,.3), transparent),
+    radial-gradient(2px 2px at 55% 15%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1px 1px at 35% 45%, rgba(220,200,255,.3), transparent) !important;
+  background-size: 100% 100% !important;
+  pointer-events: none !important;
+}
+
+/* === HEADER === */
+#stageSelectScreen .stage-select-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: .3rem !important;
+  padding: 2.5vh 2rem .5vh !important;
+  flex-shrink: 0 !important;
+  z-index: 5 !important;
+  position: relative !important;
+}
+
+#stageSelectScreen .stage-select-header h1 {
+  font-size: clamp(1rem, 2.5vw, 1.6rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: rgba(230, 210, 255, .95) !important;
+  text-shadow:
+    0 0 30px rgba(179, 92, 255, .7),
+    0 0 15px rgba(179, 92, 255, .5),
+    0 2px 4px rgba(0, 0, 0, .9),
+    0 -1px 0 rgba(0, 0, 0, .5),
+    0 1px 0 rgba(200, 160, 255, .3) !important;
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Gothic emblem SVG */
+#stageSelectScreen .stage-gothic-emblem {
+  width: clamp(160px, 20vw, 280px) !important;
+  height: 24px !important;
+  opacity: .7 !important;
+  color: rgba(185, 115, 255, .8) !important;
+  filter: drop-shadow(0 0 6px rgba(179, 92, 255, .4)) !important;
+}
+
+/* Settings button */
+#stageSelectScreen .settings-shortcut {
+  position: absolute !important;
+  top: .6rem !important;
+  right: .8rem !important;
+  z-index: 50 !important;
+  font-size: 1.1rem !important;
+  padding: .3rem .5rem !important;
+  background: rgba(10, 5, 20, .6) !important;
+  border: 1px solid rgba(185, 115, 255, .25) !important;
+  border-radius: 4px !important;
+  color: rgba(200, 180, 240, .8) !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(4px) !important;
+  transition: .15s all !important;
+}
+
+#stageSelectScreen .settings-shortcut:hover {
+  border-color: rgba(185, 115, 255, .6) !important;
+  box-shadow: 0 0 12px rgba(179, 92, 255, .3) !important;
+}
+
+/* === 3D CAROUSEL === */
+#stageSelectScreen .stage-wheel-shell {
+  flex: 1 1 auto !important;
+  min-height: 280px !important;
+  overflow: visible !important;
+  position: relative !important;
+  perspective: 1400px !important;
+  perspective-origin: 50% 45% !important;
+}
+
+#stageSelectScreen .stage-wheel {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform-style: preserve-3d !important;
+}
+
+/* === CARDS === */
+#stageSelectScreen .stage-wheel-card {
+  position: absolute !important;
+  width: 220px !important;
+  height: 300px !important;
+  left: 50% !important;
+  top: 50% !important;
+  margin-left: -110px !important;
+  margin-top: -150px !important;
+  border: 3px solid rgba(100, 70, 140, .4) !important;
+  border-radius: 2px !important;
+  background-size: cover !important;
+  background-position: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  transform-style: preserve-3d !important;
+  backface-visibility: hidden !important;
+  /* Use CSS variables set by JS - !important to override legacy rules */
+  transform: translateX(var(--tx, 0px)) translateZ(var(--tz, 0px)) rotateY(var(--ry, 0deg)) scale(var(--scale, 1)) !important;
+  transition: transform .4s cubic-bezier(.2, .7, .3, 1),
+              opacity .4s ease,
+              border-color .3s ease,
+              box-shadow .3s ease,
+              filter .3s ease !important;
+  filter: saturate(.9) brightness(.75) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, .8),
+    inset 0 0 0 1px rgba(200, 180, 255, .08),
+    inset 0 0 0 4px rgba(0, 0, 0, .3) !important;
+}
+
+/* Metallic frame on all visible cards */
+#stageSelectScreen .stage-wheel-card.visible {
+  opacity: var(--card-opacity, .5) !important;
+  pointer-events: auto !important;
+  border: 3px solid rgba(120, 85, 165, .35) !important;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, .8),
+    inset 0 0 0 1px rgba(200, 180, 255, .08),
+    inset 0 0 0 4px rgba(0, 0, 0, .3),
+    inset 0 0 20px rgba(0, 0, 0, .4) !important;
+}
+
+#stageSelectScreen .stage-wheel-card.active {
+  width: 270px !important;
+  height: 360px !important;
+  margin-left: -135px !important;
+  margin-top: -180px !important;
+  border: 3px solid rgba(179, 92, 255, .9) !important;
+  /* Override all legacy active card transforms - use the same CSS variable transform */
+  transform: translateX(var(--tx, 0px)) translateZ(var(--tz, 0px)) rotateY(var(--ry, 0deg)) scale(var(--scale, 1)) !important;
+  box-shadow:
+    0 0 25px rgba(179, 92, 255, .6),
+    0 0 50px rgba(179, 92, 255, .25),
+    0 20px 55px rgba(0, 0, 0, .85),
+    inset 0 0 0 1px rgba(200, 160, 255, .2),
+    inset 0 0 0 4px rgba(0, 0, 0, .35),
+    inset 0 0 25px rgba(179, 92, 255, .08) !important;
+  filter: saturate(1.15) brightness(1.05) !important;
+  opacity: 1 !important;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+}
+
+/* Card gradient overlay */
+#stageSelectScreen .stage-wheel-card::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(0deg,
+    rgba(0, 0, 0, .95) 0%,
+    rgba(0, 0, 0, .6) 25%,
+    rgba(0, 0, 0, .15) 45%,
+    transparent 60%,
+    rgba(0, 0, 0, .1) 100%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* Card text container */
+#stageSelectScreen .stage-wheel-card span,
+#stageSelectScreen .stage-wheel-card strong,
+#stageSelectScreen .stage-wheel-card .stage-card-desc {
+  position: relative !important;
+  z-index: 2 !important;
+  padding: .3rem .6rem !important;
+  margin: 0 !important;
+}
+
+#stageSelectScreen .stage-wheel-card span {
+  color: rgba(200, 160, 255, .8) !important;
+  font-size: .55rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .12em !important;
+  text-shadow: 0 2px 6px #000 !important;
+  background: none !important;
+  border: 0 !important;
+  border-left: 0 !important;
+  width: auto !important;
+}
+
+#stageSelectScreen .stage-wheel-card strong {
+  color: #fff !important;
+  font-size: .8rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  line-height: 1.15 !important;
+  text-shadow: 0 2px 8px #000, 0 0 4px #000 !important;
+  background: none !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin-top: .15rem !important;
+}
+
+#stageSelectScreen .stage-wheel-card .stage-card-desc {
+  display: none !important;
+}
+
+#stageSelectScreen .stage-wheel-card.active .stage-card-desc {
+  display: block !important;
+  font-size: .72rem !important;
+  color: rgba(210, 200, 230, .9) !important;
+  font-style: italic !important;
+  line-height: 1.4 !important;
+  margin-top: .3rem !important;
+  text-shadow: 0 2px 6px #000 !important;
+  background: rgba(0, 0, 0, .4) !important;
+  border-radius: 2px !important;
+}
+
+/* === GOTHIC ACTIVE CARD FRAME === */
+#stageSelectScreen .stage-wheel-card.active::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: -1px !important;
+  border: 1px solid rgba(200, 160, 255, .3) !important;
+  border-radius: 3px !important;
+  pointer-events: none !important;
+  z-index: 3 !important;
+}
+
+/* Corner brackets on active card */
+#stageSelectScreen .stage-wheel-card.active .corner-bracket {
+  position: absolute !important;
+  width: 20px !important;
+  height: 20px !important;
+  z-index: 4 !important;
+  pointer-events: none !important;
+}
+
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.tl {
+  top: 4px; left: 4px;
+  border-top: 2px solid rgba(200, 160, 255, .7);
+  border-left: 2px solid rgba(200, 160, 255, .7);
+}
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.tr {
+  top: 4px; right: 4px;
+  border-top: 2px solid rgba(200, 160, 255, .7);
+  border-right: 2px solid rgba(200, 160, 255, .7);
+}
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.bl {
+  bottom: 4px; left: 4px;
+  border-bottom: 2px solid rgba(200, 160, 255, .7);
+  border-left: 2px solid rgba(200, 160, 255, .7);
+}
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.br {
+  bottom: 4px; right: 4px;
+  border-bottom: 2px solid rgba(200, 160, 255, .7);
+  border-right: 2px solid rgba(200, 160, 255, .7);
+}
+
+/* === NAVIGATION CHEVRONS (integrated into active card) === */
+#stageSelectScreen .stage-nav-chevron {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 25 !important;
+  width: 36px !important;
+  height: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  background: none !important;
+  border: 0 !important;
+  color: rgba(200, 160, 255, .5) !important;
+  font-size: 2rem !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 10px rgba(179, 92, 255, .6) !important;
+  transition: .2s all !important;
+  opacity: .6 !important;
+}
+
+#stageSelectScreen .stage-nav-chevron.prev {
+  left: 8px !important;
+}
+#stageSelectScreen .stage-nav-chevron.next {
+  right: 8px !important;
+}
+
+#stageSelectScreen .stage-nav-chevron:hover {
+  color: rgba(220, 180, 255, 1) !important;
+  opacity: 1 !important;
+  text-shadow: 0 0 16px rgba(179, 92, 255, .9) !important;
+}
+
+#stageSelectScreen .stage-nav-chevron.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* === RANDOM STAGE PLAQUE === */
+#stageSelectScreen .random-stage-plaque {
+  position: relative !important;
+  z-index: 8 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: .5rem 1.5rem !important;
+  margin: 0 auto !important;
+  cursor: pointer !important;
+  background: linear-gradient(180deg, rgba(25, 18, 38, .9), rgba(15, 10, 25, .95)) !important;
+  border: 2px solid rgba(185, 115, 255, .3) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 0 15px rgba(179, 92, 255, .2),
+    0 4px 12px rgba(0, 0, 0, .6),
+    inset 0 1px 0 rgba(200, 160, 255, .1),
+    inset 0 -1px 0 rgba(0, 0, 0, .4) !important;
+  transition: .2s all !important;
+  max-width: 220px !important;
+}
+
+#stageSelectScreen .random-stage-plaque:hover {
+  border-color: rgba(185, 115, 255, .6) !important;
+  box-shadow:
+    0 0 25px rgba(179, 92, 255, .4),
+    0 4px 12px rgba(0, 0, 0, .6),
+    inset 0 1px 0 rgba(200, 160, 255, .15) !important;
+}
+
+#stageSelectScreen .plaque-icon {
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  color: rgba(200, 160, 255, .9) !important;
+  text-shadow: 0 0 15px rgba(179, 92, 255, .6), 0 2px 4px rgba(0, 0, 0, .8) !important;
+  line-height: 1 !important;
+}
+
+#stageSelectScreen .plaque-text {
+  font-size: .55rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .15em !important;
+  color: rgba(200, 180, 240, .7) !important;
+  text-transform: uppercase !important;
+  margin-top: .2rem !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .8) !important;
+}
+
+/* === STONE DAIS === */
+#stageSelectScreen .stage-stone-dais {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 140% !important;
+  height: 220px !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(ellipse 55% 90% at 50% 100%, rgba(35, 28, 50, .9), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 50% 100%, rgba(55, 40, 80, .5), transparent 80%),
+    radial-gradient(ellipse 35% 50% at 50% 100%, rgba(80, 50, 110, .3), transparent 85%) !important;
+  border-radius: 50% 50% 0 0 !important;
+}
+
+#stageSelectScreen .stage-stone-dais::before {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 85% !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, transparent, rgba(185, 115, 255, .5), transparent) !important;
+  box-shadow: 0 0 25px rgba(179, 92, 255, .4), 0 0 8px rgba(200, 160, 255, .3) !important;
+}
+
+#stageSelectScreen .stage-stone-dais::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 5px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 70% !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, rgba(120, 70, 160, .3), transparent) !important;
+  box-shadow: 0 0 12px rgba(120, 70, 160, .2) !important;
+}
+
+/* === DAIS (bottom controls area) === */
+#stageSelectScreen .stage-dais {
+  position: relative !important;
+  flex-shrink: 0 !important;
+  z-index: 10 !important;
+  padding: .5rem 1rem 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: .4rem !important;
+  background: linear-gradient(0deg, rgba(3, 2, 8, .95), rgba(3, 2, 8, .5) 60%, transparent) !important;
+}
+
+/* === FOOTER QUOTE === */
+#stageSelectScreen .stage-footer-quote {
+  font-size: .65rem !important;
+  color: rgba(185, 115, 255, .5) !important;
+  text-align: center !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  font-style: italic !important;
+  text-shadow: 0 0 8px rgba(179, 92, 255, .2) !important;
+}
+
+/* === PIPS (5 stylized diamonds) === */
+#stageSelectScreen .stage-pips {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: .8rem !important;
+  padding: .2rem 0 !important;
+  min-height: 16px !important;
+}
+
+#stageSelectScreen .stage-pip {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  background: rgba(185, 115, 255, .15) !important;
+  border: 1px solid rgba(185, 115, 255, .3) !important;
+  transform: rotate(45deg) !important;
+  cursor: pointer !important;
+  transition: all .25s ease !important;
+}
+
+#stageSelectScreen .stage-pip.active {
+  background: #b35cff !important;
+  border-color: #c9a0ff !important;
+  box-shadow: 0 0 12px rgba(179, 92, 255, .8), 0 0 4px rgba(200, 160, 255, .6) !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+#stageSelectScreen .stage-pip:hover {
+  background: rgba(185, 115, 255, .4) !important;
+  border-color: #b35cff !important;
+}
+
+/* === KEYBOARD PROMPT BUTTONS === */
+#stageSelectScreen .stage-actions-row.wheel-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: .5rem !important;
+  margin: .2rem auto !important;
+  padding: 0 !important;
+}
+
+#stageSelectScreen .key-prompt-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .4rem !important;
+  padding: .35rem .6rem !important;
+  font-size: .65rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+  color: rgba(200, 180, 240, .7) !important;
+  background: rgba(8, 5, 16, .7) !important;
+  border: 1px solid rgba(185, 115, 255, .2) !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(4px) !important;
+  transition: .15s all !important;
+  white-space: nowrap !important;
+}
+
+#stageSelectScreen .key-prompt-btn kbd {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  padding: 0 .3rem !important;
+  font-size: .6rem !important;
+  font-weight: 700 !important;
+  color: rgba(220, 200, 255, .9) !important;
+  background: linear-gradient(180deg, rgba(40, 25, 60, .9), rgba(20, 10, 35, .9)) !important;
+  border: 1px solid rgba(185, 115, 255, .35) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(200, 160, 255, .15) !important;
+}
+
+#stageSelectScreen .key-prompt-btn:hover {
+  border-color: rgba(185, 115, 255, .5) !important;
+  color: rgba(220, 200, 255, 1) !important;
+  box-shadow: 0 0 10px rgba(179, 92, 255, .2) !important;
+}
+
+#stageSelectScreen .key-prompt-btn:hover kbd {
+  border-color: rgba(200, 160, 255, .6) !important;
+  box-shadow: 0 0 8px rgba(179, 92, 255, .3), inset 0 1px 0 rgba(200, 160, 255, .2) !important;
+}
+
+/* Confirm button - red glowing */
+#stageSelectScreen .key-prompt-btn.key-confirm {
+  color: rgba(255, 180, 180, .9) !important;
+  background: rgba(40, 8, 12, .8) !important;
+  border: 1px solid rgba(200, 50, 60, .5) !important;
+  box-shadow: 0 0 8px rgba(200, 50, 60, .2) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm kbd {
+  background: linear-gradient(180deg, rgba(80, 15, 20, .9), rgba(40, 5, 10, .9)) !important;
+  border-color: rgba(200, 50, 60, .5) !important;
+  color: rgba(255, 200, 200, .95) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm:hover {
+  border-color: rgba(220, 60, 70, .8) !important;
+  box-shadow: 0 0 16px rgba(200, 50, 60, .4) !important;
+}
+
+/* Hide legacy elements */
+#stageSelectScreen .chosen-stage-readout,
+#stageSelectScreen .stage-nav,
+#stageSelectScreen .stage-nav.prev,
+#stageSelectScreen .stage-nav.next,
+#stageSelectScreen .back-btn {
+  display: none !important;
+}
+
+#stageSelectScreen .stage-wheel-card.hidden-wheel-card {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* === MOBILE RESPONSIVE === */
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-select-header {
+    padding: 2vh 3rem .5vh !important;
+  }
+  #stageSelectScreen .stage-select-header h1 {
+    font-size: .85rem !important;
+    letter-spacing: .06em !important;
+  }
+  #stageSelectScreen .stage-gothic-emblem {
+    width: 140px !important;
+  }
+
+  #stageSelectScreen .stage-wheel-card {
+    width: 160px !important;
+    height: 220px !important;
+    margin-left: -80px !important;
+    margin-top: -110px !important;
+  }
+  #stageSelectScreen .stage-wheel-card.active {
+    width: 190px !important;
+    height: 260px !important;
+    margin-left: -95px !important;
+    margin-top: -130px !important;
+  }
+  #stageSelectScreen .stage-wheel-card strong {
+    font-size: .65rem !important;
+  }
+  #stageSelectScreen .stage-wheel-card.active .stage-card-desc {
+    font-size: .62rem !important;
+  }
+
+  #stageSelectScreen .stage-stone-dais {
+    height: 120px !important;
+  }
+
+  #stageSelectScreen .key-prompt-btn {
+    font-size: .55rem !important;
+    padding: .25rem .4rem !important;
+    gap: .25rem !important;
+  }
+  #stageSelectScreen .key-prompt-btn kbd {
+    min-width: 16px !important;
+    height: 16px !important;
+    font-size: .5rem !important;
+  }
+  #stageSelectScreen .stage-footer-quote {
+    font-size: .5rem !important;
+  }
+  #stageSelectScreen .stage-pips {
+    gap: .5rem !important;
+  }
+  #stageSelectScreen .stage-pip {
+    width: 6px !important;
+    height: 6px !important;
+  }
+  #stageSelectScreen .stage-pip.active {
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
