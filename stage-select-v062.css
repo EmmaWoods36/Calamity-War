@@ -1857,3 +1857,118 @@
     radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 130, 55, .5) 0%, transparent 75%),
     url('assets/stone-dais.png') no-repeat center bottom / 100% 100% !important;
 }
+
+/* ============================================================
+   v0.62 POLISH PASS 11 — Side Cards Desaturated + Mobile Header Match PC
+   ============================================================ */
+
+/* === SIDE CARDS: No purple. Dark, dimmed, stone only. === */
+#stageSelectScreen .stage-wheel-card.visible:not(.active) {
+  opacity: .55 !important;
+  filter: saturate(.6) brightness(.7) !important;
+  border: 1px solid rgba(60, 50, 70, .6) !important;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, .85),
+    inset 0 0 0 1px rgba(40, 35, 50, .3),
+    inset 0 0 0 4px rgba(0, 0, 0, .4),
+    inset 0 0 20px rgba(0, 0, 0, .5) !important;
+}
+
+/* Kill ALL purple-tinted shadows on side cards from earlier rules */
+#stageSelectScreen .stage-wheel-card:not(.active) {
+  border-color: rgba(60, 50, 70, .6) !important;
+}
+
+/* === MOBILE HEADER: Full PC-grade gothic treatment === */
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-select-header {
+    padding: 3vh .5rem .5vh !important;
+    gap: .3rem !important;
+  }
+  
+  #stageSelectScreen .stage-select-header h1 {
+    font-family: 'Cinzel', 'Times New Roman', serif !important;
+    font-weight: 900 !important;
+    font-size: 1.15rem !important;
+    letter-spacing: .16em !important;
+    line-height: 1.2 !important;
+    background: linear-gradient(180deg,
+      #f0e8ff 0%,
+      #d4c4f0 30%,
+      #b8a0d8 50%,
+      #8a6ab0 70%,
+      #6a4a90 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    filter:
+      drop-shadow(0 2px 3px rgba(0, 0, 0, .9))
+      drop-shadow(0 0 20px rgba(179, 92, 255, .5))
+      drop-shadow(0 -1px 0 rgba(0, 0, 0, .6)) !important;
+    text-shadow: none !important;
+  }
+  
+  #stageSelectScreen .stage-gothic-emblem {
+    width: 120px !important;
+    height: 16px !important;
+    opacity: .9 !important;
+    color: rgba(200, 160, 255, .9) !important;
+    filter: drop-shadow(0 0 8px rgba(179, 92, 255, .6)) drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 12 — Header Silver/Stone + Emblem Prominence
+   ============================================================ */
+
+/* Header: more silver/stone, less purple */
+#stageSelectScreen .stage-select-header h1 {
+  background: linear-gradient(180deg,
+    #f8f4ec 0%,
+    #e0d8cc 25%,
+    #c0b8ac 50%,
+    #9a9080 75%,
+    #7a7060 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter:
+    drop-shadow(0 2px 3px rgba(0, 0, 0, .9))
+    drop-shadow(0 0 18px rgba(179, 92, 255, .35))
+    drop-shadow(0 -1px 0 rgba(0, 0, 0, .6)) !important;
+}
+
+/* Gothic emblem: bigger and more prominent */
+#stageSelectScreen .stage-gothic-emblem {
+  width: clamp(140px, 35vw, 220px) !important;
+  height: 22px !important;
+  opacity: 1 !important;
+  color: rgba(200, 180, 160, .9) !important;
+  filter: drop-shadow(0 0 10px rgba(200, 160, 100, .4)) drop-shadow(0 1px 2px rgba(0, 0, 0, .9)) !important;
+}
+
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-select-header h1 {
+    background: linear-gradient(180deg,
+      #f8f4ec 0%,
+      #e0d8cc 25%,
+      #c0b8ac 50%,
+      #9a9080 75%,
+      #7a7060 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    filter:
+      drop-shadow(0 2px 3px rgba(0, 0, 0, .9))
+      drop-shadow(0 0 18px rgba(179, 92, 255, .35))
+      drop-shadow(0 -1px 0 rgba(0, 0, 0, .6)) !important;
+  }
+  
+  #stageSelectScreen .stage-gothic-emblem {
+    width: 130px !important;
+    height: 18px !important;
+    opacity: 1 !important;
+    color: rgba(200, 180, 160, .9) !important;
+    filter: drop-shadow(0 0 10px rgba(200, 160, 100, .4)) drop-shadow(0 1px 2px rgba(0, 0, 0, .9)) !important;
+  }
+}
