@@ -2423,17 +2423,19 @@
         const radius = 480; // virtual cylinder radius - smaller to keep cards in viewport
         const ry = offset * angleStep; // rotateY angle
         const tx = Math.sin(offset * angleStep * Math.PI / 180) * radius;
-        const tz = (Math.cos(offset * angleStep * Math.PI / 180) - 1) * radius * -1; // push back
+        const tz = (Math.cos(offset * angleStep * Math.PI / 180) - 1) * radius; // push back on cylinder
         const scale = isActive ? 1.0 : Math.max(0.55, 0.88 - absOffset * 0.06);
         const opacity = isActive ? 1.0 : Math.max(0.5, 0.85 - absOffset * 0.08);
-        const zIndex = isActive ? 20 : Math.max(1, 18 - absOffset * 3);
+        const zIndex = isActive ? 20 : Math.max(1, 15 - absOffset * 3);
+        // Push active card slightly forward to ensure it renders above side cards in 3D
+        const activeTz = isActive ? 30 : 0;
 
         const card = document.createElement('button');
         card.type = 'button';
         card.className = 'stage-wheel-card visible' + (isActive ? ' active' : '');
         card.style.setProperty('--card-opacity', opacity.toFixed(2));
         card.style.setProperty('--tx', `${tx}px`);
-        card.style.setProperty('--tz', `${tz}px`);
+        card.style.setProperty('--tz', `${tz + activeTz}px`);
         card.style.setProperty('--ry', `${ry}deg`);
         card.style.setProperty('--scale', scale.toFixed(2));
         card.style.zIndex = String(zIndex);

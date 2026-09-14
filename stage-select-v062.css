@@ -160,7 +160,7 @@
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: .3rem !important;
+  gap: .5rem !important;
   padding: 2.5vh 2rem .5vh !important;
   flex-shrink: 0 !important;
   z-index: 5 !important;
@@ -197,18 +197,24 @@
 /* Settings button */
 #stageSelectScreen .settings-shortcut {
   position: absolute !important;
-  top: .6rem !important;
-  right: .8rem !important;
+  top: .4rem !important;
+  right: .5rem !important;
   z-index: 50 !important;
-  font-size: 1.1rem !important;
-  padding: .3rem .5rem !important;
-  background: rgba(10, 5, 20, .6) !important;
+  font-size: 1rem !important;
+  padding: .2rem .4rem !important;
+  background: rgba(10, 5, 20, .7) !important;
   border: 1px solid rgba(185, 115, 255, .25) !important;
   border-radius: 4px !important;
   color: rgba(200, 180, 240, .8) !important;
   cursor: pointer !important;
   backdrop-filter: blur(4px) !important;
   transition: .15s all !important;
+  line-height: 1 !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 #stageSelectScreen .settings-shortcut:hover {
@@ -372,16 +378,7 @@
   border-radius: 2px !important;
 }
 
-/* === GOTHIC ACTIVE CARD FRAME === */
-#stageSelectScreen .stage-wheel-card.active::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: -1px !important;
-  border: 1px solid rgba(200, 160, 255, .3) !important;
-  border-radius: 3px !important;
-  pointer-events: none !important;
-  z-index: 3 !important;
-}
+/* Gothic active card frame - removed ::after to fix horizontal line artifact */
 
 /* Corner brackets on active card */
 #stageSelectScreen .stage-wheel-card.active .corner-bracket {
@@ -699,6 +696,7 @@
 @media (max-width: 900px) {
   #stageSelectScreen .stage-select-header {
     padding: 2vh 3rem .5vh !important;
+    gap: .15rem !important;
   }
   #stageSelectScreen .stage-select-header h1 {
     font-size: .85rem !important;
