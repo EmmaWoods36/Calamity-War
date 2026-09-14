@@ -2088,3 +2088,100 @@
 #stageSelectScreen .stage-gothic-emblem svg path[fill] {
   fill: rgba(220, 200, 160, 0.15) !important;
 }
+
+/* ============================================================
+   v0.62 POLISH PASS 15 — CSS Gothic Emblem (replaces SVG)
+   ============================================================ */
+
+/* Draw the gothic emblem entirely with CSS pseudo-elements */
+#stageSelectScreen .stage-gothic-emblem {
+  width: 200px !important;
+  height: 16px !important;
+  position: relative !important;
+  opacity: 1 !important;
+  margin: 4px auto 0 !important;
+}
+
+/* Left line */
+#stageSelectScreen .stage-gothic-emblem::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 65px !important;
+  height: 1.5px !important;
+  background: linear-gradient(90deg, transparent, rgba(220, 200, 160, 0.8)) !important;
+  border-radius: 1px !important;
+}
+
+/* Right line */
+#stageSelectScreen .stage-gothic-emblem::after {
+  content: '' !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 65px !important;
+  height: 1.5px !important;
+  background: linear-gradient(90deg, rgba(220, 200, 160, 0.8), transparent) !important;
+  border-radius: 1px !important;
+}
+
+/* Center diamond via box-shadow trick on a rotated square */
+/* We use a nested approach: the ::before draws left line, ::after draws right line */
+/* For the center diamond, we add it via a background gradient on the element itself */
+#stageSelectScreen .stage-gothic-emblem {
+  background-image: 
+    /* Center diamond - two triangles forming a diamond */
+    linear-gradient(45deg, transparent 45%, rgba(220, 200, 160, 0.9) 45%, rgba(220, 200, 160, 0.9) 55%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, rgba(220, 200, 160, 0.9) 45%, rgba(220, 200, 160, 0.9) 55%, transparent 55%) !important;
+  background-size: 12px 12px, 12px 12px !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-gothic-emblem {
+    width: 130px !important;
+    height: 14px !important;
+  }
+  #stageSelectScreen .stage-gothic-emblem::before,
+  #stageSelectScreen .stage-gothic-emblem::after {
+    width: 40px !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 16 — Emblem on H1 ::after (guaranteed visible)
+   ============================================================ */
+
+/* Attach the gothic emblem directly to the H1 as ::after */
+#stageSelectScreen .stage-select-header h1::after {
+  content: '' !important;
+  display: block !important;
+  width: 200px !important;
+  height: 14px !important;
+  margin: 8px auto 0 !important;
+  background-image: 
+    linear-gradient(90deg, transparent, rgba(220, 200, 160, 0.8) 30%, rgba(220, 200, 160, 0.8) 70%, transparent),
+    linear-gradient(45deg, transparent 45%, rgba(220, 200, 160, 0.9) 45%, rgba(220, 200, 160, 0.9) 55%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, rgba(220, 200, 160, 0.9) 45%, rgba(220, 200, 160, 0.9) 55%, transparent 55%) !important;
+  background-size: 100% 1.5px, 10px 10px, 10px 10px !important;
+  background-position: center, center center, center center !important;
+  background-repeat: no-repeat !important;
+  filter: drop-shadow(0 0 6px rgba(200, 160, 100, 0.4)) !important;
+}
+
+/* Hide the old emblem div since we moved it to H1::after */
+#stageSelectScreen .stage-gothic-emblem {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-select-header h1::after {
+    width: 130px !important;
+    height: 12px !important;
+    margin-top: 6px !important;
+  }
+}
