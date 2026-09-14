@@ -2388,76 +2388,74 @@
     const selectedIndex = getStageIndex();
     state.stageWheelIndex = selectedIndex;
     const selectedStage = stageOptions[selectedIndex];
-    document.getElementById('stageSetupKicker').textContent = battleModeLabel();
-    document.getElementById('stageSetupCopy').textContent = state.battle.mode === 'training'
+    const kicker = document.getElementById('stageSetupKicker');
+    if (kicker) kicker.textContent = battleModeLabel();
+    const setupCopy = document.getElementById('stageSetupCopy');
+    if (setupCopy) setupCopy.textContent = state.battle.mode === 'training'
       ? `${teamNames(p1Team)} will train on ${stageLabel(state.battle.stage)}. Rotate the wheel, hit Random, or press Start.`
       : `${teamNames(p1Team)} vs ${teamNames(p2Team)} at ${stageLabel(state.battle.stage)}. Format: ${p1Team.length}v${p2Team.length}. Rotate the stage wheel or let AI randomize it.`;
-    document.getElementById('chosenStageReadout').textContent = spinning ? `${t('aiShuffling')}: ${selectedStage.name}` : `${t('selected')}: ${selectedStage.name}`;
+    const readout = document.getElementById('chosenStageReadout');
+    if (readout) readout.textContent = spinning ? `${t('aiShuffling')}: ${selectedStage.name}` : `${t('selected')}: ${selectedStage.name}`;
 
-    const preview = document.getElementById('stagePreviewPanel');
-    if (preview) {
-      const src = assets[selectedStage.id];
-      preview.style.backgroundImage = `linear-gradient(90deg, rgba(0,0,0,.32), rgba(0,0,0,.10)), url('${src}')`;
-      preview.innerHTML = `<img class="stage-preview-img" src="${src}" alt="${selectedStage.name} stage preview" loading="eager"><div class="stage-preview-copy"><span>${selectedStage.tag}</span><strong>${selectedStage.name}</strong><em>${selectedStage.desc}</em></div>`;
-    }
 
     const wheel = document.getElementById('stageWheel');
     if (wheel) {
       wheel.innerHTML = '';
-      // v0.60: Circular portal crown carousel.
-      // Stages arranged in an arc around the center. Selected stage is centered and largest.
-      // Adjacent stages arc upward like a crown. Far stages fade and hide.
+      // v0.62: 3D perspective carousel — stages recede into the distance on both sides
+      // Active card is centered, largest, with glowing violet border
+      // Inactive cards are angled, smaller, and fade with distance
       stageOptions.forEach((stage, i) => {
         let offset = i - selectedIndex;
         const half = stageOptions.length / 2;
         if (offset > half) offset -= stageOptions.length;
         if (offset < -half) offset += stageOptions.length;
         const absOffset = Math.min(Math.abs(offset), 4);
-        if (Math.abs(offset) > 4) return; // hide far cards entirely
+        if (Math.abs(offset) > 4) return;
         const direction = offset < 0 ? -1 : offset > 0 ? 1 : 0;
 
-        // Circular arc positioning: each stage sits on a circle around center
-        // Crown arc: center card at bottom, adjacent cards arc upward
-        const angle = absOffset * 0.42; // radians per step
-        const radiusX = 360; // horizontal spread
-        const radiusY = 100; // vertical arc height (crown curve)
-        const ringX = direction * Math.sin(angle) * radiusX;
-        const ringY = Math.cos(angle) * radiusY - radiusY; // arc upward from center
-        const ringRot = direction * (absOffset === 0 ? 0 : 8 + absOffset * 7);
-        const scale = absOffset === 0 ? 1.15 : Math.max(0.5, 1.0 - absOffset * 0.15);
-        const opacity = absOffset === 0 ? 1.0 : Math.max(0, 1.0 - absOffset * 0.22);
+        // Flat carousel: cards spread horizontally, scale down with distance
+        const tx = direction * (absOffset * 200); // horizontal spread per step
+        const scale = absOffset === 0 ? 1.0 : Math.max(0.5, 0.85 - absOffset * 0.1);
+        const opacity = absOffset === 0 ? 1.0 : Math.max(0.35, 0.88 - absOffset * 0.16);
 
         const card = document.createElement('button');
         card.type = 'button';
         card.className = 'stage-wheel-card' + (i === selectedIndex ? ' active' : '');
         card.style.setProperty('--offset', offset);
-        card.style.setProperty('--tx', `${ringX}px`);
-        card.style.setProperty('--ty', `${ringY}px`);
+        card.style.setProperty('--tx', `${tx}px`);
         card.style.setProperty('--scale', scale.toFixed(2));
-        card.style.setProperty('--rot', `${ringRot}deg`);
         card.style.setProperty('--opacity', opacity.toFixed(2));
         card.style.setProperty('--z', String(absOffset === 0 ? 20 : 18 - absOffset));
         const stageSrc = assets[stage.id];
-        card.style.backgroundImage = `linear-gradient(rgba(5,5,8,.35), rgba(5,5,8,.65)), url('${stageSrc}')`;
-        card.innerHTML = `<img class="stage-wheel-img" src="${stageSrc}" alt="${stage.name} thumbnail" loading="eager"><span>${stage.tag}</span><strong>${stage.name}</strong>`;
+        card.style.backgroundImage = `url('${stageSrc}')`;
+        card.innerHTML = `<span>${stage.tag}</span><strong>${stage.name}</strong><div class="stage-card-desc">${stage.desc}</div>`;
         card.addEventListener('click', () => selectStage(stage.id));
         wheel.appendChild(card);
       });
     }
 
-    const grid = document.getElementById('stageSelectGrid');
-    if (grid) {
-      grid.innerHTML = '';
+    // Render pips (position indicators) into the stageSelectGrid which has class stage-pips
+    const pipsContainer = document.getElementById('stageSelectGrid');
+    if (pipsContainer) {
+      pipsContainer.innerHTML = '';
+      pipsContainer.className = 'stage-pips';
       stageOptions.forEach((stage, i) => {
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'stage-thumb-dot' + (i === selectedIndex ? ' active' : '');
-        const dotSrc = assets[stage.id];
-        dot.style.backgroundImage = `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.42)), url('${dotSrc}')`;
-        dot.innerHTML = `<img class="stage-thumb-img" src="${dotSrc}" alt="${stage.name}" loading="lazy"><span>${stage.name}</span>`;
-        dot.addEventListener('click', () => selectStage(stage.id));
-        grid.appendChild(dot);
+        const pip = document.createElement('span');
+        pip.className = 'stage-pip' + (i === selectedIndex ? ' active' : '');
+        pip.addEventListener('click', () => selectStage(stage.id));
+        pipsContainer.appendChild(pip);
       });
+    }
+
+    // Shorten title on small screens
+    const stageH1 = document.querySelector('.stage-select-header h1');
+    if (stageH1) {
+      stageH1.textContent = window.innerWidth <= 900 ? 'Select Stage' : 'Battle Stage Select';
+    }
+    // Shorten settings button on small screens
+    const settingsBtn = document.querySelector('#stageSelectScreen .settings-shortcut');
+    if (settingsBtn) {
+      settingsBtn.textContent = window.innerWidth <= 900 ? '⚙' : '⚙ Settings';
     }
   }
 

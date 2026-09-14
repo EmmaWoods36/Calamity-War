@@ -238,16 +238,17 @@
     </div>
 
     <div id="stageSelectScreen" class="screen stage-select-screen">
-      <div class="bg bg-stage-template"></div>
+      <div class="stage-cosmic-bg"></div>
+      <div class="stage-ember-layer"></div>
       <div class="shade stronger template-shade"></div>
       <button class="back-btn" data-action="battle-characters">Back</button>
       <button class="settings-shortcut" data-action="options">⚙ Settings</button>
       <section class="stage-select-wrap stage-wheel-wrap overlay-ui-shell" data-overlay-screen="stage-select">
-        <div class="kicker" id="stageSetupKicker">BATTLE STAGE</div>
-        <h1>Battle Stage Select</h1>
-        <p id="stageSetupCopy">Choose the arena after choosing fighters, or hit Random Stage and let the game pick where the fight happens.</p>
-
-        <div id="stagePreviewPanel" class="stage-preview-panel"></div>
+        <div class="stage-select-header">
+          <div class="stage-crest">◆</div>
+          <h1>SELECT BATTLE STAGE</h1>
+          <div class="stage-crest">◆</div>
+        </div>
 
         <div class="stage-wheel-shell">
           <button id="prevStage" class="stage-nav prev" type="button" aria-label="Previous stage">‹</button>
@@ -255,15 +256,16 @@
           <button id="nextStage" class="stage-nav next" type="button" aria-label="Next stage">›</button>
         </div>
 
-        <p class="stage-help">Rotate the stage wheel, tap a stage thumbnail, or let the AI randomize the arena.</p>
-
-        <div class="stage-actions-row wheel-actions">
-          <button id="stageBackInline" class="stage-inline-back-btn" data-action="battle-characters" type="button">Back</button>
-          <button id="randomStage" class="random-stage-btn" type="button">Random</button>
-          <button id="startConfiguredBattle" class="start-battle-btn" type="button">Continue</button>
+        <div class="stage-dais">
+          <div id="stageSelectGrid" class="stage-pips"></div>
+          <div class="stage-actions-row wheel-actions">
+            <button id="stageBackInline" class="stage-inline-back-btn" data-action="battle-characters" type="button">Back</button>
+            <button id="randomStage" class="random-stage-btn" type="button">? RANDOM STAGE</button>
+            <button id="startConfiguredBattle" class="start-battle-btn" type="button">CONFIRM</button>
+          </div>
+          <div id="chosenStageReadout" class="chosen-stage-readout">Selected: Moonlit Forest Path</div>
+          <div class="stage-footer-quote">HONOR IS NOT GIVEN. IT IS EARNED IN WAR.</div>
         </div>
-        <div id="chosenStageReadout" class="chosen-stage-readout">Selected: Moonlit Forest Path</div>
-        <div id="stageSelectGrid" class="stage-thumb-strip"></div>
       </section>
     </div>
 
