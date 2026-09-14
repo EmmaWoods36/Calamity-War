@@ -518,9 +518,10 @@
   z-index: 2 !important;
   pointer-events: none !important;
   background:
-    radial-gradient(ellipse 55% 90% at 50% 100%, rgba(35, 28, 50, .9), transparent 70%),
-    radial-gradient(ellipse 45% 70% at 50% 100%, rgba(55, 40, 80, .5), transparent 80%),
-    radial-gradient(ellipse 35% 50% at 50% 100%, rgba(80, 50, 110, .3), transparent 85%) !important;
+    radial-gradient(ellipse 55% 90% at 50% 100%, rgba(60, 30, 20, .95), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 50% 100%, rgba(120, 50, 25, .7), transparent 80%),
+    radial-gradient(ellipse 35% 50% at 50% 100%, rgba(200, 80, 30, .5), transparent 85%),
+    radial-gradient(ellipse 25% 30% at 50% 100%, rgba(255, 120, 40, .3), transparent 90%) !important;
   border-radius: 50% 50% 0 0 !important;
 }
 
@@ -532,8 +533,8 @@
   transform: translateX(-50%) !important;
   width: 85% !important;
   height: 3px !important;
-  background: linear-gradient(90deg, transparent, rgba(185, 115, 255, .5), transparent) !important;
-  box-shadow: 0 0 25px rgba(179, 92, 255, .4), 0 0 8px rgba(200, 160, 255, .3) !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 140, 50, .8), rgba(200, 100, 40, .6), rgba(255, 140, 50, .8), transparent) !important;
+  box-shadow: 0 0 30px rgba(255, 100, 40, .6), 0 0 10px rgba(200, 160, 255, .3) !important;
 }
 
 #stageSelectScreen .stage-stone-dais::after {
@@ -701,63 +702,687 @@
 
 /* === MOBILE RESPONSIVE === */
 @media (max-width: 900px) {
+  /* Hide settings button - reference doesn't have it */
+  #stageSelectScreen .settings-shortcut {
+    display: none !important;
+  }
+
   #stageSelectScreen .stage-select-header {
-    padding: 2vh 3rem .5vh !important;
+    padding: 3vh 1rem .5vh !important;
+    gap: .2rem !important;
+  }
+  #stageSelectScreen .stage-select-header h1 {
+    font-size: .72rem !important;
+    letter-spacing: .04em !important;
+  }
+  #stageSelectScreen .stage-gothic-emblem {
+    width: 100px !important;
+    height: 14px !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* Tighter wheel shell to reduce empty space - override old max-height */
+  #stageSelectScreen .stage-wheel-shell {
+    min-height: 320px !important;
+    max-height: none !important;
+    height: auto !important;
+    perspective: 600px !important;
+    perspective-origin: 50% 45% !important;
+  }
+  /* Force preserve-3d on mobile - override old style.css perspective:none */
+  #stageSelectScreen .stage-wheel {
+    perspective: none !important;
+    transform-style: preserve-3d !important;
+  }
+
+  /* Cards taller to fill mobile screen */
+  #stageSelectScreen .stage-wheel-card {
+    width: 105px !important;
+    height: 210px !important;
+    margin-left: -52px !important;
+    margin-top: -105px !important;
+  }
+  #stageSelectScreen .stage-wheel-card.active {
+    width: 145px !important;
+    height: 270px !important;
+    margin-left: -72px !important;
+    margin-top: -135px !important;
+  }
+  #stageSelectScreen .stage-wheel-card strong {
+    font-size: .48rem !important;
+    line-height: 1.1 !important;
+  }
+  #stageSelectScreen .stage-wheel-card span {
+    font-size: .38rem !important;
+  }
+  /* Hide description on side cards to prevent clipping */
+  #stageSelectScreen .stage-wheel-card:not(.active) .stage-card-desc {
+    display: none !important;
+  }
+  #stageSelectScreen .stage-wheel-card.active .stage-card-desc {
+    font-size: .46rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Stone dais more visible - raised behind cards with ember colors */
+  #stageSelectScreen .stage-stone-dais {
+    height: 280px !important;
+    margin-top: -40px !important;
+    z-index: 3 !important;
+  }
+
+  /* Make bottom bar background transparent so stone dais shows through */
+  #stageSelectScreen .stage-dais {
+    background: linear-gradient(0deg, rgba(3, 2, 8, .5), rgba(3, 2, 8, .1) 60%, transparent) !important;
+    z-index: 10 !important;
+    padding: .3rem .5rem .8rem !important;
+    gap: .3rem !important;
+  }
+
+  /* Chevrons docked to active card edges on mobile */
+  #stageSelectScreen .stage-nav-chevron {
+    width: 32px !important;
+    height: 50px !important;
+    font-size: 1.8rem !important;
+    opacity: .9 !important;
+    color: rgba(200, 160, 255, .8) !important;
+    text-shadow: 0 0 12px rgba(179, 92, 255, .8), 0 0 4px rgba(200, 160, 255, .5) !important;
+  }
+  #stageSelectScreen .stage-nav-chevron.prev {
+    left: 18% !important;
+  }
+  #stageSelectScreen .stage-nav-chevron.next {
+    right: 18% !important;
+  }
+
+  /* Single row keyboard prompts */
+  #stageSelectScreen .key-prompt-btn {
+    font-size: .44rem !important;
+    padding: .15rem .25rem !important;
+    gap: .15rem !important;
+  }
+  #stageSelectScreen .key-prompt-btn kbd {
+    min-width: 12px !important;
+    height: 12px !important;
+    font-size: .4rem !important;
+  }
+  #stageSelectScreen .stage-footer-quote {
+    font-size: .42rem !important;
+    order: 99 !important;
+    margin-top: .2rem !important;
+  }
+  #stageSelectScreen .stage-pips {
+    gap: .4rem !important;
+  }
+  #stageSelectScreen .stage-pip {
+    width: 5px !important;
+    height: 5px !important;
+  }
+  #stageSelectScreen .stage-pip.active {
+    width: 8px !important;
+    height: 8px !important;
+  }
+  /* Random stage plaque smaller */
+  #stageSelectScreen .random-stage-plaque {
+    padding: .25rem .5rem !important;
+    font-size: .55rem !important;
+  }
+  #stageSelectScreen .random-stage-plaque .random-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  /* Corner brackets smaller on mobile */
+  #stageSelectScreen .stage-wheel-card.active .corner-bracket {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS — 10/10 Mobile Match
+   All rules appended to override everything above
+   ============================================================ */
+
+/* === HEADER: Metallic chiseled text + gothic crest === */
+#stageSelectScreen .stage-select-header h1 {
+  font-family: 'Cinzel', 'Times New Roman', serif !important;
+  font-weight: 900 !important;
+  background: linear-gradient(180deg,
+    #f0e8ff 0%,
+    #d4c4f0 30%,
+    #b8a0d8 50%,
+    #8a6ab0 70%,
+    #6a4a90 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter:
+    drop-shadow(0 2px 3px rgba(0, 0, 0, .9))
+    drop-shadow(0 0 20px rgba(179, 92, 255, .5))
+    drop-shadow(0 -1px 0 rgba(0, 0, 0, .6)) !important;
+  letter-spacing: .18em !important;
+}
+
+/* Gothic dagger crest ornament below title */
+#stageSelectScreen .stage-select-header .stage-gothic-emblem {
+  width: clamp(120px, 30vw, 200px) !important;
+  height: 20px !important;
+  opacity: .85 !important;
+  color: rgba(200, 160, 255, .9) !important;
+  filter: drop-shadow(0 0 8px rgba(179, 92, 255, .6)) drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) !important;
+}
+
+/* === ACTIVE CARD: Ornate gothic frame === */
+#stageSelectScreen .stage-wheel-card.active {
+  border: none !important;
+  border-radius: 8px 8px 4px 4px !important;
+  box-shadow:
+    0 0 0 2px rgba(179, 92, 255, .9),
+    0 0 0 3px rgba(120, 70, 160, .4),
+    0 0 0 4px rgba(200, 160, 255, .15),
+    0 0 30px rgba(179, 92, 255, .5),
+    0 0 60px rgba(179, 92, 255, .2),
+    0 20px 55px rgba(0, 0, 0, .85),
+    inset 0 0 0 1px rgba(200, 160, 255, .25),
+    inset 0 0 0 5px rgba(0, 0, 0, .3),
+    inset 0 0 30px rgba(179, 92, 255, .08) !important;
+}
+
+/* Arched top on active card */
+#stageSelectScreen .stage-wheel-card.active::before {
+  border-radius: 8px 8px 0 0 !important;
+  background: linear-gradient(0deg,
+    rgba(0, 0, 0, .95) 0%,
+    rgba(0, 0, 0, .6) 25%,
+    rgba(0, 0, 0, .15) 45%,
+    transparent 60%,
+    rgba(0, 0, 0, .1) 100%) !important;
+}
+
+/* Gothic filigree brackets on active card - replace corner brackets */
+#stageSelectScreen .stage-wheel-card.active .corner-bracket {
+  width: 24px !important;
+  height: 24px !important;
+  z-index: 5 !important;
+}
+
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.tl {
+  top: 3px !important;
+  left: 3px !important;
+  border-top: 2px solid rgba(200, 160, 255, .8) !important;
+  border-left: 2px solid rgba(200, 160, 255, .8) !important;
+  box-shadow: -1px -1px 8px rgba(179, 92, 255, .4), inset 1px 1px 2px rgba(200, 160, 255, .2) !important;
+  border-radius: 6px 0 0 0 !important;
+}
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.tr {
+  top: 3px !important;
+  right: 3px !important;
+  border-top: 2px solid rgba(200, 160, 255, .8) !important;
+  border-right: 2px solid rgba(200, 160, 255, .8) !important;
+  box-shadow: 1px -1px 8px rgba(179, 92, 255, .4), inset -1px 1px 2px rgba(200, 160, 255, .2) !important;
+  border-radius: 0 6px 0 0 !important;
+}
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.bl {
+  bottom: 3px !important;
+  left: 3px !important;
+  border-bottom: 2px solid rgba(200, 160, 255, .8) !important;
+  border-left: 2px solid rgba(200, 160, 255, .8) !important;
+  box-shadow: -1px 1px 8px rgba(179, 92, 255, .4), inset 1px -1px 2px rgba(200, 160, 255, .2) !important;
+  border-radius: 0 0 0 6px !important;
+}
+#stageSelectScreen .stage-wheel-card.active .corner-bracket.br {
+  bottom: 3px !important;
+  right: 3px !important;
+  border-bottom: 2px solid rgba(200, 160, 255, .8) !important;
+  border-right: 2px solid rgba(200, 160, 255, .8) !important;
+  box-shadow: 1px 1px 8px rgba(179, 92, 255, .4), inset -1px -1px 2px rgba(200, 160, 255, .2) !important;
+  border-radius: 0 0 6px 0 !important;
+}
+
+/* === CARD TEXT: Serif typography === */
+#stageSelectScreen .stage-wheel-card strong {
+  font-family: 'Cinzel', 'Times New Roman', serif !important;
+  color: #f0e8ff !important;
+  font-weight: 700 !important;
+  letter-spacing: .08em !important;
+  text-shadow: 0 2px 8px #000, 0 0 4px rgba(0, 0, 0, .9), 0 1px 0 rgba(200, 160, 255, .3) !important;
+}
+
+#stageSelectScreen .stage-wheel-card span {
+  font-family: 'Cinzel', 'Times New Roman', serif !important;
+  color: rgba(220, 200, 255, .85) !important;
+  letter-spacing: .14em !important;
+}
+
+#stageSelectScreen .stage-wheel-card.active .stage-card-desc {
+  font-family: 'Georgia', 'Times New Roman', serif !important;
+  color: rgba(230, 210, 180, .9) !important;
+  font-style: italic !important;
+  text-shadow: 0 2px 6px #000 !important;
+  background: rgba(0, 0, 0, .5) !important;
+  border-radius: 3px !important;
+  border-left: 2px solid rgba(200, 160, 255, .3) !important;
+}
+
+/* === FLANKING CARDS: Metallic bevels === */
+#stageSelectScreen .stage-wheel-card.visible:not(.active) {
+  border: 2px solid rgba(120, 85, 165, .5) !important;
+  box-shadow:
+    0 0 0 1px rgba(200, 160, 255, .1),
+    0 12px 35px rgba(0, 0, 0, .8),
+    inset 0 0 0 1px rgba(200, 180, 255, .06),
+    inset 0 0 0 4px rgba(0, 0, 0, .3),
+    inset 0 0 20px rgba(0, 0, 0, .4) !important;
+}
+
+/* === CHEVRONS: Gothic, docked to active card edges === */
+#stageSelectScreen .stage-nav-chevron {
+  width: 40px !important;
+  height: 70px !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  color: rgba(200, 160, 255, .9) !important;
+  text-shadow:
+    0 0 15px rgba(179, 92, 255, .9),
+    0 0 5px rgba(200, 160, 255, .6),
+    0 2px 4px rgba(0, 0, 0, .8) !important;
+  opacity: .95 !important;
+  z-index: 30 !important;
+}
+
+#stageSelectScreen .stage-nav-chevron.prev {
+  left: 5% !important;
+}
+#stageSelectScreen .stage-nav-chevron.next {
+  right: 5% !important;
+}
+
+#stageSelectScreen .stage-nav-chevron:hover {
+  color: #e0d0ff !important;
+  text-shadow:
+    0 0 20px rgba(179, 92, 255, 1),
+    0 0 8px rgba(200, 160, 255, .8),
+    0 2px 4px rgba(0, 0, 0, .8) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* === STONE DAIS: Bright embers, visible cracked stone === */
+#stageSelectScreen .stage-stone-dais {
+  height: 280px !important;
+  background:
+    radial-gradient(ellipse 55% 90% at 50% 100%, rgba(80, 40, 25, .95), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 50% 100%, rgba(160, 60, 30, .8), transparent 80%),
+    radial-gradient(ellipse 35% 50% at 50% 100%, rgba(240, 100, 35, .6), transparent 85%),
+    radial-gradient(ellipse 25% 30% at 50% 100%, rgba(255, 160, 60, .4), transparent 90%) !important;
+}
+
+#stageSelectScreen .stage-stone-dais::before {
+  height: 4px !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 160, 60, .9), rgba(240, 100, 35, .7), rgba(255, 160, 60, .9), transparent) !important;
+  box-shadow: 0 0 40px rgba(255, 120, 40, .7), 0 0 15px rgba(200, 160, 255, .3) !important;
+}
+
+#stageSelectScreen .stage-stone-dais::after {
+  height: 3px !important;
+  background: linear-gradient(90deg, transparent, rgba(150, 80, 180, .4), transparent) !important;
+  box-shadow: 0 0 16px rgba(150, 80, 180, .3) !important;
+}
+
+/* === FOOTER QUOTE: Gold serif, high contrast === */
+#stageSelectScreen .stage-footer-quote {
+  font-family: 'Cinzel', 'Georgia', serif !important;
+  color: rgba(220, 180, 100, .85) !important;
+  font-size: .7rem !important;
+  letter-spacing: .16em !important;
+  text-shadow: 0 0 10px rgba(200, 150, 50, .4), 0 2px 4px rgba(0, 0, 0, .9) !important;
+  font-style: normal !important;
+}
+
+/* === PIPS: Brighter, more visible === */
+#stageSelectScreen .stage-pip {
+  width: 10px !important;
+  height: 10px !important;
+  background: rgba(185, 115, 255, .2) !important;
+  border: 1px solid rgba(185, 115, 255, .4) !important;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .5) !important;
+}
+
+#stageSelectScreen .stage-pip.active {
+  background: #c9a0ff !important;
+  border-color: #e0c0ff !important;
+  box-shadow: 0 0 16px rgba(179, 92, 255, .9), 0 0 6px rgba(200, 160, 255, .7) !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* === RANDOM STAGE PLAQUE: Stone slab with metallic brackets === */
+#stageSelectScreen .random-stage-plaque {
+  background: linear-gradient(180deg, rgba(35, 28, 48, .95), rgba(18, 12, 30, .95)) !important;
+  border: 2px solid rgba(185, 115, 255, .4) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 0 0 1px rgba(200, 160, 255, .15),
+    0 0 20px rgba(179, 92, 255, .25),
+    0 4px 12px rgba(0, 0, 0, .7),
+    inset 0 1px 0 rgba(200, 160, 255, .15),
+    inset 0 -1px 0 rgba(0, 0, 0, .5),
+    inset 0 0 15px rgba(0, 0, 0, .3) !important;
+}
+
+#stageSelectScreen .plaque-icon {
+  font-family: 'Cinzel', serif !important;
+  color: rgba(220, 180, 255, 1) !important;
+  text-shadow: 0 0 20px rgba(179, 92, 255, .8), 0 2px 4px rgba(0, 0, 0, .9) !important;
+}
+
+#stageSelectScreen .plaque-text {
+  font-family: 'Cinzel', serif !important;
+  color: rgba(200, 180, 240, .85) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .9) !important;
+}
+
+/* === KEYCAPS: Dark stone with metallic borders === */
+#stageSelectScreen .key-prompt-btn {
+  font-family: 'Cinzel', serif !important;
+  background: rgba(8, 5, 16, .8) !important;
+  border: 1px solid rgba(120, 85, 165, .3) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(200, 160, 255, .08) !important;
+}
+
+#stageSelectScreen .key-prompt-btn kbd {
+  font-family: 'Cinzel', serif !important;
+  background: linear-gradient(180deg, rgba(45, 30, 65, .95), rgba(20, 12, 35, .95)) !important;
+  border: 1px solid rgba(185, 115, 255, .4) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(200, 160, 255, .2) !important;
+  color: rgba(220, 200, 255, .95) !important;
+}
+
+/* Confirm button - crimson glow */
+#stageSelectScreen .key-prompt-btn.key-confirm {
+  background: rgba(40, 8, 12, .85) !important;
+  border: 1px solid rgba(220, 60, 70, .6) !important;
+  box-shadow: 0 0 12px rgba(200, 50, 60, .3), 0 2px 6px rgba(0, 0, 0, .5) !important;
+  color: rgba(255, 180, 180, .95) !important;
+}
+
+#stageSelectScreen .key-prompt-btn.key-confirm kbd {
+  background: linear-gradient(180deg, rgba(90, 15, 25, .95), rgba(40, 5, 12, .95)) !important;
+  border-color: rgba(220, 60, 70, .6) !important;
+  color: rgba(255, 200, 200, 1) !important;
+  box-shadow: 0 0 8px rgba(200, 50, 60, .4), inset 0 1px 0 rgba(255, 100, 100, .2) !important;
+}
+
+/* === BACKGROUND: Richer embers and volumetric glow === */
+#stageSelectScreen .stage-ember-layer {
+  background-image:
+    radial-gradient(circle at 15% 80%, rgba(255, 140, 60, .7) 0, transparent 2px),
+    radial-gradient(circle at 80% 90%, rgba(255, 100, 40, .6) 0, transparent 1.5px),
+    radial-gradient(circle at 40% 95%, rgba(255, 160, 80, .5) 0, transparent 2px),
+    radial-gradient(circle at 65% 85%, rgba(200, 80, 255, .6) 0, transparent 1.5px),
+    radial-gradient(circle at 25% 70%, rgba(255, 120, 50, .4) 0, transparent 1px),
+    radial-gradient(circle at 90% 75%, rgba(180, 60, 200, .5) 0, transparent 2px),
+    radial-gradient(circle at 50% 92%, rgba(255, 180, 100, .4) 0, transparent 1.5px),
+    radial-gradient(circle at 10% 50%, rgba(255, 140, 60, .3) 0, transparent 1px),
+    radial-gradient(circle at 85% 60%, rgba(200, 80, 255, .3) 0, transparent 1px) !important;
+}
+
+#stageSelectScreen .stage-nebula-layer {
+  background:
+    radial-gradient(circle at 25% 35%, rgba(160, 50, 180, .15), transparent 35%),
+    radial-gradient(circle at 75% 45%, rgba(200, 60, 100, .1), transparent 40%),
+    radial-gradient(circle at 50% 20%, rgba(100, 60, 160, .08), transparent 45%) !important;
+}
+
+/* === MOBILE 10/10 OVERRIDES === */
+@media (max-width: 900px) {
+  /* Header - fix clipping, add padding */
+  #stageSelectScreen .stage-select-header {
+    padding: 3.5vh .5rem .5vh !important;
     gap: .15rem !important;
   }
   #stageSelectScreen .stage-select-header h1 {
-    font-size: .85rem !important;
-    letter-spacing: .06em !important;
+    font-size: .7rem !important;
+    letter-spacing: .16em !important;
+    line-height: 1.2 !important;
   }
   #stageSelectScreen .stage-gothic-emblem {
-    width: 140px !important;
+    width: 100px !important;
+    height: 14px !important;
+    margin-bottom: 1px !important;
   }
 
+  /* Maximize card height - fill vertical space */
+  #stageSelectScreen .stage-wheel-shell {
+    min-height: 360px !important;
+    max-height: none !important;
+    height: auto !important;
+    perspective: 650px !important;
+    perspective-origin: 50% 48% !important;
+  }
+
+  /* Active card - taller, wider, more cinematic */
+  #stageSelectScreen .stage-wheel-card.active {
+    width: 150px !important;
+    height: 290px !important;
+    margin-left: -75px !important;
+    margin-top: -145px !important;
+  }
+
+  /* Side cards - scaled to match */
   #stageSelectScreen .stage-wheel-card {
-    width: 160px !important;
+    width: 110px !important;
     height: 220px !important;
-    margin-left: -80px !important;
+    margin-left: -55px !important;
     margin-top: -110px !important;
   }
-  #stageSelectScreen .stage-wheel-card.active {
-    width: 190px !important;
-    height: 260px !important;
-    margin-left: -95px !important;
-    margin-top: -130px !important;
-  }
-  #stageSelectScreen .stage-wheel-card strong {
-    font-size: .65rem !important;
+
+  /* Active card text - readable serif */
+  #stageSelectScreen .stage-wheel-card.active strong {
+    font-size: .5rem !important;
+    line-height: 1.1 !important;
   }
   #stageSelectScreen .stage-wheel-card.active .stage-card-desc {
-    font-size: .62rem !important;
+    font-size: .48rem !important;
+    line-height: 1.35 !important;
+    padding: .3rem .5rem !important;
   }
 
+  /* Chevrons - prominent, docked to card edges */
+  #stageSelectScreen .stage-nav-chevron {
+    width: 36px !important;
+    height: 55px !important;
+    font-size: 2rem !important;
+    opacity: 1 !important;
+  }
+  #stageSelectScreen .stage-nav-chevron.prev {
+    left: 12% !important;
+  }
+  #stageSelectScreen .stage-nav-chevron.next {
+    right: 12% !important;
+  }
+
+  /* Stone dais - bright embers on mobile, visible behind cards */
   #stageSelectScreen .stage-stone-dais {
-    height: 120px !important;
+    height: 320px !important;
+    margin-top: -60px !important;
+    z-index: 3 !important;
+    opacity: 1 !important;
   }
 
+  /* Controls - single compact row, must fit on screen */
+  #stageSelectScreen .stage-actions-row.wheel-actions {
+    flex-wrap: nowrap !important;
+    gap: .2rem !important;
+    margin: .1rem auto !important;
+    padding: 0 .3rem !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
   #stageSelectScreen .key-prompt-btn {
-    font-size: .55rem !important;
-    padding: .25rem .4rem !important;
-    gap: .25rem !important;
+    font-size: .36rem !important;
+    padding: .1rem .15rem !important;
+    gap: .08rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 1 !important;
   }
   #stageSelectScreen .key-prompt-btn kbd {
-    min-width: 16px !important;
-    height: 16px !important;
-    font-size: .5rem !important;
+    min-width: 12px !important;
+    height: 12px !important;
+    font-size: .35rem !important;
   }
+
+  /* Footer quote - gold, visible, above pips */
   #stageSelectScreen .stage-footer-quote {
-    font-size: .5rem !important;
+    font-size: .46rem !important;
+    color: rgba(220, 180, 100, .8) !important;
+    order: 98 !important;
+    margin-top: .15rem !important;
+    margin-bottom: .1rem !important;
   }
+
+  /* Pips - below footer quote */
   #stageSelectScreen .stage-pips {
+    order: 99 !important;
     gap: .5rem !important;
+    padding: .1rem 0 !important;
   }
   #stageSelectScreen .stage-pip {
-    width: 6px !important;
-    height: 6px !important;
+    width: 7px !important;
+    height: 7px !important;
   }
   #stageSelectScreen .stage-pip.active {
     width: 10px !important;
     height: 10px !important;
+  }
+
+  /* Random plaque - stone slab */
+  #stageSelectScreen .random-stage-plaque {
+    padding: .2rem .5rem !important;
+    font-size: .5rem !important;
+  }
+  #stageSelectScreen .random-stage-plaque .random-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Corner brackets - gothic, prominent */
+  #stageSelectScreen .stage-wheel-card.active .corner-bracket {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* ============================================================
+   v0.62 POLISH PASS 2 — Stone Dais & Card Frame Enhancement
+   ============================================================ */
+
+/* === STONE DAIS: Dramatically more visible === */
+#stageSelectScreen .stage-stone-dais {
+  background:
+    radial-gradient(ellipse 60% 95% at 50% 100%, rgba(90, 45, 28, 1), transparent 65%),
+    radial-gradient(ellipse 50% 75% at 50% 100%, rgba(180, 70, 35, .9), transparent 75%),
+    radial-gradient(ellipse 40% 55% at 50% 100%, rgba(255, 110, 40, .7), transparent 80%),
+    radial-gradient(ellipse 30% 35% at 50% 100%, rgba(255, 170, 70, .5), transparent 85%),
+    radial-gradient(ellipse 20% 20% at 50% 100%, rgba(255, 200, 100, .3), transparent 90%) !important;
+  opacity: 1 !important;
+  z-index: 2 !important;
+}
+
+#stageSelectScreen .stage-stone-dais::before {
+  height: 5px !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 170, 70, 1), rgba(255, 110, 40, .8), rgba(255, 170, 70, 1), transparent) !important;
+  box-shadow: 0 0 50px rgba(255, 130, 50, .8), 0 0 20px rgba(200, 160, 255, .4) !important;
+  width: 90% !important;
+}
+
+/* === ACTIVE CARD: Enhanced gothic frame === */
+#stageSelectScreen .stage-wheel-card.active {
+  box-shadow:
+    0 0 0 2px rgba(200, 160, 255, .95),
+    0 0 0 3px rgba(140, 90, 180, .5),
+    0 0 0 4px rgba(200, 160, 255, .2),
+    0 0 35px rgba(179, 92, 255, .55),
+    0 0 70px rgba(179, 92, 255, .2),
+    0 20px 55px rgba(0, 0, 0, .85),
+    inset 0 0 0 1px rgba(220, 200, 255, .3),
+    inset 0 0 0 5px rgba(0, 0, 0, .35),
+    inset 0 0 35px rgba(179, 92, 255, .1) !important;
+}
+
+/* Glowing star ornament below active card description */
+#stageSelectScreen .stage-wheel-card.active .stage-card-desc::after {
+  content: "✦" !important;
+  display: block !important;
+  text-align: center !important;
+  font-size: 1rem !important;
+  color: rgba(200, 160, 255, .8) !important;
+  text-shadow: 0 0 12px rgba(179, 92, 255, .8), 0 0 4px rgba(220, 200, 255, .5) !important;
+  margin-top: .3rem !important;
+  line-height: 1 !important;
+}
+
+/* === RANDOM STAGE PLAQUE: Stone tablet styling === */
+#stageSelectScreen .random-stage-plaque {
+  background: linear-gradient(180deg, rgba(40, 32, 55, .95), rgba(20, 15, 35, .95)) !important;
+  border: 2px solid rgba(160, 120, 200, .5) !important;
+  border-radius: 3px !important;
+  box-shadow:
+    0 0 0 1px rgba(200, 160, 255, .2),
+    0 0 25px rgba(179, 92, 255, .3),
+    0 4px 12px rgba(0, 0, 0, .7),
+    inset 0 2px 0 rgba(200, 160, 255, .2),
+    inset 0 -2px 0 rgba(0, 0, 0, .5),
+    inset 0 0 20px rgba(0, 0, 0, .4) !important;
+}
+
+/* === MOBILE: Stone dais even more prominent === */
+@media (max-width: 900px) {
+  #stageSelectScreen .stage-stone-dais {
+    height: 350px !important;
+    margin-top: -80px !important;
+    opacity: 1 !important;
+    z-index: 3 !important;
+  }
+  
+  /* Fix bottom bar - remove any gold band artifact */
+  #stageSelectScreen .stage-dais {
+    background: linear-gradient(0deg, rgba(3, 2, 8, .6), transparent 70%) !important;
+    padding: .3rem .3rem .6rem !important;
+  }
+  
+  /* Active card frame more prominent on mobile */
+  #stageSelectScreen .stage-wheel-card.active {
+    box-shadow:
+      0 0 0 2px rgba(200, 160, 255, 1),
+      0 0 0 3px rgba(140, 90, 180, .5),
+      0 0 0 4px rgba(200, 160, 255, .2),
+      0 0 30px rgba(179, 92, 255, .6),
+      0 0 60px rgba(179, 92, 255, .2),
+      0 20px 55px rgba(0, 0, 0, .85),
+      inset 0 0 0 1px rgba(220, 200, 255, .3),
+      inset 0 0 0 4px rgba(0, 0, 0, .35),
+      inset 0 0 30px rgba(179, 92, 255, .1) !important;
+  }
+  
+  /* Corner brackets more visible on mobile */
+  #stageSelectScreen .stage-wheel-card.active .corner-bracket {
+    width: 20px !important;
+    height: 20px !important;
+    border-width: 2px !important;
+    border-color: rgba(220, 200, 255, .9) !important;
+    box-shadow: 0 0 8px rgba(179, 92, 255, .5) !important;
+  }
+  
+  /* Footer quote gold and bright */
+  #stageSelectScreen .stage-footer-quote {
+    color: rgba(230, 190, 110, .9) !important;
+    text-shadow: 0 0 12px rgba(200, 150, 50, .5), 0 2px 4px rgba(0, 0, 0, .9) !important;
+  }
+  
+  /* Pips brighter */
+  #stageSelectScreen .stage-pip.active {
+    box-shadow: 0 0 20px rgba(179, 92, 255, 1), 0 0 8px rgba(220, 200, 255, .8) !important;
   }
 }

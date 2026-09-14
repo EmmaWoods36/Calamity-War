@@ -2412,15 +2412,16 @@
         const half = stageOptions.length / 2;
         if (offset > half) offset -= stageOptions.length;
         if (offset < -half) offset += stageOptions.length;
-        const absOffset = Math.min(Math.abs(offset), 3);
-        if (Math.abs(offset) > 3) return;
+        const maxOffset = window.innerWidth <= 900 ? 2 : 3;
+        const absOffset = Math.min(Math.abs(offset), maxOffset);
+        if (Math.abs(offset) > maxOffset) return;
 
         const isActive = i === selectedIndex;
 
         // 3D arc: cards curve along a cylinder
         // Each step: translateX spreads horizontally, rotateY angles inward, translateZ pushes back
-        const angleStep = 18; // degrees per card position
-        const radius = 580; // virtual cylinder radius - larger for more depth separation
+        const angleStep = window.innerWidth <= 900 ? 26 : 18; // wider spread on mobile for stronger 3D
+        const radius = window.innerWidth <= 900 ? 280 : 580; // smaller radius on mobile for more cards
         const ry = offset * angleStep; // rotateY angle
         const tx = Math.sin(offset * angleStep * Math.PI / 180) * radius;
         const tz = (Math.cos(offset * angleStep * Math.PI / 180) - 1) * radius; // push back on cylinder
@@ -2428,7 +2429,7 @@
         const opacity = isActive ? 1.0 : Math.max(0.5, 0.85 - absOffset * 0.08);
         const zIndex = isActive ? 20 : Math.max(1, 15 - absOffset * 3);
         // Push active card slightly forward to ensure it renders above side cards in 3D
-        const activeTz = isActive ? 50 : 0;
+        const activeTz = isActive ? (window.innerWidth <= 900 ? 70 : 50) : 0;
 
         const card = document.createElement('button');
         card.type = 'button';
@@ -2449,7 +2450,7 @@
 
       // Add navigation chevrons integrated into the active card area
       const prevChevron = document.createElement('button');
-      prevChevron.className = 'stage-nav-chevron prev' + (selectedIndex === 0 ? ' hidden' : '');
+      prevChevron.className = 'stage-nav-chevron prev';
       prevChevron.type = 'button';
       prevChevron.setAttribute('aria-label', 'Previous stage');
       prevChevron.innerHTML = '‹';
@@ -2460,7 +2461,7 @@
       wheel.appendChild(prevChevron);
 
       const nextChevron = document.createElement('button');
-      nextChevron.className = 'stage-nav-chevron next' + (selectedIndex === stageOptions.length - 1 ? ' hidden' : '');
+      nextChevron.className = 'stage-nav-chevron next';
       nextChevron.type = 'button';
       nextChevron.setAttribute('aria-label', 'Next stage');
       nextChevron.innerHTML = '›';
