@@ -2420,7 +2420,7 @@
         // 3D arc: cards curve along a cylinder
         // Each step: translateX spreads horizontally, rotateY angles inward, translateZ pushes back
         const angleStep = 18; // degrees per card position
-        const radius = 480; // virtual cylinder radius - smaller to keep cards in viewport
+        const radius = 580; // virtual cylinder radius - larger for more depth separation
         const ry = offset * angleStep; // rotateY angle
         const tx = Math.sin(offset * angleStep * Math.PI / 180) * radius;
         const tz = (Math.cos(offset * angleStep * Math.PI / 180) - 1) * radius; // push back on cylinder
@@ -2428,7 +2428,7 @@
         const opacity = isActive ? 1.0 : Math.max(0.5, 0.85 - absOffset * 0.08);
         const zIndex = isActive ? 20 : Math.max(1, 15 - absOffset * 3);
         // Push active card slightly forward to ensure it renders above side cards in 3D
-        const activeTz = isActive ? 30 : 0;
+        const activeTz = isActive ? 50 : 0;
 
         const card = document.createElement('button');
         card.type = 'button';

@@ -254,6 +254,7 @@
   border-radius: 2px !important;
   background-size: cover !important;
   background-position: center !important;
+  background-repeat: no-repeat !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-end !important;
@@ -379,6 +380,12 @@
 }
 
 /* Gothic active card frame - removed ::after to fix horizontal line artifact */
+/* Suppress old ::after from style.css that adds arrow text creating vertical lines */
+#stageSelectScreen .stage-wheel-card::after,
+#stageSelectScreen .stage-wheel-card.active::after {
+  content: none !important;
+  display: none !important;
+}
 
 /* Corner brackets on active card */
 #stageSelectScreen .stage-wheel-card.active .corner-bracket {
